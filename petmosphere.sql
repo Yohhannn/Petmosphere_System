@@ -1,3 +1,5 @@
+-- Insert Tables
+
 CREATE TABLE USER (
     USERID          INTEGER             PRIMARY KEY,
     USERNAME        VARCHAR(50)         NOT NULL UNIQUE,
@@ -24,6 +26,7 @@ CREATE TABLE TYPE (
 CREATE TABLE BREED (
     BREEDID         INTEGER             PRIMARY KEY,
     BREEDNAME       VARCHAR(50)         NOT NULL UNIQUE
+    TYPEID          INTEGER             NOT NULL REFERENCES TYPE(TYPEID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE TAG (
@@ -106,3 +109,61 @@ CREATE TABLE MESSAGE (
     FOREIGN KEY     (RECEIVERID)            REFERENCES USER (USERID),
     FOREIGN KEY     (POSTID)                REFERENCES POST (POSTID)
 );
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+-- Insert Admin
+INSERT INTO ADMIN (ADMINID, ADMINUSERNAME, ADMINPASS) VALUES
+(1, 'admin1', 'pass123'),
+
+-- Insert Users (Owners and Adopters)
+INSERT INTO USER (USERID, USERNAME, USERPHONE, USERLOCATION, USERPROFPIC, USEREMAIL, USERPASSWORD, USERTYPE) VALUES
+(1, 'owner1', '0912345678', 'City A', 'owner1.jpg', 'owner1@email.com', 'password1', 'Owner'),
+(2, 'adopter1', '0987654321', 'City B', 'adopter1.jpg', 'adopter1@email.com', 'password2', 'Adopter'),
+(3, 'adopter2', '0976543210', 'City C', 'adopter2.jpg', 'adopter2@email.com', 'password3', 'Adopter');
+
+-- Insert Pet Types
+INSERT INTO TYPE (TYPEID, TYPENAME) VALUES
+(1, 'Dogs'),
+(2, 'Cats'),
+(3, 'Birds'),
+(4, 'Snakes'),
+(5, 'Ducks'),
+(6, 'Chicken');
+
+-- Insert Breeds
+INSERT INTO BREED (BREEDID, BREEDNAME, TYPEID) VALUES
+(1, 'Golden Retriever', 1), -- Golden Retriever
+(2, 'Shih Tzu', 1), -- Shih Tzu
+(3, 'Persian Cat', 2), -- Persian Cat
+(4, 'Siberian Cat', 2), -- Siberian Cat
+(5, 'Parrot', 3), -- Parrot
+(6, 'Canary', 3), -- Canary
+(7, 'Python', 4), -- Python Snake
+(8, 'Cobra', 4), -- Cobra Snake
+(9, 'Mallard', 5), -- Mallard Duck
+(10, 'Muscovy', 5), -- Muscovy Duck
+(11, 'Leghorn', 6), -- Leghorn Chicken
+(12, 'Silkie', 6); -- Silkie Chicken
+
+-- Insert Tags
+INSERT INTO TAG (TAGID, TAGNAME) VALUES    --- murag naka radio button tas last  option is others (so mo type ra si user)
+(1, 'Friendly'),
+(2, 'Playful'),
+(3, 'Trained'),
+(4, 'Adopted'),
+(5, 'Vaccinated');
+
+-- Insert Pets
+INSERT INTO PET (PETID, PETNAME, PETLOCATION, PETAGE, PETDESCRIPT, PETSTATUS, BREEDID, TYPEID, USERID) VALUES
+(1, 'Buddy', 'City A', 3, 'A very friendly golden retriever.', 'Available', 0101, 1, 1), -- Golden Retriever
+(2, 'Milo', 'City B', 2, 'Energetic and loves playing fetch.', 'Available', 0102, 1, 1), -- Shih Tzu
+(3, 'Whiskers', 'City C', 4, 'Fluffy Persian cat, calm and loving.', 'Adopted', 0201, 2, 2), -- Persian Cat
+(4, 'Shadow', 'City A', 1, 'Siberian cat, playful and curious.', 'Available', 0202, 2, 1); -- Siberian Cat
+
+-- Insert Post
+INSERT INTO POST (POSTID, POSTDATE, POSTIMAGE, POSTDESCRIPT, PETID, USERID, TAGID, TYPEID, BREEDID) VALUES
+(1, CURRENT_TIMESTAMP, '0101-goldenRetriever.jpg', 'Looking for a loving home!', 1, 1, 1, 1, 0101), -- Golden Retriever
+(2, CURRENT_TIMESTAMP, '0202-siberianCat.jpg', 'Adopt this cute Siberian cat!', 4, 1, 2, 2, 0202); -- Siberian Cat
