@@ -1,3 +1,7 @@
+-- CREATE DATABASE
+CREATE DATABASE petmosphere_data_overhaul;
+
+
 -- Insert Tables
 
 CREATE TABLE USER (
