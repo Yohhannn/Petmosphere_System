@@ -16,3 +16,9 @@
 Petmosphere aims to simplify pet adoption, promote responsible pet ownership, and help every pet find a loving home.  
 
 ---
+1. composer install
+2. npm install
+3. Install composer.json
+4. php artisan migrate
+5. php artisan serve
+6. Run the postman
