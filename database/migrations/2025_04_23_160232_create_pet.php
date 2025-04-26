@@ -25,9 +25,24 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');   // user_id column
 
             // Define foreign key constraints
-            $table->foreign('breed_id')->references('breed_id')->on('breed')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('type_id')->references('type_id')->on('type')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('user_id')->on('user')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('breed_id')
+                ->references('breed_id')
+                ->on('breed')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('type_id')
+                ->references('type_id')
+                ->on('type')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+
+            $table->foreign('user_id')
+                ->references('user_id')
+                ->on('user')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
         });
     }

@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('breed', function (Blueprint $table) {
             $table->bigIncrements('breed_id')->primary(true);
-            $table->string('breed_name',50);
-            $table->integer('type_id');
-            $table->foreign('type_id')->references('type_id')->on('type')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('breed_name', 50);
+            $table->unsignedBigInteger('type_id');
+            $table->timestamps();
+
+            $table->foreign('type_id')
+                ->references('type_id')
+                ->on('type')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
