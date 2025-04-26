@@ -11,11 +11,11 @@ use Illuminate\Routing\Controller;
 class MessageController extends Controller
 {
     public function getAllMessage(){
-        $message = Message::with('user','post')->get();
+        $message = Message::with('sender','receiver','post')->get();
         return response()->json(["message" => "Successfully get data","data" => $message],200);
     }
     public function getMessageById($id){
-        $message = Message::with('user','post')->find($id);
+        $message = Message::with('sender','receiver','post')->find($id);
         if($message){
             return response()->json(["message" => "Successfully get data","data" => $message],200);
         }
@@ -37,6 +37,7 @@ class MessageController extends Controller
             return response()->json(["message"=>$ErrorMessage],400);
         }
         $validated = $request->validate([
+            'msg_time' => 'required|date_format:H:i:s',
             'msg_content' => 'required|string',
             'sender_id' => 'required|exists:user,user_id',
             'receiver_id' => 'required|exists:user,user_id',

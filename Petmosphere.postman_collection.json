@@ -1,0 +1,1420 @@
+{
+	"info": {
+		"_postman_id": "273804d9-9f46-4964-9231-fca6720f85ca",
+		"name": "Petmosphere",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39133545"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "getAllAdmin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Admin/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Admin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAdminById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Admin/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Admin",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAdmin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"admin_username\" : \"Edmark1434\",\r\n    \"admin_pass\" : \"Admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Admin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"admin_username\" : \"Edmark12\",\r\n    \"admin_pass\" : \"Admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Admin/Update/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Admin",
+								"Update",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Admin/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Admin",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Breed",
+			"item": [
+				{
+					"name": "getAllBreed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Breed/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Breed",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBreedById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Breed/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Breed",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createBreed",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"breed_name\" : \"chimpanziniBananini\",\r\n    \"type_id\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Breed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Breed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBreed",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n    {\r\n    \"breed_name\" : \"dopperman\",\r\n    \"type_id\" : 2\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Breed/15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Breed",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBreed",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Breed/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Breed",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pet",
+			"item": [
+				{
+					"name": "getAllPet",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Pet/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Pet",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Pet/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Pet",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"pet_name\" : \"Dan\",\r\n            \"pet_location\" : \"Urgello\",\r\n            \"pet_age\": 3,\r\n            \"pet_description\" :\"bomboclat\",\r\n            \"pet_status\" : \"ok ra\",\r\n            \"breed_id\" :16,\r\n            \"type_id\" :3,\r\n            \"user_id\" :1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Pet/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Pet",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePet",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"pet_name\": \"jodeci\",\r\n            \"pet_location\": \"cebu city\",\r\n            \"pet_age\": 3,\r\n            \"pet_description\": \"sipatan\",\r\n            \"pet_status\": \"goods\",\r\n            \"breed_id\": 14,\r\n            \"type_id\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Pet/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Pet",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Pet/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Pet",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PetTag",
+			"item": [
+				{
+					"name": "getAllPetTag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/PetTag/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"PetTag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPetTagById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/PetTag/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"PetTag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPetTag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pet_id\": 2,\r\n    \"req_id\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/PetTag/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"PetTag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePetTag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"breed_name\" : \"bulldog\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/PetTag/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"PetTag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePetTag",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/PetTag/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"PetTag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tag",
+			"item": [
+				{
+					"name": "getAllTag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Tag/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTagById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Tag/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createTag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tag_name\" : \"expensive food\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Tag/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Tag",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateTag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tag_name\" : \"special needs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Tag/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Tag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTag",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Tag/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Tag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Type",
+			"item": [
+				{
+					"name": "getAllType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Type/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Type",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTypeById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Type/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Type",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type_name\" : \"type kita yiee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Type",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type_name\" : \"update test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Type/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Type",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteType",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Type/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Type",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "getAllUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/User/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"User",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/User/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"User",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_name\": \"Edmark C. Talingting\",\r\n  \"user_phone\": \"09106682418\",\r\n  \"user_location\": \"Apas, Cebu City\",\r\n  \"user_prof_pic\": \"https://example.com/uploads/profile/juan.jpg\",\r\n  \"user_valid_id\": \"https://example.com/uploads/valid_ids/juan-id.jpg\",\r\n  \"user_email\": \"edmarktalingting0@gmail.com\",\r\n  \"user_pass\": \"StrongP@ssw0rd\",\r\n  \"user_createdate\": \"2025-04-26\",\r\n  \"user_type\": \"Breeder\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/User",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"User"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"breed_name\" : \"bulldog\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/User/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"User",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/User/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"User",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "getAllPost",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Post/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPostById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Post/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPost",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"post_date\": \"2025-04-26\",\r\n  \"post_img\": \"https://example.com/uploads/post_images/pet_image.jpg\",\r\n  \"post_descrip\": \"Ballerina Capuccina MI mi mi .\",\r\n  \"pet_id\": 2,\r\n  \"tag_id\": 6,\r\n  \"type_id\": 7,\r\n  \"user_id\": 2,\r\n  \"breed_id\": 15\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Post/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePost",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"post_date\": \"2025-04-26\",\r\n        \"post_img\": \"https://example.com/uploads/post_images/pet_image.jpg\",\r\n        \"post_descrip\": \"This is a updated description of the pet post.\",\r\n        \"pet_id\": 1,\r\n        \"tag_id\": 2,\r\n        \"type_id\": 3,\r\n        \"breed_id\": 7,\r\n        \"user_id\": 1,\r\n        \"post_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Post/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePost",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Post/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Post",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "getAllReview",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Review/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Review",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReviewById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Review/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Review",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createReview",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rev_rating\" : 5,\r\n    \"rev_date\" : \"2025-04-26\",\r\n    \"rev_description\": \"tralalelo tralala\",\r\n    \"rev_rated_by\": \"Rated by Edmark \",\r\n    \"user_id\" : 2\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Review/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Review",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateReview",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"rev_rating\": 5,\r\n        \"rev_rated_by\": \"testing\",\r\n        \"user_id\": 1,\r\n        \"rev_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Review/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Review",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteReview",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Review/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Review",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RequestHistory",
+			"item": [
+				{
+					"name": "getAllRequestHistory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/RequestHistory/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"RequestHistory",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRequestHistoryById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/RequestHistory/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"RequestHistory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createRequestHistory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status_old\" : \"pending\",\r\n    \"status_new\" : \"rejected\",\r\n    \"change_at\" : \"2025-04-26\",\r\n    \"req_id\" : 1,\r\n    \"change_by\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/RequestHistory/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"RequestHistory",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateRequestHistory",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"breed_name\" : \"bulldog\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/RequestHistory/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"RequestHistory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteRequestHistory",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/RequestHistory/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"RequestHistory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AdoptionRequest",
+			"item": [
+				{
+					"name": "getAllAdoptionRequest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/AdoptionRequest",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"AdoptionRequest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAdoptionRequestById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/AdoptionRequest/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"AdoptionRequest",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAdoptionRequest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"req_status\" : \"completed\",\r\n    \"req_date\" : \"2025-04-26\",\r\n    \"pet_id\": 1,\r\n    \"user_id\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/AdoptionRequest",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"AdoptionRequest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAdoptionRequest",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"req_status\" : \"completed\",\r\n    \"req_date\" : \"2025-04-26\",\r\n    \"pet_id\": 2\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/AdoptionRequest/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"AdoptionRequest",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAdoptionRequest",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/AdoptionRequest/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"AdoptionRequest",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "getAllMessage",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Message/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Message",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMessageById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Message/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Message",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createMessage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"msg_time\" : \"14:45:30\",\r\n    \"msg_content\" : \"Edmark Gwapo\",\r\n    \"sender_id\" : 1,\r\n    \"receiver_id\" : 2 ,\r\n    \"post_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Message",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateMessage",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"msg_content\" : \"test_update\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/Message/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Message",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteMessage",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/Message/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Message",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

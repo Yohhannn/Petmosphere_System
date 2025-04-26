@@ -10,7 +10,7 @@ class RequestHistoryController extends Controller
 {
     public function getAllRequestHistory(){
         $requestHistory = RequestHistory::with('user','adoptionRequest')->get();
-        return response()->json(["message" => "Successfully get data of Request History",]);
+        return response()->json(["message" => "Successfully get data of Request History","data"=> $requestHistory],200);
     }
     public function getRequestHistoryById($id){
         $request_history = RequestHistory::with('user','adoptionRequest')->find($id);

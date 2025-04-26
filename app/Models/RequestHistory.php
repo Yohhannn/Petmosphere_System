@@ -11,7 +11,7 @@ class RequestHistory extends Model
     protected $fillable = [
         'status_old',
         'status_new',
-        'changed_at',
+        'change_at',
         'change_by',
         'req_id',
     ];
