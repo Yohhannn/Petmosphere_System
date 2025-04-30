@@ -8,7 +8,6 @@ export function meta() {
     { name: "description", content: "Find your perfect pet at PETMOSPHERE!" },
   ];
 }
-
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
 

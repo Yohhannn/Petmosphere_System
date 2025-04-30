@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdoptionRequestController;
 use App\Http\Controllers\BreedController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\PetTagController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/Admin',[AdminController::class,'createAdmin']);
     Route::get('/Admin',[AdminController::class,'getAllAdmin']);
     Route::get('/Admin/{id}',[AdminController::class,'getAdminById']);
@@ -87,6 +89,11 @@ use App\Http\Controllers\AdminController;
     Route::get('/PetTag', [PetTagController::class, 'getAllPetTag']);
     Route::get('/PetTag/{id}', [PetTagController::class, 'getPetTagById']);
     Route::delete('/PetTag/{id}', [PetTagController::class, 'deletePetTag']);
+
+    Route::post('/logout', [LoginController::class, 'logout']);
+});
+    Route::post('/login', [LoginController::class, 'login']);
+
 
 
 
