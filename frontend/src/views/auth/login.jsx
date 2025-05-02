@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'animate.css';
-import loginData from '../../data/loginData';
-
+import * as send from '../postRequest/send.js';
 export function meta() {
   return [
     { title: "( ✦ ) PETMOSPHERE - LOGIN" },
@@ -17,22 +16,29 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Simulate login validation using loginData
-    const user = loginData.find(u => u.email === email && u.password === password);
-
-    if (user) {
-      console.log("Login successful");
-      navigate("/home");
-    } else {
-      console.log("Invalid credentials");
-      setErrorMessage("Invalid email or password.");
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 3000); // Clear error message after 3 seconds
-    }
+      console.log(email+" "+password);
+      const credentials = {
+          "user_email" : email,
+          "user_pass" : password
+      }
+      const data = await send.login(credentials);
+      if(data.message.includes('Invalid')){
+        setErrorMessage(data.message);
+        setTimeout(()=>{
+            setErrorMessage('');
+        },3000);
+      }else if(data.message.includes("successfully")){
+          console.log(data.message);
+          navigate("/home");
+      }else{
+          setErrorMessage('An error occured');
+          setTimeout(()=>{
+              setErrorMessage('');
+          },3000);
+      }
   }
 
   return (

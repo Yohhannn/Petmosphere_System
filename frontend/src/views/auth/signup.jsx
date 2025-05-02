@@ -22,31 +22,27 @@ const SignUp = () => {
   const [address, setAddress] = useState('');             // New state for address
   const [errorMessage, setErrorMessage] = useState(''); // New state for error message
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e) => {
+    e.preventDefault();
     if (password !== confirmPassword) {
       console.log("Password doesn't match");
       setErrorMessage("Passwords do not match.");
       setTimeout(() => setErrorMessage(''), 3000); // Clear message
       return;
     }
-    if (!fullname || !email || !password || !confirmPassword || !contactNumber || !address) {
-      setErrorMessage("Please fill in all required fields.");
-      setTimeout(() => setErrorMessage(''), 3000); // Clear message
-      return;
-    }
-
     const signUpObject = {
       "user_name": fullname,
       "user_email": email,
       "user_pass": password,
       "user_createdate": new Date().toISOString().slice(0, 10),
-      "user_contact": contactNumber, // Include contact number
-      "user_address": address,     // Include address
+        "user_prof_pic" : null,
+      "user_phone": contactNumber, // Include contact number
+      "user_location": address,     // Include address
     };
     const response = await send.signUp(signUpObject);
     console.log(response.message);
     console.log(signUpObject);
-    if (response.message.includes('Successfully')) {
+    if (response.message.includes('successfully')) {
       navigate('/login');
     } else {
       console.log(response.message);
