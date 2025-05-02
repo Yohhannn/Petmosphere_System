@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Link, useNavigation} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'animate.css';
 import * as send from '../postRequest/send.js';
 
@@ -11,38 +11,54 @@ export function meta() {
 }
 
 const SignUp = () => {
-  const navigate = useNavigation();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [fullname,setFullname] = useState('');
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  const [confirmPassword,setConfirmPassword] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [contactNumber, setContactNumber] = useState(''); // New state for contact number
+  const [address, setAddress] = useState('');             // New state for address
+  const [errorMessage, setErrorMessage] = useState(''); // New state for error message
+
   const handleSignUp = async () => {
-      if(!(confirmPassword && password)){
-          console.log("Password doesn't match");
-          return;
-      }
-      const signUpObject = {
-          "user_name" : fullname,
-          "user_email" : email,
-          "user_pass" : password,
-          "user_createdate" : new Date().toISOString().slice(0,10)
-      }
-      const response = await send.signUp(signUpObject);
+    if (password !== confirmPassword) {
+      console.log("Password doesn't match");
+      setErrorMessage("Passwords do not match.");
+      setTimeout(() => setErrorMessage(''), 3000); // Clear message
+      return;
+    }
+    if (!fullname || !email || !password || !confirmPassword || !contactNumber || !address) {
+      setErrorMessage("Please fill in all required fields.");
+      setTimeout(() => setErrorMessage(''), 3000); // Clear message
+      return;
+    }
+
+    const signUpObject = {
+      "user_name": fullname,
+      "user_email": email,
+      "user_pass": password,
+      "user_createdate": new Date().toISOString().slice(0, 10),
+      "user_contact": contactNumber, // Include contact number
+      "user_address": address,     // Include address
+    };
+    const response = await send.signUp(signUpObject);
+    console.log(response.message);
+    console.log(signUpObject);
+    if (response.message.includes('Successfully')) {
+      navigate('/login');
+    } else {
       console.log(response.message);
-      console.log(signUpObject);
-      if(response.message.includes('Successfully')){
-          navigate('/login');
-      }else{
-          console.log(response.message);
-      }
+      setErrorMessage(response.message); //show the error message from server
+      setTimeout(() => setErrorMessage(''), 3000); // Clear message
+    }
   }
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('/main_assets/images/bg_landing_phone.svg')] sm:bg-[url('/main_assets/images/bg_landing.svg')] animate__animated animate__fadeIn"
     >
-      <div className="w-full max-w-sm p-8 bg-white bg-opacity-90 rounded-lg shadow-lg space-y-6 mt-16 animate__animated animate__fadeIn">
+      <div className="w-full max-w-md p-8 bg-white bg-opacity-90 rounded-lg shadow-lg space-y-6 mt-16 animate__animated animate__fadeIn">
         {/* Upper-left circle button */}
         <Link
           to="/"
@@ -58,21 +74,18 @@ const SignUp = () => {
         <h1 className="text-3xl font-bold text-[#8E57B2] mb-6 text-center animate__animated animate__wobble">
           Sign Up
         </h1>
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative animate__animated animate__shakeX" role="alert">
+            <strong className="font-bold">Error!</strong>
+            <span className="block sm:inline"> {errorMessage}</span>
+          </div>
+        )}
 
-        <form className="w-full max-w-sm space-y-4" onSubmit={handleSignUp}>
+        <form className="w-full space-y-4" onSubmit={handleSignUp}>
           <div className="space-y-2">
             <label htmlFor="name" className="block text-sm text-[#626262]">
               Full Name
             </label>
-
-            {/*Auto Fill CSS Format*/}
-            <style>
-              {`input:-webkit-autofill {
-                -webkit-text-fill-color: black !important;
-                transition: background-color 5000s ease-in-out 0s;
-                }`}
-            </style>
-
             <input
               id="name"
               type="text"
@@ -87,15 +100,6 @@ const SignUp = () => {
             <label htmlFor="email" className="block text-sm text-[#626262]">
               Email Address
             </label>
-
-            {/*Auto Fill CSS Format*/}
-            <style>
-              {`input:-webkit-autofill {
-                -webkit-text-fill-color: black !important;
-                transition: background-color 5000s ease-in-out 0s;
-                }`}
-            </style>
-
             <input
               id="email"
               type="email"
@@ -106,20 +110,41 @@ const SignUp = () => {
             />
           </div>
 
+          {/* New Contact Number Field */}
+          <div className="space-y-2">
+            <label htmlFor="contact" className="block text-sm text-[#626262]">
+              Contact Number
+            </label>
+            <input
+              id="contact"
+              type="tel" // Use type="tel" for phone numbers
+              required
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
+              className="w-full px-4 py-2 border border-[#8E57B2] rounded-md text-black focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white"
+            />
+          </div>
+
+          {/* New Address Field */}
+          <div className="space-y-2">
+            <label htmlFor="address" className="block text-sm text-[#626262]">
+              Address
+            </label>
+            <input
+              id="address"
+              type="text"
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full px-4 py-2 border border-[#8E57B2] rounded-md text-black focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white"
+            />
+          </div>
+
           {/* Password field with show/hide */}
           <div className="space-y-2 relative">
             <label htmlFor="password" className="block text-sm text-[#626262]">
               Password
             </label>
-
-            {/*Auto Fill CSS Format*/}
-            <style>
-              {`input:-webkit-autofill {
-                -webkit-text-fill-color: black !important;
-                transition: background-color 5000s ease-in-out 0s;
-                }`}
-            </style>
-
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
@@ -146,15 +171,6 @@ const SignUp = () => {
             <label htmlFor="confirm-password" className="block text-sm text-[#626262]">
               Confirm Password
             </label>
-
-            {/*Auto Fill CSS Format*/}
-            <style>
-              {`input:-webkit-autofill {
-                -webkit-text-fill-color: black !important;
-                transition: background-color 5000s ease-in-out 0s;
-                }`}
-            </style>
-
             <input
               id="confirm-password"
               type={showConfirmPassword ? 'text' : 'password'}
@@ -189,7 +205,7 @@ const SignUp = () => {
         <div className="mt-6 text-center">
           <p className="text-sm text-[#626262]">
             Already have an account?{" "}
-            <Link to="/send" className="text-[#8E57B2] hover:text-[#F69332]">
+            <Link to="/login" className="text-[#8E57B2] hover:text-[#F69332]">
               Login
             </Link>
           </p>

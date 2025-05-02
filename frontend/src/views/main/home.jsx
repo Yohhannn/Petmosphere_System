@@ -23,8 +23,9 @@ const Home = () => {
 
     const filteredPets = posts.filter(
         (post) =>
-            post.PetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            post.Breed.toLowerCase().includes(searchQuery.toLowerCase())
+            (post.PetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                post.Breed.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            post.Status === 'Available' // Added this condition to filter by status
     );
 
     return (
@@ -131,7 +132,7 @@ const Home = () => {
 
                         {filteredPets.length === 0 && (
                             <p className="text-center text-gray-600 mt-10 animate__animated animate__fadeIn">
-                                No posts available. Be the first to share a pet for adoption!
+                                No available pets matching your search.
                             </p>
                         )}
                     </div>

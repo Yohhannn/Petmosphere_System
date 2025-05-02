@@ -3,7 +3,6 @@ export const posts = [
     {
         PetID: '001',
         PetName: 'Charlie',
-        PetCategory: 'Mammal',
         PetType: 'Dog',
         Breed: 'Golden Retriever',
         PetTags: ['friendly', 'playful', 'good with kids'],
@@ -13,7 +12,7 @@ export const posts = [
         History: 'Buddy has been with his current family since he was a puppy.',
         Health: 'Up-to-date on all vaccinations, neutered, and healthy.',
         PetImages: ['main_assets/images/pets/charlie.jpg'],
-        Status: 'Available',
+        Status: 'Available', // Available or Not
         CurrentOwnerFullName: 'Alice Wonderland',
         CurrentOwnerAccountDisplayName: '@alice_w',
         CurrentOwnerProfile: 'https://via.placeholder.com/50/FFC107/000000?Text=AW',
@@ -21,12 +20,17 @@ export const posts = [
         Email: 'alice.w@email.com',
         TimePosted: '2025-05-01T10:00:00Z',
         TimeUpdated: '2025-05-01T10:00:00Z',
-        OwnerAccountID: 'user_alice_123', // Added OwnerAccountID
+        OwnerAccountID: 'user_alice_123',
+        PostStatus: 'Approved', // Added PostStatus
+        AccountReviewID: '101', // Added AccountReviewID
+        AccountReviewedRatedBy: 'Reviewer One', // Added AccountReviewedRatedBy
+        AccountReviewRating: 4.8, // Added AccountReviewRating
+        AccountReviewDesc: 'A lovely pet with a detailed description and clear reasons for rehoming.', // Added AccountReviewDesc
+        AccountReviewDate: '2025-05-01', // Added AccountReviewDate
     },
     {
         PetID: '002',
         PetName: 'Whiskers',
-        PetCategory: 'Mammal',
         PetType: 'Cat',
         Breed: 'Siamese',
         PetTags: ['calm', 'affectionate', 'blue eyes'],
@@ -44,12 +48,17 @@ export const posts = [
         Email: 'bob.b@email.com',
         TimePosted: '2025-04-30T15:30:00Z',
         TimeUpdated: '2025-04-30T15:30:00Z',
-        OwnerAccountID: 'user_bob_456', // Added OwnerAccountID
+        OwnerAccountID: 'user_bob_456',
+        PostStatus: 'Approved', // Added PostStatus
+        AccountReviewID: '102', // Added AccountReviewID
+        AccountReviewedRatedBy: 'Reviewer Two', // Added AccountReviewedRatedBy
+        AccountReviewRating: 4.5, // Added AccountReviewRating
+        AccountReviewDesc: 'Good information provided, especially regarding the reason for needing a new home.', // Added AccountReviewDesc
+        AccountReviewDate: '2025-04-30', // Added AccountReviewDate
     },
     {
         PetID: '003',
         PetName: 'Sheldon',
-        PetCategory: 'Reptile',
         PetType: 'Turtle',
         Breed: 'Red-Eared Slider',
         PetTags: ['aquatic', 'low maintenance'],
@@ -67,6 +76,12 @@ export const posts = [
         Email: 'amy.f@email.com',
         TimePosted: '2025-04-29T09:45:00Z',
         TimeUpdated: '2025-04-29T09:45:00Z',
-        OwnerAccountID: 'user_amy_789', // Added OwnerAccountID
+        OwnerAccountID: 'user_amy_789',
+        PostStatus: 'Approved', // Added PostStatus
+        AccountReviewID: '103', // Added AccountReviewID
+        AccountReviewedRatedBy: 'Reviewer Three', // Added AccountReviewedRatedBy
+        AccountReviewRating: 4.0, // Added AccountReviewRating
+        AccountReviewDesc: 'Clear description of the pet and its needs. Important to highlight the aquatic setup requirement.', // Added AccountReviewDesc
+        AccountReviewDate: '2025-04-29', // Added AccountReviewDate
     },
 ];
