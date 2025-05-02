@@ -71,7 +71,7 @@ const Home = () => {
                             >
                                 {/* Image Section (Left on wider screens) */}
                                 <div className="w-full md:w-1/2">
-                                    {post.PetImages && post.PetImages.length > 0 && (
+                                    { (
                                         <img
                                             src={post.PetImages[0]}
                                             alt={post.PetName}
@@ -110,6 +110,10 @@ const Home = () => {
                                                 </span>
                                             ))}
                                         </div>
+                                        {/* Display Post Description below tags */}
+                                        {post.PostDescription && (
+                                            <p className="text-gray-600 text-sm mt-3">{post.PostDescription}</p>
+                                        )}
                                     </div>
 
                                     {/* Post Actions */}

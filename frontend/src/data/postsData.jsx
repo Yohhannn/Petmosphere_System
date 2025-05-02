@@ -1,4 +1,11 @@
 // data/postsData.jsx
+import accountsData from './accountsData';
+
+// Helper function to find account details by ID
+const getAccountDetails = (accountID) => {
+    return accountsData.find(account => account.accountID === accountID);
+};
+
 export const posts = [
     {
         PetID: '001',
@@ -13,20 +20,17 @@ export const posts = [
         Health: 'Up-to-date on all vaccinations, neutered, and healthy.',
         PetImages: ['main_assets/images/pets/charlie.jpg'],
         Status: 'Available', // Available or Not
-        CurrentOwnerFullName: 'Alice Wonderland',
-        CurrentOwnerAccountDisplayName: '@alice_w',
-        CurrentOwnerProfile: 'https://via.placeholder.com/50/FFC107/000000?Text=AW',
-        ContactNumber: '0917-111-2222',
-        Email: 'alice.w@email.com',
         TimePosted: '2025-05-01T10:00:00Z',
         TimeUpdated: '2025-05-01T10:00:00Z',
-        OwnerAccountID: 'user_alice_123',
+        OwnerAccountID: 'AS67890', // Using an existing accountID
         PostStatus: 'Approved', // Added PostStatus
-        AccountReviewID: '101', // Added AccountReviewID
-        AccountReviewedRatedBy: 'Reviewer One', // Added AccountReviewedRatedBy
-        AccountReviewRating: 4.8, // Added AccountReviewRating
-        AccountReviewDesc: 'A lovely pet with a detailed description and clear reasons for rehoming.', // Added AccountReviewDesc
-        AccountReviewDate: '2025-05-01', // Added AccountReviewDate
+        PostDescription: 'Charlie is looking for a loving family who enjoys outdoor activities. He is great with children and other pets. Serious inquiries only, please.', // Added Post Description
+        // The following fields will be populated dynamically based on OwnerAccountID
+        CurrentOwnerFullName: getAccountDetails('AS67890')?.accountFullName || 'Unknown',
+        CurrentOwnerAccountDisplayName: getAccountDetails('AS67890')?.accountEmail || '@unknown',
+        CurrentOwnerProfile: getAccountDetails('AS67890')?.profile || 'https://via.placeholder.com/50/808080/FFFFFF?Text=?',
+        ContactNumber: getAccountDetails('AS67890')?.accountContactNumber || 'N/A',
+        Email: getAccountDetails('AS67890')?.accountEmail || 'unknown@example.com',
     },
     {
         PetID: '002',
@@ -41,20 +45,16 @@ export const posts = [
         Health: 'Vaccinated, spayed, and in excellent health.',
         PetImages: ['main_assets/images/pets/siamese.jpg'],
         Status: 'Available',
-        CurrentOwnerFullName: 'Bob The Builder',
-        CurrentOwnerAccountDisplayName: '@bob_builds',
-        CurrentOwnerProfile: 'https://via.placeholder.com/50/007BFF/FFFFFF?Text=BB',
-        ContactNumber: '0918-333-4444',
-        Email: 'bob.b@email.com',
         TimePosted: '2025-04-30T15:30:00Z',
         TimeUpdated: '2025-04-30T15:30:00Z',
-        OwnerAccountID: 'user_bob_456',
+        OwnerAccountID: 'RB54321', // Using an existing accountID
         PostStatus: 'Approved', // Added PostStatus
-        AccountReviewID: '102', // Added AccountReviewID
-        AccountReviewedRatedBy: 'Reviewer Two', // Added AccountReviewedRatedBy
-        AccountReviewRating: 4.5, // Added AccountReviewRating
-        AccountReviewDesc: 'Good information provided, especially regarding the reason for needing a new home.', // Added AccountReviewDesc
-        AccountReviewDate: '2025-04-30', // Added AccountReviewDate
+        PostDescription: 'Whiskers is a sweet and gentle cat who loves to be indoors.',
+        CurrentOwnerFullName: getAccountDetails('RB54321')?.accountFullName || 'Unknown',
+        CurrentOwnerAccountDisplayName: getAccountDetails('RB54321')?.accountEmail || '@unknown',
+        CurrentOwnerProfile: getAccountDetails('RB54321')?.profile || 'https://via.placeholder.com/50/808080/FFFFFF?Text=?',
+        ContactNumber: getAccountDetails('RB54321')?.accountContactNumber || 'N/A',
+        Email: getAccountDetails('RB54321')?.accountEmail || 'unknown@example.com',
     },
     {
         PetID: '003',
@@ -69,19 +69,16 @@ export const posts = [
         Health: 'Healthy and active.',
         PetImages: ['main_assets/images/pets/sheldon.jpg'],
         Status: 'Available',
-        CurrentOwnerFullName: 'Amy Fowler',
-        CurrentOwnerAccountDisplayName: '@amy_f',
-        CurrentOwnerProfile: 'https://via.placeholder.com/50/28A745/FFFFFF?Text=AF',
-        ContactNumber: '0919-555-6666',
-        Email: 'amy.f@email.com',
         TimePosted: '2025-04-29T09:45:00Z',
         TimeUpdated: '2025-04-29T09:45:00Z',
-        OwnerAccountID: 'user_amy_789',
+        OwnerAccountID: 'EM09876', // Using an existing accountID
         PostStatus: 'Approved', // Added PostStatus
-        AccountReviewID: '103', // Added AccountReviewID
-        AccountReviewedRatedBy: 'Reviewer Three', // Added AccountReviewedRatedBy
-        AccountReviewRating: 4.0, // Added AccountReviewRating
-        AccountReviewDesc: 'Clear description of the pet and its needs. Important to highlight the aquatic setup requirement.', // Added AccountReviewDesc
-        AccountReviewDate: '2025-04-29', // Added AccountReviewDate
+        PostDescription: 'Sheldon needs a spacious tank with proper lighting and filtration. He is a fascinating pet to observe. Experience with aquatic turtles preferred.', // Added Post Description
+        // The following fields will be populated dynamically based on OwnerAccountID
+        CurrentOwnerFullName: getAccountDetails('EM09876')?.accountFullName || 'Unknown',
+        CurrentOwnerAccountDisplayName: getAccountDetails('EM09876')?.accountEmail || '@unknown',
+        CurrentOwnerProfile: getAccountDetails('EM09876')?.profile || 'https://via.placeholder.com/50/808080/FFFFFF?Text=?',
+        ContactNumber: getAccountDetails('EM09876')?.accountContactNumber || 'N/A',
+        Email: getAccountDetails('EM09876')?.accountEmail || 'unknown@example.com',
     },
 ];
