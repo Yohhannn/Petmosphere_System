@@ -9,6 +9,13 @@ export function meta() {
     { name: "description", content: "Create your account and start adopting a pet today!" },
   ];
 }
+const checkPassword = (password) => {
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasMinLength = password.length >= 8;
+
+    return hasSymbol && hasUppercase && hasMinLength;
+};
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -30,6 +37,11 @@ const SignUp = () => {
       setTimeout(() => setErrorMessage(''), 3000); // Clear message
       return;
     }
+    if(!checkPassword(password)){
+        setErrorMessage("Password must be at least 8 characters, include an uppercase letter and a symbol.");
+        setTimeout(() => setErrorMessage(''), 3000);
+        return;
+    }
     const signUpObject = {
       "user_name": fullname,
       "user_email": email,
@@ -44,12 +56,16 @@ const SignUp = () => {
     console.log(signUpObject);
     if (response.message.includes('successfully')) {
       navigate('/login');
-    } else {
-      console.log(response.message);
+    }else if(response.message.includes('email')) {
+        setErrorMessage(response.message); //show the error message from server
+        setTimeout(() => setErrorMessage(''), 3000);
+    }
+    else {
       setErrorMessage(response.message); //show the error message from server
       setTimeout(() => setErrorMessage(''), 3000); // Clear message
     }
   }
+
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('/main_assets/images/bg_landing_phone.svg')] sm:bg-[url('/main_assets/images/bg_landing.svg')] animate__animated animate__fadeIn"

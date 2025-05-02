@@ -27,17 +27,13 @@ const Login = () => {
       const data = await send.login(credentials);
       if(data.message.includes('Invalid')){
         setErrorMessage(data.message);
-        setTimeout(()=>{
-            setErrorMessage('');
-        },3000);
+        setTimeout(() => setErrorMessage(''), 3000);
       }else if(data.message.includes("successfully")){
           console.log(data.message);
           navigate("/home");
       }else{
           setErrorMessage('An error occured');
-          setTimeout(()=>{
-              setErrorMessage('');
-          },3000);
+          setTimeout(() => setErrorMessage(''), 3000);
       }
   }
 
