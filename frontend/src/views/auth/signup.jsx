@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'animate.css';
+import * as send from '../postRequest/send.js';
 
 export function meta() {
   return [
@@ -12,7 +13,13 @@ export function meta() {
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const [fullname,setFullname] = useState('');
+  const [email,setEmail] = useState('');
+  const [password,setPassword] = useState('');
+  const [confirmPassword,setConfirmPassword] = useState('');
+  const handleSignUp = async () => {
+      const response = await send.signUp();
+  }
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('/main_assets/images/bg_landing_phone.svg')] sm:bg-[url('/main_assets/images/bg_landing.svg')] animate__animated animate__fadeIn"
@@ -34,7 +41,7 @@ const SignUp = () => {
           Sign Up
         </h1>
 
-        <form className="w-full max-w-sm space-y-4">
+        <form className="w-full max-w-sm space-y-4" onSubmit={handleSignUp}>
           <div className="space-y-2">
             <label htmlFor="name" className="block text-sm text-[#626262]">
               Full Name
@@ -52,6 +59,8 @@ const SignUp = () => {
               id="name"
               type="text"
               required
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
               className="w-full px-4 py-2 border border-[#8E57B2] rounded-md text-black focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white"
             />
           </div>
@@ -73,6 +82,8 @@ const SignUp = () => {
               id="email"
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-[#8E57B2] rounded-md text-black focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white"
             />
           </div>
@@ -95,6 +106,8 @@ const SignUp = () => {
               id="password"
               type={showPassword ? 'text' : 'password'}
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-[#8E57B2] rounded-md text-black focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white"
             />
             <button
@@ -128,6 +141,8 @@ const SignUp = () => {
               id="confirm-password"
               type={showConfirmPassword ? 'text' : 'password'}
               required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full px-4 py-2 border border-[#8E57B2] rounded-md text-black focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white"
             />
             <button
@@ -156,7 +171,7 @@ const SignUp = () => {
         <div className="mt-6 text-center">
           <p className="text-sm text-[#626262]">
             Already have an account?{" "}
-            <Link to="/login" className="text-[#8E57B2] hover:text-[#F69332]">
+            <Link to="/send" className="text-[#8E57B2] hover:text-[#F69332]">
               Login
             </Link>
           </p>

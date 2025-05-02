@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import 'animate.css';
+import * as send from '../postRequest/send.js';
 
 export function meta() {
   return [
@@ -9,8 +10,28 @@ export function meta() {
   ];
 }
 const Login = () => {
+  const navigate = useNavigate();
+  const [email,setEmail] = useState('');
+  const [password,setPasword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const handleLogin = async (e) =>{
+      e.preventDefault();
+      console.log(email+" "+password);
+      const credentials = {
+          "user_email" : email,
+          "user_pass" : password
+      }
+      const data = await send.login(credentials);
+      if(data.message.includes('Invalid')){
+          console.log(data.message);
+      }else if(data.message.includes("successfully")){
+          console.log(data.message);
+          navigate("/home");
+      }else{
+          console.log("an error occured");
+      }
 
+  }
   return (
     <div
       className="relative flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('/main_assets/images/bg_landing_phone.svg')] sm:bg-[url('/main_assets/images/bg_landing.svg')] animate__animated animate__fadeIn"
@@ -40,7 +61,7 @@ const Login = () => {
           Login
         </h1>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           <div className="space-y-2">
             <label htmlFor="email" className="block text-sm text-[#626262]">
               Email Address
@@ -58,6 +79,8 @@ const Login = () => {
               id="email"
               type="email"
               required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-[#8E57B2] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white text-black"
             />
           </div>
@@ -80,6 +103,8 @@ const Login = () => {
               id="password"
               type={showPassword ? "text" : "password"}
               required
+              value={password}
+              onChange={e => setPasword(e.target.value)}
               className="w-full px-4 py-2 border border-[#8E57B2] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white text-black"
             />
             <button
