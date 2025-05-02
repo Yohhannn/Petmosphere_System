@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('pet_name', 50);
             $table->string('pet_location', 50);
             $table->integer('pet_age');
+            $table->string('pet_tag',250)->nullable();
             $table->string('pet_description', 100);
             $table->string('pet_status', 50);
 

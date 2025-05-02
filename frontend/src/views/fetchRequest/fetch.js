@@ -8,3 +8,10 @@ export async function getTag(){
     const response = await fetch(base_url+"/Post");
     return await response.json();
 }
+export async function getPosts(){
+    const response = await fetch(base_url+'/Post');
+    return await  response.json();
+}
+export async function getPostsBy(id){
+    const response = await fetch(base_url+'/')
+}

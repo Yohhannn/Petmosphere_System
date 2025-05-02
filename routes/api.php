@@ -13,7 +13,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {});
     Route::post('/Admin',[AdminController::class,'createAdmin']);
     Route::get('/Admin',[AdminController::class,'getAllAdmin']);
     Route::get('/Admin/{id}',[AdminController::class,'getAdminById']);
@@ -76,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/logout', [LoginController::class, 'logout']);
-});
+
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/User',[UserController::class,'createUser']);
 
