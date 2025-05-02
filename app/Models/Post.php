@@ -17,6 +17,8 @@ class Post extends Model
         'type_id',
         'user_id',
         'breed_id',
+        'post_status',
+        'post_tag'
     ];
     public function user(){
         return $this->belongsTo(User::class,'user_id');

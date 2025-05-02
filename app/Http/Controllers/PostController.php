@@ -45,6 +45,7 @@ class PostController extends Controller
             'type_id' => 'required|integer|exists:type,type_id',
             'breed_id' => 'required|integer|exists:breed,breed_id',
             'user_id' => 'required|integer|exists:user,user_id',
+            'post_tag' => 'required|string|max:250',
         ]);
 
         $post = Post::create($validated);
@@ -73,6 +74,7 @@ class PostController extends Controller
             'tag_id' => 'required|integer|exists:tag,tag_id',
             'type_id' => 'required|integer|exists:type,type_id',
             'breed_id' => 'required|integer|exists:breed,breed_id',
+            'post_tag' => 'required|string|max:250',
         ]);
         $post->update($validated);
         return response()->json(['message' => 'Post updated successfully',"data" => $post],200);

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->date('post_date');
             $table->string('post_img',250)->nullable();
             $table->string('post_descrip',100);
+            $table->string('post_status',20)->default('Pending');
+            $table->string('post_tag',250)->nullable();
             $table->unsignedBigInteger('pet_id');
             $table->unsignedBigInteger('tag_id');
             $table->unsignedBigInteger('type_id');

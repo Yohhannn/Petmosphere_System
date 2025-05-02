@@ -39,7 +39,6 @@ class UserController extends Controller
             'user_email' => 'required|email|max:50',
             'user_pass' => 'required|string|max:100',
             'user_createdate' => 'required|date',
-            'user_type' => 'required|string|max:10',
         ]);
 
         // Hash the password
@@ -64,11 +63,9 @@ class UserController extends Controller
             'user_phone' => 'required|string|max:11',
             'user_location' => 'required|string|max:100',
             'user_prof_pic' => 'nullable|string|max:250',
-            'user_valid_id' => 'required|string|max:250',
             'user_email' => 'required|email|max:50',
             'user_pass' => 'required|string|max:100',
             'user_createdate' => 'required|date',
-            'user_type' => 'required|string|max:10',
         ]);
         if($user->user_email !== $request->user_email){
             if(User::where('user_email',$request->user_email)->exists()){

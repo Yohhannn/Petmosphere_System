@@ -18,11 +18,9 @@ return new class extends Migration
             $table->string('user_phone',11)->nullable();
             $table->string('user_location',100)->nullable();
             $table->string('user_prof_pic',250)->nullable();
-            $table->string('user_valid_id',250)->nullable();
             $table->string('user_email',50)->unique();
             $table->string('user_pass',100);
             $table->date('user_createdate');
-            $table->string('user_type',10);
         });
     }
 
