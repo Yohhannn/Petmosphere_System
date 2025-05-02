@@ -22,7 +22,7 @@ const router = createBrowserRouter ([
 
     {path: '*', element: <NotFound />,},
     {path: '/', element: <Landing />,},
-    {path: '/send', element: <Login />,},
+    {path: '/login', element: <Login />,},
     {path: '/signup', element: <SignUp />,},
     {path: '/test', element: <TestComponent />,}, //Test if tailwind works lol
 

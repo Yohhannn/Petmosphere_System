@@ -43,7 +43,7 @@ const Landing = () => {
           <div className="bg-white bg-opacity-90 px-8 py-10 text-center max-w-lg w-full animate__animated animate__zoomIn">
             <div className="mt-4">
               <Link
-                to="/send"
+                to="/login"
                 className="w-full px-6 py-3 rounded-full text-lg font-semibold transition duration-300 transform bg-[#F69332] hover:bg-[#8E57B2] hover:text-white text-white scale-110"
               >
                 Get Started
