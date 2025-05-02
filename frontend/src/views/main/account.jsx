@@ -21,7 +21,7 @@ const AccountInfo = () => {
     // Assuming you want to display the logged-in user's account.
     // You'll need a way to identify the current user (e.g., from context, state, or props).
     // For this example, let's just pick the first account from the array.
-    const loggedInAccount = accountsData[1];
+    const loggedInAccount = accountsData[0];
 
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Details');
@@ -126,6 +126,10 @@ const AccountInfo = () => {
                         <div>
                             <h3 className="font-semibold text-purple-600">Address:</h3>
                             <p>{loggedInAccount.accountAddress}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-purple-600">Bio:</h3>
+                            <p>{loggedInAccount.accountBio}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold text-purple-600">Date Created:</h3>
@@ -246,18 +250,6 @@ const AccountInfo = () => {
                     <div>
                         <h3 className="font-semibold text-purple-600 mb-2">More Options</h3>
                         <p className="text-gray-700">Additional account settings or information will appear here.</p>
-
-                        <div className="flex justify-end mt-6 space-x-4">
-                            <button
-                                className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
-                                onClick={handleLogoutClick}
-                            >
-                                Logout
-                            </button>
-                            <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
-                                Edit Profile
-                            </button>
-                        </div>
                     </div>
                 );
             default:
@@ -351,6 +343,17 @@ const AccountInfo = () => {
                         {/* Tab Content */}
                         {renderTabContent()}
 
+                        <div className="flex justify-end mt-6 space-x-4">
+                            <button
+                                className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
+                                onClick={handleLogoutClick}
+                            >
+                                Logout
+                            </button>
+                            <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
+                                Edit Profile
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -399,7 +402,7 @@ const AccountInfo = () => {
                             <textarea
                                 value={newReviewDesc}
                                 onChange={handleDescChange}
-                                className="w-full h-32 px-4 py-2 border rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full h-32 px-4 py-2 border rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"  // Added bg-white here
                                 placeholder="Write your review here..."
                             />
                         </div>
@@ -425,3 +428,4 @@ const AccountInfo = () => {
 };
 
 export default AccountInfo;
+
