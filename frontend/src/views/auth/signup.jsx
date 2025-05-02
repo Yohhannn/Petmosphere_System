@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigation} from 'react-router-dom';
 import 'animate.css';
 import * as send from '../postRequest/send.js';
 
@@ -11,6 +11,7 @@ export function meta() {
 }
 
 const SignUp = () => {
+  const navigate = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fullname,setFullname] = useState('');
@@ -18,7 +19,24 @@ const SignUp = () => {
   const [password,setPassword] = useState('');
   const [confirmPassword,setConfirmPassword] = useState('');
   const handleSignUp = async () => {
-      const response = await send.signUp();
+      if(!(confirmPassword && password)){
+          console.log("Password doesn't match");
+          return;
+      }
+      const signUpObject = {
+          "user_name" : fullname,
+          "user_email" : email,
+          "user_pass" : password,
+          "user_createdate" : new Date().toISOString().slice(0,10)
+      }
+      const response = await send.signUp(signUpObject);
+      console.log(response.message);
+      console.log(signUpObject);
+      if(response.message.includes('Successfully')){
+          navigate('/login');
+      }else{
+          console.log(response.message);
+      }
   }
   return (
     <div

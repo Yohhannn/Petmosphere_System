@@ -5,11 +5,9 @@ use App\Http\Controllers\BreedController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PetController;
-use App\Http\Controllers\PetTagController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RequestHistoryController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -28,11 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/Type/{id}',[TypeController::class,'updateType']);
     Route::delete('/Type/{id}',[TypeController::class,'deleteType']);
 
-    Route::get('/Tag',[TagController::class,'getAllTag']);
-    Route::get('/Tag/{id}',[TagController::class,'getTagById']);
-    Route::post('/Tag',[TagController::class,'createTag']);
-    Route::put('/Tag/{id}',[TagController::class,'updateTag']);
-    Route::delete('/Tag/{id}',[TagController::class,'deleteTag']);
 
     Route::get('/Post',[PostController::class,'getAllPost']);
     Route::get('/Post/{id}',[PostController::class,'getPostById']);
@@ -42,7 +35,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/User',[UserController::class,'getAllUser']);
     Route::get('/User/{id}',[UserController::class,'getUserById']);
-    Route::post('/User',[UserController::class,'createUser']);
     Route::put('/User/{id}',[UserController::class,'updateUser']);
     Route::delete('/User/{id}',[UserController::class,'deleteUser']);
 
@@ -83,16 +75,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/RequestHistory/{id}',[RequestHistoryController::class,'deleteRequestHistory']);
 
 
-    //Pet Tag Controller
-    Route::post('/PetTag', [PetTagController::class, 'createPetTag']);
-    Route::put('/PetTag/{id}', [PetTagController::class, 'updatePetTag']);
-    Route::get('/PetTag', [PetTagController::class, 'getAllPetTag']);
-    Route::get('/PetTag/{id}', [PetTagController::class, 'getPetTagById']);
-    Route::delete('/PetTag/{id}', [PetTagController::class, 'deletePetTag']);
-
     Route::post('/logout', [LoginController::class, 'logout']);
 });
     Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/User',[UserController::class,'createUser']);
+
 
 
 
