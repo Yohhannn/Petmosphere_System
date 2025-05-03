@@ -84,7 +84,18 @@ const AccountInfo = () => {
     const handleOpenAddReview = () => {
         setIsAddReviewOpen(true);
     };
-
+    const fetchUser = async() =>{
+        const response = await fetch.getUserBy(accId);
+        setAccount(response.data);
+    }
+    const fetchReview = async() =>{
+        const response = await fetch.getReviewByUserId(accId);
+        setUserReview(response.data);
+    }
+    const fetchPost = async() =>{
+        const response = await fetch.getPostByUserId(accId);
+        setUserPost(response.data);
+    }
     const handleCloseAddReview = () => {
         setIsAddReviewOpen(false);
         setNewReviewRating(0);
@@ -179,17 +190,17 @@ const AccountInfo = () => {
                 if(userReview.length <= 0){
                     return (
                         <div>
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-purple-600">Your Reviews</h3>
-                            { !isMyAcc && (
-                                <button
-                                    onClick={handleOpenAddReview}
-                                    className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
-                                >
-                                    <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
-                                </button>
-                            )}
-                        </div>
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="font-semibold text-purple-600">Your Reviews</h3>
+                                { !isMyAcc && (
+                                    <button
+                                        onClick={handleOpenAddReview}
+                                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
+                                    >
+                                        <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
+                                    </button>
+                                )}
+                            </div>
                             <p className="text-gray-700">No reviews yet for this account.</p>
                         </div>
 
@@ -203,12 +214,12 @@ const AccountInfo = () => {
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-semibold text-purple-600">Your Reviews</h3>
                             { !isMyAcc && (
-                            <button
-                                onClick={handleOpenAddReview}
-                                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
-                            >
-                                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
-                            </button>
+                                <button
+                                    onClick={handleOpenAddReview}
+                                    className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
+                                >
+                                    <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
+                                </button>
                             )}
                         </div>
 
@@ -310,17 +321,17 @@ const AccountInfo = () => {
                         <h3 className="font-semibold text-purple-600 mb-2">More Options</h3>
                         <p className="text-gray-700">Additional account settings or information will appear here.</p>
                         {isMyAcc && (
-                        <div className="flex justify-end mt-6 space-x-4">
-                            <button
-                                className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
-                                onClick={handleLogoutClick}
-                            >
-                                Logout
-                            </button>
-                            <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
-                                Edit Profile
-                            </button>
-                        </div>)}
+                            <div className="flex justify-end mt-6 space-x-4">
+                                <button
+                                    className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
+                                    onClick={handleLogoutClick}
+                                >
+                                    Logout
+                                </button>
+                                <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
+                                    Edit Profile
+                                </button>
+                            </div>)}
                     </div>
                 );
             default:
@@ -375,7 +386,7 @@ const AccountInfo = () => {
                         <div className="border-b border-gray-200 mb-6">
                             <nav className="-mb-px flex space-x-4">
                                 <button
-                                    onClick={() => handleTabChange('Details')}
+                                    onClick={() => {handleTabChange('Details');fetchUser()}}
                                     className={`${
                                         activeTab === 'Details'
                                             ? 'border-purple-600 text-purple-600'
@@ -385,7 +396,7 @@ const AccountInfo = () => {
                                     Details
                                 </button>
                                 <button
-                                    onClick={() => handleTabChange('Reviews')}
+                                    onClick={() => {handleTabChange('Reviews');fetchReview();}}
                                     className={`${
                                         activeTab === 'Reviews'
                                             ? 'border-purple-600 text-purple-600'
@@ -395,7 +406,7 @@ const AccountInfo = () => {
                                     Reviews
                                 </button>
                                 <button
-                                    onClick={() => handleTabChange('Recent Posts')}
+                                    onClick={() => {handleTabChange('Recent Posts');fetchPost()}}
                                     className={`${
                                         activeTab === 'Recent Posts'
                                             ? 'border-purple-600 text-purple-600'
@@ -495,4 +506,3 @@ const AccountInfo = () => {
 };
 
 export default AccountInfo;
-
