@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('pet_tag',250)->nullable();
             $table->string('pet_description', 100);
             $table->string('pet_status', 50);
+            $table->string('pet_medical', 100)->nullable();
 
             // Add breed_id, type_id, and user_id columns
             $table->unsignedBigInteger('breed_id');  // breed_id column

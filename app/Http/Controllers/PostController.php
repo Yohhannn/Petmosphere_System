@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\post;
 use App\Models\Tag;
+use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -12,17 +14,16 @@ class PostController extends Controller
 {
     public function getAllPost()
     {
-        $posts = Post::with('user','pet')->get();
+        $posts = Post::with('user','pet','pet.type','pet.breed')->get();
         return response()->json([
             'message' => 'All posts retrieved successfully',
-            'data' => $posts
+            'data' => $posts,
         ]);
     }
 
     public function getPostById($id)
     {
-        $post = Post::with('user','pet')->find($id);
-
+        $post = Post::with('user','pet','pet.type','pet.breed')->find($id);
         if (!$post) {
             return response()->json([
                 'message' => "id doesn't exist"], 404);
@@ -30,7 +31,20 @@ class PostController extends Controller
 
         return response()->json([
             'message' => 'Post retrieved successfully',
-            'data' => $post
+            'data' => $post,
+        ]);
+    }
+    public function getPostByUserId($id)
+    {
+        $post = Post::where('user_id',$id)->with('user','pet','pet.type','pet.breed')->get();
+        if (!$post) {
+            return response()->json([
+                'message' => "id doesn't exist"], 404);
+        }
+
+        return response()->json([
+            'message' => 'Post retrieved successfully',
+            'data' => $post,
         ]);
     }
 
