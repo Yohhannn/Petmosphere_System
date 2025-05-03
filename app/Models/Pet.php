@@ -17,6 +17,8 @@ class Pet extends Model
         'breed_id',
         'type_id',
         'user_id',
+        'pet_tag',
+        'pet_medical'
     ];
     public function breed(){
         return $this->belongsTo(Breed::class,'breed_id');

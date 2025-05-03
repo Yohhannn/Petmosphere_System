@@ -16,9 +16,10 @@ return new class extends Migration
             $table->integer('rev_rating');
             $table->text('rev_description')->nullable();
             $table->date('rev_date');
-            $table->string('rev_rated_by',50);
+            $table->unsignedBigInteger('rev_rated_by');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('user_id')->on('user')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('rev_rated_by')->references('user_id')->on('user')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

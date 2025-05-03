@@ -18,5 +18,8 @@ class Review extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function reviewBy(){
+        return $this->belongsTo(User::class, 'rev_rated_by');
+    }
     public $timestamps = false;
 }

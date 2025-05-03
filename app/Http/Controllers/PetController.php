@@ -42,6 +42,8 @@ class PetController extends Controller
             'breed_id' => 'required|exists:breed,breed_id',
             'type_id' => 'required|exists:type,type_id',
             'user_id' => 'required|exists:user,user_id',
+            'pet_tag' => 'string|max:250',
+            'pet_medical' => 'string|max:100',
         ]);
         $pet = Pet::create($validated);
         return response()->json(['message' => 'Pet created successfully', 'data' => $pet]);
@@ -60,6 +62,8 @@ class PetController extends Controller
                 'pet_status' => 'sometimes|string|max:50',
                 'breed_id' => 'required|exists:breed,breed_id',
                 'type_id' => 'required|exists:type,type_id',
+                'pet_tag' => 'string|max:250',
+                'pet_medical' => 'string|max:100',
             ]);
 
             $pet->update($validated);

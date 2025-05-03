@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Inner_Footer from '../../components/inner_footer';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
-import { posts } from '../../data/postsData';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import moment from 'moment'; // For formatting time
+import * as fetch from '../fetchRequest/fetch.js';
 
 export function meta() {
     return [
@@ -19,13 +19,21 @@ export function meta() {
 }
 
 const Home = () => {
-    const [searchQuery] = useState('');
-
-    const filteredPets = posts.filter(
+    const [posts,setPost] = useState([]);
+    const [type,setType] = useState([]);
+    const [breed,setBreed] = useState([]);
+    useEffect(()=>{
+        const getPost = async() => {
+            const response = await fetch.getPosts();
+            setPost(response.data);
+            setType(response.type);
+            setBreed(response.breed);
+        }
+        getPost();
+    });
+    const filteredPost = posts.filter(
         (post) =>
-            (post.PetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.Breed.toLowerCase().includes(searchQuery.toLowerCase())) &&
-            post.Status === 'Available' // Added this condition to filter by status
+            post.post_status === 'Available' // Added this condition to filter by status
     );
 
     return (
@@ -64,17 +72,17 @@ const Home = () => {
                 {/* Main Feed Area */}
                 <div className="container mx-auto px-6 py-8">
                     <div className="space-y-6">
-                        {filteredPets.map((post) => (
+                        {posts.map((post) => (
                             <div
-                                key={post.PetID}
+                                key={post.pet.pet_id}
                                 className="bg-white shadow-md rounded-lg overflow-hidden animate__animated animate__fadeInUp md:flex md:flex-row md:max-w-2xl md:mx-auto"
                             >
                                 {/* Image Section (Left on wider screens) */}
                                 <div className="w-full md:w-1/2">
                                     { (
                                         <img
-                                            src={post.PetImages[0]}
-                                            alt={post.PetName}
+                                            src={post.pet.pet_img}
+                                            alt={post.pet.pet_name}
                                             className="w-full h-auto object-cover rounded-t-lg md:rounded-l-lg md:rounded-r-none"
                                         />
                                     )}
@@ -86,22 +94,22 @@ const Home = () => {
                                         {/* Owner Info (Always shown at the top) */}
                                         <div className="flex items-center mb-2">
                                             <img
-                                                src={post.CurrentOwnerProfile}
-                                                alt={post.CurrentOwnerFullName}
+                                                src={post.user.user_prof_pic}
+                                                alt={post.user.user_name}
                                                 className="w-8 h-8 rounded-full mr-3"
                                             />
                                             <div>
                                                 <h3 className="text-sm font-semibold text-gray-800">{post.CurrentOwnerFullName}</h3>
                                                 <p className="text-xs text-gray-500">
-                                                    Posted {moment(post.TimePosted).fromNow()}
+                                                    Posted {moment(post.post_date).fromNow()}
                                                 </p>
                                             </div>
                                         </div>
-                                        <h4 className="text-lg font-bold text-purple-600 mb-1">{post.PetName}</h4>
-                                        <p className="text-orange-400 font-semibold mb-2">{post.Breed} ({post.PetType})</p>
-                                        <p className="text-gray-700 leading-relaxed mb-3 line-clamp-3">{post.PetDescription}</p>
+                                        <h4 className="text-lg font-bold text-purple-600 mb-1">{post.pet.pet_name}</h4>
+                                        <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
+                                        <p className="text-gray-700 leading-relaxed mb-3 line-clamp-3">{post.pet.pet_description}</p>
                                         <div className="mt-2"> {/* Container for tags */}
-                                            {post.PetTags.map((tag, index) => (
+                                            {post.pet.pet_tag.split(',').map((tag, index) => (
                                                 <span
                                                     key={index}
                                                     className="inline-block bg-orange-200 rounded-full px-3 py-1 text-sm font-semibold text-orange-700 mr-2 mb-2"
@@ -111,8 +119,8 @@ const Home = () => {
                                             ))}
                                         </div>
                                         {/* Display Post Description below tags */}
-                                        {post.PostDescription && (
-                                            <p className="text-gray-600 text-sm mt-3">{post.PostDescription}</p>
+                                        {post.post_descrip && (
+                                            <p className="text-gray-600 text-sm mt-3">{post.post_descrip}</p>
                                         )}
                                     </div>
 
@@ -120,12 +128,12 @@ const Home = () => {
                                     <div className="border-t border-gray-200 pt-2 mt-4">
                                         <div className="flex justify-between items-center text-sm text-gray-600">
                                             <Link
-                                                to={`/chat/${post.OwnerAccountID}`}
+                                                to={`/chat/${post.user_id}`}
                                                 className="bg-orange-400 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
                                             >
                                                 Contact Owner
                                             </Link>
-                                            <Link to={`/pet/${post.PetID}/details`} className="text-purple-600 hover:underline font-semibold">
+                                            <Link to={`/pet/${post.post_id}/details`} className="text-purple-600 hover:underline font-semibold">
                                                 View More
                                             </Link>
                                         </div>
@@ -134,7 +142,7 @@ const Home = () => {
                             </div>
                         ))}
 
-                        {filteredPets.length === 0 && (
+                        {posts.length === 0 && (
                             <p className="text-center text-gray-600 mt-10 animate__animated animate__fadeIn">
                                 No available pets matching your search.
                             </p>

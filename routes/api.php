@@ -13,7 +13,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {});
     Route::post('/Admin',[AdminController::class,'createAdmin']);
     Route::get('/Admin',[AdminController::class,'getAllAdmin']);
     Route::get('/Admin/{id}',[AdminController::class,'getAdminById']);
@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/Post',[PostController::class,'getAllPost']);
     Route::get('/Post/{id}',[PostController::class,'getPostById']);
+    Route::get('/Post/User/{id}',[PostController::class,'getPostByUserId']);
     Route::post('/Post',[PostController::class,'createPost']);
     Route::put('/Post/{id}',[PostController::class,'updatePost']);
     Route::delete('/Post/{id}',[PostController::class,'deletePost']);
@@ -58,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/Review',[ReviewController::class,'getAllReview']);
     Route::get('/Review/{id}',[ReviewController::class,'getReviewById']);
+    Route::get('/Review/User/{id}',[ReviewController::class,'getReviewByUserId']);
     Route::post('/Review',[ReviewController::class,'createReview']);
     Route::put('/Review/{id}',[ReviewController::class,'updateReview']);
     Route::delete('/Review/{id}',[ReviewController::class,'deleteReview']);
@@ -76,7 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/logout', [LoginController::class, 'logout']);
-});
+
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/User',[UserController::class,'createUser']);
 

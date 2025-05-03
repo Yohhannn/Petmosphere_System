@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'animate.css';
-import * as send from '../postRequest/send.js';
+import * as send from '../postRequest/send.js'
+import Cookies from 'js-cookie';
+
 export function meta() {
   return [
     { title: "( ✦ ) PETMOSPHERE - LOGIN" },
@@ -31,6 +33,7 @@ const Login = () => {
       }else if(data.message.includes("successfully")){
           console.log(data.message);
           navigate("/home");
+          Cookies.set('userCredentials',JSON.stringify(data),{expires: 7});
       }else{
           setErrorMessage('An error occured');
           setTimeout(() => setErrorMessage(''), 3000);

@@ -32,6 +32,7 @@ class LoginController extends Controller
             'token' => $token,
             'message' => "Logged in successfully",
             'token_type' => 'Bearer',
+            'user' => $user,
         ],200);
     }
     public function adminAuth(Request $request)

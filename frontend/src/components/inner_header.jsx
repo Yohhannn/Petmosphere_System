@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Inner_Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,7 +10,11 @@ const Inner_Header = () => {
   const closeMenu = () => setIsMenuOpen(false);
 
   const isActive = (path) => location.pathname === path;
-
+  const userCookie =  Cookies.get('userCredentials');
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  if(!user){
+      window.location.href = "/";
+  }
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -98,11 +103,11 @@ const Inner_Header = () => {
               </Link>
             </li>
 
-            <li className={`${isActive('/account') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'} transition`}>
-              <Link to="/account" className="flex flex-col items-center">
+            <li className={`${isActive(`/account/${user.user.user_id}`) ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'} transition`}>
+              <Link to={`/account/${user.user.user_id}`} className="flex flex-col items-center">
                 <img
                   src={
-                    isActive('/account')
+                    isActive(`/account/${user.user.user_id}`)
                       ? '/main_assets/icons/icon_account_active.png'
                       : '/main_assets/icons/icon_account.png'
                   }
