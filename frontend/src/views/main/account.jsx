@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Inner_Footer from '../../components/inner_footer';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
@@ -9,6 +9,10 @@ import { posts } from '../../data/postsData'; // Import posts data
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid, faCalendarAlt, faUserCircle, faPlusCircle, faStar as faStarRegular } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
+import Cookies from 'js-cookie';
+import * as fetch from '../fetchRequest/fetch.js';
+import {useParams} from "react-router-dom";
+
 
 export function meta() {
     return [
@@ -21,18 +25,47 @@ const AccountInfo = () => {
     // Assuming you want to display the logged-in user's account.
     // You'll need a way to identify the current user (e.g., from context, state, or props).
     // For this example, let's just pick the first account from the array.
-    const loggedInAccount = accountsData[0];
-
+    const [loggedInAccount,setAccount] = useState(null);
+    const [userReview,setUserReview] = useState([]);
+    const [userPost,setUserPost] = useState([]);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Details');
     const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
     const [newReviewRating, setNewReviewRating] = useState(0);
     const [newReviewDesc, setNewReviewDesc] = useState('');
+    const {accId} = useParams();
+    const [isMyAcc, setMyAcc] = useState(false);
+    let user = null;
+    useEffect(() => {
+        const userCookie =  Cookies.get('userCredentials');
+        user = userCookie ? JSON.parse(userCookie) : null;
+        const fetchUserData = async () => {
+            try {
+                if (user) {
+                    const response = await fetch.getUserBy(accId);
+                    const response2 = await fetch.getReviewByUserId(accId);
+                    const response3 = await fetch.getPostByUserId(accId);
+                    setAccount(response.data);
+                    setUserReview(response2.data);
+                    setUserPost(response3.data);
+                    console.log(user.user.user_id);
+                    console.log(accId);
+                    setMyAcc(user.user.user_id === parseInt(accId));
+                } else {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const handleLogoutClick = () => {
         setIsLogoutModalOpen(true);
     };
-
+    console.log(isMyAcc);
     const handleConfirmLogout = () => {
         // Perform logout logic here (e.g., clearing session, local storage)
         setIsLogoutModalOpen(false);
@@ -103,86 +136,108 @@ const AccountInfo = () => {
     };
 
     const renderTabContent = () => {
+        if (!loggedInAccount) {
+            return (
+                <div className="flex items-center justify-center h-screen text-gray-500">
+                    Loading account...
+                </div>
+            );
+        }
         switch (activeTab) {
             case 'Details':
+
                 return (
                     <div className="space-y-4 text-gray-700">
                         <div>
                             <h3 className="font-semibold text-purple-600">Account ID:</h3>
-                            <p>{loggedInAccount.accountID}</p>
+                            <p>{loggedInAccount.user_id}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold text-purple-600">Full Name:</h3>
-                            <p>{loggedInAccount.accountFullName}</p>
+                            <p>{loggedInAccount.user_name}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold text-purple-600">Email:</h3>
-                            <p>{loggedInAccount.accountEmail}</p>
+                            <p>{loggedInAccount.user_email}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold text-purple-600">Phone:</h3>
-                            <p>{loggedInAccount.accountContactNumber}</p>
+                            <p>{loggedInAccount.user_phone}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold text-purple-600">Address:</h3>
-                            <p>{loggedInAccount.accountAddress}</p>
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-purple-600">Bio:</h3>
-                            <p>{loggedInAccount.accountBio}</p>
+                            <p>{loggedInAccount.user_location}</p>
                         </div>
                         <div>
                             <h3 className="font-semibold text-purple-600">Date Created:</h3>
-                            <p>{loggedInAccount.dateCreated}</p>
+                            <p>{loggedInAccount.user_createdate}</p>
                         </div>
                     </div>
                 );
             case 'Reviews':
-                // Find reviews for the logged-in account
-                const userReviews = reviewsData.find(
-                    (review) => review.ReviewTo === loggedInAccount.accountID
-                )?.reviews || [];
+                console.log(userReview);
+                if(userReview.length <= 0){
+                    return (
+                        <div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-semibold text-purple-600">Your Reviews</h3>
+                            { !isMyAcc && (
+                                <button
+                                    onClick={handleOpenAddReview}
+                                    className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
+                                >
+                                    <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
+                                </button>
+                            )}
+                        </div>
+                            <p className="text-gray-700">No reviews yet for this account.</p>
+                        </div>
 
-                // Calculate total rating
-                const totalRating = userReviews.reduce((sum, review) => sum + review.ReviewRatings, 0);
-                const averageRating = userReviews.length > 0 ? (totalRating / userReviews.length).toFixed(1) : 0;
-
+                    );
+                }
+                const totalRating = userReview
+                    .map(review => review.rev_rating)
+                    .reduce((sum, rating) => sum + rating, 0);
                 return (
                     <div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-semibold text-purple-600">Your Reviews</h3>
+                            { !isMyAcc && (
                             <button
                                 onClick={handleOpenAddReview}
                                 className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
                             >
                                 <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
                             </button>
+                            )}
                         </div>
 
-                        {userReviews.length > 0 && (
+                        {userReview  && (
                             <div className="mb-4">
                                 <h4 className="font-semibold text-gray-700">
-                                    Average Rating: <span className="text-yellow-500">{averageRating}</span> ({userReviews.length} reviews)
+                                    Average Rating: <span className="text-yellow-500">{totalRating/userReview.length.toFixed(2)}</span> ({userReview.length} reviews)
                                 </h4>
                             </div>
                         )}
 
-                        {userReviews.length > 0 ? (
+                        {userReview ? (
                             <ul className="space-y-4">
-                                {userReviews.map((review) => (
-                                    <li key={review.ReviewID} className="bg-white border rounded-md shadow-sm p-4">
+                                {userReview.map((review) => (
+                                    <li key={review.rev_id} className="bg-white border rounded-md shadow-sm p-4">
                                         <div className="flex items-center mb-2 text-gray-700">
                                             <FontAwesomeIcon icon={faUserCircle} className="mr-2 text-xl text-purple-500" />
-                                            <span className="font-semibold">{review.Reviewer}</span>
+                                            <span className="font-semibold">{review.review_by.user_name}</span>
                                         </div>
                                         <div className="flex items-center mb-2">
-                                            <FontAwesomeIcon icon={faStarSolid} className="mr-1 text-yellow-500" />
-                                            <span className="text-yellow-500 font-semibold">{review.ReviewRatings}</span>
+                                            {[...Array(review.rev_rating)].map((_, index) =>(
+                                                <FontAwesomeIcon key={index} icon={faStarSolid} className="mr-1 text-yellow-500" />
+                                            ))}
+                                            <span className="text-yellow-500 font-semibold">{review.rev_rating}</span>
                                         </div>
-                                        <p className="text-gray-800 mb-3">{review.ReviewDesc}</p>
+                                        <p className="text-gray-800 mb-3">{review.rev_description}</p>
                                         <div className="flex items-center text-gray-500 text-sm">
                                             <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
-                                            <span>{review.ReviewDate}</span>
+                                            <span>{review.rev_date}</span>
                                         </div>
                                     </li>
                                 ))}
@@ -193,34 +248,38 @@ const AccountInfo = () => {
                     </div>
                 );
             case 'Recent Posts':
+                console.log(userPost);
                 // Filter posts where the OwnerAccountID matches the logged-in account ID
-                const recentPosts = posts.filter(post => post.OwnerAccountID === loggedInAccount.accountID);
-
+                if(userPost.length <= 0){
+                    return (
+                        <p className="text-gray-700">You haven't posted any pets for adoption yet.</p>
+                    );
+                }
                 return (
                     <div>
                         <h3 className="font-semibold text-purple-600 mb-2">Your Recent Posts</h3>
-                        {recentPosts.length > 0 ? (
+                        {userPost.length > 0 ? (
                             <ul className="space-y-4">
-                                {recentPosts.map(post => (
-                                    <li key={post.PetID} className="bg-white border rounded-md shadow-sm p-4">
+                                {userPost.map(post => (
+                                    <li key={post.pet.pet_id} className="bg-white border rounded-md shadow-sm p-4">
                                         <div className="flex items-center mb-2">
                                             <img
-                                                src={post.PetImages[0]}
-                                                alt={post.PetName}
+                                                src={post.pet.pet_img}
+                                                alt={post.pet.pet_name}
                                                 className="w-16 h-16 object-cover rounded mr-4"
                                             />
                                             <div>
-                                                <h4 className="font-semibold text-gray-800">{post.PetName}</h4>
-                                                <p className="text-sm text-gray-600">{post.Breed} ({post.PetType})</p>
-                                                <p className="text-xs text-gray-500">Posted {moment(post.TimePosted).fromNow()}</p>
+                                                <h4 className="font-semibold text-gray-800">{post.pet.pet_name}</h4>
+                                                <p className="text-sm text-gray-600">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
+                                                <p className="text-xs text-gray-500">Posted {moment(post.post_date).fromNow()}</p>
                                             </div>
                                         </div>
-                                        <p className="text-gray-700 leading-relaxed line-clamp-2">{post.PetDescription}</p>
-                                        {post.PostDescription && (
-                                            <p className="text-gray-600 text-sm mt-2 italic">"{post.PostDescription}"</p>
+                                        <p className="text-gray-700 leading-relaxed line-clamp-2">{post.pet.pet_description}</p>
+                                        {post.post_descrip && (
+                                            <p className="text-gray-600 text-sm mt-2 italic">"{post.post_descrip}"</p>
                                         )}
                                         <div className="mt-2">
-                                            {post.PetTags.map((tag, index) => (
+                                            {post.pet.pet_tag.split(',').map((tag, index) => (
                                                 <span
                                                     key={index}
                                                     className="inline-block bg-orange-200 rounded-full px-2 py-1 text-xs font-semibold text-orange-700 mr-2"
@@ -230,11 +289,11 @@ const AccountInfo = () => {
                                             ))}
                                         </div>
                                         <div className="mt-2 flex flex-wrap gap-2">
-                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${post.Status === 'Available' ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
-                                                {post.Status}
+                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${post.pet.pet_status === 'Available' ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
+                                                {post.pet.pet_status}
                                             </span>
-                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${post.PostStatus === 'Approved' ? 'bg-blue-200 text-blue-700' : post.PostStatus === 'Rejected' ? 'bg-red-200 text-red-700' : 'bg-gray-200 text-gray-700'}`}>
-                                                {post.PostStatus}
+                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${post.post_status === 'Approved' ? 'bg-blue-200 text-blue-700' : post.post_status === 'Rejected' ? 'bg-red-200 text-red-700' : 'bg-gray-200 text-gray-700'}`}>
+                                                {post.post_status}
                                             </span>
                                         </div>
                                     </li>
@@ -250,13 +309,31 @@ const AccountInfo = () => {
                     <div>
                         <h3 className="font-semibold text-purple-600 mb-2">More Options</h3>
                         <p className="text-gray-700">Additional account settings or information will appear here.</p>
+                        {isMyAcc && (
+                        <div className="flex justify-end mt-6 space-x-4">
+                            <button
+                                className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
+                                onClick={handleLogoutClick}
+                            >
+                                Logout
+                            </button>
+                            <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
+                                Edit Profile
+                            </button>
+                        </div>)}
                     </div>
                 );
             default:
                 return null;
         }
     };
-
+    if (!loggedInAccount) {
+        return (
+            <div className="flex items-center justify-center h-screen text-gray-500">
+                Loading account...
+            </div>
+        );
+    }
     return (
         <>
             {/* Sticky Header */}
@@ -343,17 +420,7 @@ const AccountInfo = () => {
                         {/* Tab Content */}
                         {renderTabContent()}
 
-                        <div className="flex justify-end mt-6 space-x-4">
-                            <button
-                                className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
-                                onClick={handleLogoutClick}
-                            >
-                                Logout
-                            </button>
-                            <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
-                                Edit Profile
-                            </button>
-                        </div>
+
                     </div>
                 </div>
 

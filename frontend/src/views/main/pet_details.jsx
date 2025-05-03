@@ -6,15 +6,20 @@ import ScrollToTopButton from '../utility/util_scroll_up';
 import { posts } from '../../data/postsData';
 import moment from 'moment';
 import 'animate.css'; // Import animate.css
+import * as fetch from '../fetchRequest/fetch.js';
 
 const PetDetails = () => {
     const { petId } = useParams();
     const [pet, setPet] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const foundPet = posts.find((p) => p.PetID === petId);
-        setPet(foundPet);
+    useEffect( () => {
+        const foundPet = async ()=>{
+            const numericId = parseInt(petId);
+            const response = await fetch.getPostsBy(numericId);
+            setPet(response.data);
+        }
+        foundPet();
     }, [petId]);
 
     if (!pet) {
@@ -40,10 +45,10 @@ const PetDetails = () => {
                 <div className="bg-white shadow-md rounded-lg overflow-hidden md:flex animate__animated animate__fadeInUp"> {/* Added fadeInUp */}
                     {/* Image Section */}
                     <div className="md:w-1/2">
-                        {pet.PetImages && Array.isArray(pet.PetImages) && pet.PetImages.length > 0 ? (
+                        {pet.pet.pet_img && Array.isArray(pet.pet.pet_img) && pet.pet.pet_img.length > 0 ? (
                             <img
-                                src={pet.PetImages[0]}
-                                alt={pet.PetName}
+                                src={pet.pet.pet_img[0]}
+                                alt={pet.pet.pet_name}
                                 className="w-full h-auto object-cover rounded-t-lg md:rounded-l-lg md:rounded-r-none"
                             />
                         ) : (
@@ -55,21 +60,20 @@ const PetDetails = () => {
 
                     {/* Details Section */}
                     <div className="p-6 md:w-1/2">
-                        <h2 className="text-2xl font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft">{pet.PetName}</h2> {/* Added fadeInLeft */}
-                        <p className="text-orange-400 font-semibold mb-4 animate__animated animate__fadeInLeft">{pet.Breed} ({pet.PetType})</p> {/* Added fadeInLeft */}
-                        <p className="text-gray-700 leading-relaxed mb-4 animate__animated animate__fadeInLeft">{pet.PetDescription}</p> {/* Added fadeInLeft */}
+                        <h2 className="text-2xl font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft">{pet.pet.pet_name}</h2> {/* Added fadeInLeft */}
+                        <p className="text-orange-400 font-semibold mb-4 animate__animated animate__fadeInLeft">{pet.pet.breed.breed_name} ({pet.pet.type.type_name})</p> {/* Added fadeInLeft */}
+                        <p className="text-gray-700 leading-relaxed mb-4 animate__animated animate__fadeInLeft">{pet.pet.pet_description}</p> {/* Added fadeInLeft */}
 
                         <h3 className="text-lg font-semibold text-gray-800 mb-2 animate__animated animate__fadeInLeft">Details</h3> {/* Added fadeInLeft */}
                         <ul className="list-disc list-inside text-gray-600 mb-4 animate__animated animate__fadeInLeft"> {/* Added fadeInLeft */}
-                            <li>Age: {pet.PetAge}</li>
-                            <li>Reason for Adoption: {pet.Reason}</li>
-                            <li>History: {pet.History}</li>
-                            <li>Health: {pet.Health}</li>
+                            <li>Age: {pet.pet.pet_age}</li>
+                            <li>Reason for Adoption: {pet.post_reason}</li>
+                            <li>Medical: {pet.pet.pet_medical ? pet.pet.pet_medical : "None"}</li>
                         </ul>
 
                         <h3 className="text-lg font-semibold text-gray-800 mb-2 animate__animated animate__fadeInLeft">Tags</h3> {/* Added fadeInLeft */}
                         <div className="mb-4 animate__animated animate__fadeInLeft"> {/* Added fadeInLeft */}
-                            {pet.PetTags.map((tag, index) => (
+                            {pet.pet.pet_tag.split(',').map((tag, index) => (
                                 <span
                                     key={index}
                                     className="inline-block bg-orange-200 rounded-full px-3 py-1 text-sm font-semibold text-orange-700 mr-2 mb-2"
@@ -81,15 +85,14 @@ const PetDetails = () => {
 
                         <h3 className="text-lg font-semibold text-gray-800 mb-2 animate__animated animate__fadeInLeft">Contact Owner</h3>  {/* Added fadeInLeft */}
                         <div className="mb-4 animate__animated animate__fadeInLeft">  {/* Added fadeInLeft */}
-                            <p className="text-gray-600">Name: {pet.CurrentOwnerFullName}</p>
-                            <p className="text-gray-600">Username: {pet.CurrentOwnerAccountDisplayName}</p>
-                            <p className="text-gray-600">Contact: {pet.ContactNumber}</p>
-                            <p className="text-gray-600">Email: {pet.Email}</p>
-                            <p className="text-gray-600">Posted: {moment(pet.TimePosted).format('MMMM D, h:mm A')}</p>
+                            <p className="text-gray-600">Name: {pet.user.user_name}</p>
+                            <p className="text-gray-600">Contact: {pet.user.user_phone}</p>
+                            <p className="text-gray-600">Email: {pet.user.user_email}</p>
+                            <p className="text-gray-600">Posted: {moment(pet.post_date).format('MMMM D, h:mm A')}</p>
                         </div>
 
                         <Link
-                            to={`/chat/${pet.OwnerAccountID}`}
+                            to={`/chat/${pet.user.user_id}`}
                             className="inline-block bg-orange-400 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp" // Added fadeInUp
                         >
                             Chat with Owner

@@ -33,7 +33,7 @@ const router = createBrowserRouter ([
     {path: '/home', element: <Home />,},
     {path: '/pets', element: <Pets />,},
     { path: '/pet/:petId/details', element: <PetDetails /> },
-    {path: '/account', element: <AccountInfo />,},
+    {path: '/account/:accId', element: <AccountInfo />,},
     {path: '/alt_about', element: <Alt_AboutUs />,}
 
     // Kamo lay in ani pang Token -VVVV
