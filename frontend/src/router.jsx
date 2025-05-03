@@ -14,9 +14,12 @@ import SignUp from './views/auth/signup';
 
 import Home from './views/main/home';
 import Pets from './views/main/pets';
+import PostPet from './views/main/post_pet';
 import PetDetails from './views/main/pet_details';
 import AccountInfo from './views/main/account';
 import Alt_AboutUs from './views/main/alt_about';
+
+import PromptPostSuccess from './prompt/prompt_post_success';
 
 const router = createBrowserRouter ([
 
@@ -32,9 +35,11 @@ const router = createBrowserRouter ([
 
     {path: '/home', element: <Home />,},
     {path: '/pets', element: <Pets />,},
+    {path: '/post_pet', element: <PostPet />,},
     { path: '/pet/:petId/details', element: <PetDetails /> },
     {path: '/account/:accId', element: <AccountInfo />,},
-    {path: '/alt_about', element: <Alt_AboutUs />,}
+    {path: '/alt_about', element: <Alt_AboutUs />,},
+    {path: '/success', element: <PromptPostSuccess />,}
 
     // Kamo lay in ani pang Token -VVVV
     // {

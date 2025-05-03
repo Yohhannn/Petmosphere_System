@@ -61,7 +61,7 @@ const Home = () => {
                             Discover adorable pets looking for their forever homes and connect with their current owners.
                         </p>
                         <Link
-                            to="/post-pet"
+                            to="/post_pet"
                             className="inline-block bg-orange-400 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
                         >
                             Post a Pet for Adoption
