@@ -117,6 +117,21 @@ const Inner_Header = () => {
                 Account
               </Link>
             </li>
+
+            <li className={`${isActive(`/inbox/${user.user.user_id}`) ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'} transition`}>
+              <Link to={`/inbox/${user.user.user_id}`} className="flex flex-col items-center">
+                <img
+                  src={
+                    isActive(`/inbox/${user.user.user_id}`)
+                      ? '/main_assets/icons/icon_inbox_active.png'
+                      : '/main_assets/icons/icon_inbox.png'
+                  }
+                  alt="Chat Icon"
+                  className="w-6 h-6 mb-1"
+                />
+                Inbox
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
@@ -149,6 +164,15 @@ const Inner_Header = () => {
               className={`transition flex justify-between items-center ${isActive('/chat') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'}`}
             >
               <span>Chat</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/inbox"
+              onClick={closeMenu}
+              className={`transition flex justify-between items-center ${isActive('/inbox') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'}`}
+            >
+              <span>Inbox</span>
             </Link>
           </li>
           <li>

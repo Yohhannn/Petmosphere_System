@@ -3,9 +3,7 @@ import Inner_Footer from '../../components/inner_footer';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
-import accountsData from '../../data/accountsData';
-import reviewsData from '../../data/reviewsData';
-import { posts } from '../../data/postsData'; // Import posts data
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid, faCalendarAlt, faUserCircle, faPlusCircle, faStar as faStarRegular } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
@@ -23,9 +21,7 @@ export function meta() {
 }
 
 const AccountInfo = () => {
-    // Assuming you want to display the logged-in user's account.
-    // You'll need a way to identify the current user (e.g., from context, state, or props).
-    // For this example, let's just pick the first account from the array.
+
     const [loggedInAccount,setAccount] = useState(null);
     const [userReview,setUserReview] = useState([]);
     const [userPost,setUserPost] = useState([]);
@@ -144,14 +140,9 @@ const AccountInfo = () => {
     };
 
     const renderTabContent = () => {
-        if (!loggedInAccount) {
-            return (
-                <div className="flex items-center justify-center h-screen text-gray-500">
-                    Loading account...
-                </div>
-            );
-        }
+
         switch (activeTab) {
+
             case 'Details':
 
                 return (
@@ -189,14 +180,6 @@ const AccountInfo = () => {
                         <div>
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="font-semibold text-purple-600">Your Reviews</h3>
-                                { !isMyAcc && (
-                                    <button
-                                        onClick={handleOpenAddReview}
-                                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
-                                    >
-                                        <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
-                                    </button>
-                                )}
                             </div>
                             <p className="text-gray-700">No reviews yet for this account.</p>
                         </div>
@@ -210,14 +193,6 @@ const AccountInfo = () => {
                     <div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-semibold text-purple-600">Your Reviews</h3>
-                            { !isMyAcc && (
-                                <button
-                                    onClick={handleOpenAddReview}
-                                    className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors"
-                                >
-                                    <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
-                                </button>
-                            )}
                         </div>
 
                         {userReview  && (
@@ -312,22 +287,31 @@ const AccountInfo = () => {
                         )}
                     </div>
                 );
-            case 'more':
+
+            case 'History':
+
+                return (
+                    <div>
+                        <h3 className="font-semibold text-purple-600 mb-2">Adoption History</h3>
+                        <p className="text-gray-700">Additional account settings or information will appear here.</p>
+                    </div>
+                );
+
+            case 'More':
                 return (
                     <div>
                         <h3 className="font-semibold text-purple-600 mb-2">More Options</h3>
                         <p className="text-gray-700">Additional account settings or information will appear here.</p>
                         {isMyAcc && (
                             <div className="flex justify-end mt-6 space-x-4">
+                                <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
+                                    Edit Profile
+                                </button>
                                 <button
                                     className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition-colors"
                                     onClick={handleLogoutClick}
                                 >
-                                    Logout
-                                </button>
-                                <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
-                                    Edit Profile
-                                </button>
+                                    Logout</button>
                             </div>)}
                     </div>
                 );
@@ -337,9 +321,15 @@ const AccountInfo = () => {
     };
     if (!loggedInAccount) {
         return (
-            <div className="flex items-center justify-center h-screen text-gray-500">
-                Loading account...
+            <div className="flex flex-col items-center justify-center h-screen">
+            <img
+                src="/main_assets/gifs/dog.gif"
+                alt="animated-gif"
+                className="w-32 h-32 animate__animated animate__stretch mb-4"
+            />
+            <div className="text-purple-500 text-xl font-bold">Loading account...</div>
             </div>
+
         );
     }
     return (
@@ -355,7 +345,7 @@ const AccountInfo = () => {
                 {/* Hero Section */}
                 <section
                     className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-24 text-center bg-cover bg-center animate__animated animate__fadeIn"
-                    style={{ backgroundImage: "url('../public/main_assets/images/image_main_banner3.png')" }}
+                    style={{ backgroundImage: "url('../main_assets/images/image_main_banner3.png')" }}
                 >
                     <div className="container mx-auto px-6">
                         <h1 className="text-4xl font-bold mb-4 animate__animated animate__bounceIn">My Account Information</h1>
@@ -412,16 +402,34 @@ const AccountInfo = () => {
                                 >
                                     Recent Posts
                                 </button>
-                                <button
-                                    onClick={() => handleTabChange('more')}
+
+                                {/* Only the logginin account can see */}
+                                {isMyAcc && (
+                                    <button
+                                    onClick={() => handleTabChange('History')}
                                     className={`${
-                                        activeTab === 'more'
+                                        activeTab === 'History'
                                             ? 'border-purple-600 text-purple-600'
                                             : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
                                     } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                                 >
-                                    More
+                                    History
                                 </button>
+                                )}
+
+                                {/* Only the logginin account can see */}
+                                {isMyAcc && (
+                                    <button
+                                    onClick={() => handleTabChange('More')}
+                                    className={`${
+                                        activeTab === 'More'
+                                            ? 'border-purple-600 text-purple-600'
+                                            : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
+                                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                                >
+                                    Settings
+                                </button>
+                                )}
                             </nav>
                         </div>
 

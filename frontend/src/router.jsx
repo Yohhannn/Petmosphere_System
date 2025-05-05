@@ -18,6 +18,7 @@ import PostPet from './views/main/post_pet';
 import PetDetails from './views/main/pet_details';
 import AccountInfo from './views/main/account';
 import Alt_AboutUs from './views/main/alt_about';
+import InboxPage from './views/main/inbox';
 
 import PromptPostSuccess from './prompt/prompt_post_success';
 
@@ -38,8 +39,11 @@ const router = createBrowserRouter ([
     {path: '/post_pet', element: <PostPet />,},
     { path: '/pet/:petId/details', element: <PetDetails /> },
     {path: '/account/:accId', element: <AccountInfo />,},
+    {path: '/inbox/:accId', element: <InboxPage />,},
     {path: '/alt_about', element: <Alt_AboutUs />,},
     {path: '/success', element: <PromptPostSuccess />,}
+
+
 
     // Kamo lay in ani pang Token -VVVV
     // {

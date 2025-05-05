@@ -51,6 +51,7 @@ const SignUp = () => {
       "user_phone": contactNumber, // Include contact number
       "user_location": address,     // Include address
     };
+    console.log(signUpObject);
     const response = await send.signUp(signUpObject);
     if (response.message.includes('successfully')) {
       navigate('/login');

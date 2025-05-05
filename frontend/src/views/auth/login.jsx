@@ -44,14 +44,7 @@ const Login = () => {
     <div
       className="relative flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('/main_assets/images/bg_landing_phone.svg')] sm:bg-[url('/main_assets/images/bg_landing.svg')] animate__animated animate__fadeIn"
     >
-      {/* Animated GIF at the Top Center Above the Container */}
-      <div className="absolute top-0 mt-35 ml-19 left-1/2 transform -translate-x-1/2 mb-8 animate__animated animate__lightSpeedInLeft">
-        <img
-          src="main_assets/gifs/cat.gif"
-          alt="animated-gif"
-          className="w-32 h-32 animate__animated animate__stretch"
-        />
-      </div>
+
 
       <div className="w-full max-w-sm p-8 bg-white bg bg-opacity-90 rounded-lg shadow-lg space-y-6 mt-16 animate__animated animate__fadeIn">
         <Link

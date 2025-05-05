@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Inner_Footer from '../../components/inner_footer';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
@@ -99,13 +98,22 @@ const Home = () => {
                                                 className="w-8 h-8 rounded-full mr-3"
                                             />
                                             <div>
-                                                <h3 className="text-sm font-semibold text-gray-800">{post.CurrentOwnerFullName}</h3>
+                                                <h3 className="text-sm font-semibold text-gray-800">
+                                                <Link to={`/account/${post.user.user_id}`} className="text-gray-800 hover:underline">
+                                                {post.user.user_name}
+                                                </Link>
+                                                </h3>
                                                 <p className="text-xs text-gray-500">
                                                     Posted {moment(post.post_date).fromNow()}
                                                 </p>
                                             </div>
                                         </div>
-                                        <h4 className="text-lg font-bold text-purple-600 mb-1">{post.pet.pet_name}</h4>
+                                        
+                                        <h2 className="text-2xl font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft flex items-center">
+                                        <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
+                                        {post.pet.pet_name}
+                                        </h2>
+
                                         <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
                                         <p className="text-gray-700 leading-relaxed mb-3 line-clamp-3">{post.pet.pet_description}</p>
                                         <div className="mt-2"> {/* Container for tags */}
@@ -131,7 +139,7 @@ const Home = () => {
                                                 to={`/chat/${post.user_id}`}
                                                 className="bg-orange-400 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
                                             >
-                                                Contact Owner
+                                                <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
                                             </Link>
                                             <Link to={`/pet/${post.post_id}/details`} className="text-purple-600 hover:underline font-semibold">
                                                 View More
@@ -149,10 +157,6 @@ const Home = () => {
                         )}
                     </div>
                 </div>
-
-                <footer className="bg-purple-600 py-6 text-white text-center mt-10">
-                    <Inner_Footer />
-                </footer>
             </div>
         </>
     );

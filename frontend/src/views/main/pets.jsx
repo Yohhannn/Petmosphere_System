@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import Inner_Footer from '../../components/inner_footer';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
-import { posts } from '../../data/postsData';
+import moment from 'moment';
+
 import 'animate.css';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+
 import * as fetch from '../fetchRequest/fetch.js';
 export function meta() {
     return [
@@ -79,9 +79,23 @@ const Pets = () => {
                                         className="w-full h-48 object-cover rounded-lg mb-4 border-4 border-orange-400"
                                     />
 
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-gray-800"> Posted by: {" "}
+                                        <Link to={`/account/${post.user.user_id}`} className="text-purple-800 hover:underline ">
+                                        {post.user.user_name}
+                                            </Link>
+                                        </h3>
+                                        <p className="text-xs text-gray-500">
+                                            Posted {moment(post.post_date).fromNow()}
+                                        </p>
+                                    </div>
 
-                                <h3 className="text-lg font-bold text-purple-600 mb-1">{post.pet.pet_name}</h3>
-                                <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
+                                <h3 className="mt-2 text-lg font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft flex items-center">
+                                    <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
+                                    {post.pet.pet_name}
+                                </h3>
+
+                                <p className="text-orange-400 font-semibold">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
                                 <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{post.pet.pet_description}</p>
                                 <div className="mt-2 flex flex-wrap"> {/* Changed to a flex wrap container */}
                                     {post.pet.pet_tag.split(',').map((tag, index) => (
@@ -110,10 +124,6 @@ const Pets = () => {
                         </p>
                     )}
                 </div>
-
-                <footer className="bg-purple-600 py-6 text-white text-center mt-10">
-                    <Inner_Footer />
-                </footer>
             </div>
         </>
     );
