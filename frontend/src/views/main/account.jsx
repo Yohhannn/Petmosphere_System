@@ -11,6 +11,7 @@ import { faStar as faStarSolid, faCalendarAlt, faUserCircle, faPlusCircle, faSta
 import moment from 'moment';
 import Cookies from 'js-cookie';
 import * as fetch from '../fetchRequest/fetch.js';
+import * as send from '../postRequest/send.js';
 import {useParams} from "react-router-dom";
 
 
@@ -31,14 +32,15 @@ const AccountInfo = () => {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Details');
     const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
-    const [newReviewRating, setNewReviewRating] = useState(0);
+    const [newReviewRating, setNewReviewRating] = useState(1);
     const [newReviewDesc, setNewReviewDesc] = useState('');
     const {accId} = useParams();
     const [isMyAcc, setMyAcc] = useState(false);
-    let user = null;
+    const [user,setUser]= useState(null);
     useEffect(() => {
         const userCookie =  Cookies.get('userCredentials');
-        user = userCookie ? JSON.parse(userCookie) : null;
+        const user = userCookie ? JSON.parse(userCookie) : null;
+        setUser(user);
         const fetchUserData = async () => {
             try {
                 if (user) {
@@ -48,8 +50,6 @@ const AccountInfo = () => {
                     setAccount(response.data);
                     setUserReview(response2.data);
                     setUserPost(response3.data);
-                    console.log(user.user.user_id);
-                    console.log(accId);
                     setMyAcc(user.user.user_id === parseInt(accId));
                 } else {
                     window.location.href = '/';
@@ -65,7 +65,6 @@ const AccountInfo = () => {
     const handleLogoutClick = () => {
         setIsLogoutModalOpen(true);
     };
-    console.log(isMyAcc);
     const handleConfirmLogout = () => {
         // Perform logout logic here (e.g., clearing session, local storage)
         setIsLogoutModalOpen(false);
@@ -98,7 +97,7 @@ const AccountInfo = () => {
     }
     const handleCloseAddReview = () => {
         setIsAddReviewOpen(false);
-        setNewReviewRating(0);
+        setNewReviewRating(1);
         setNewReviewDesc('');
     };
 
@@ -110,25 +109,23 @@ const AccountInfo = () => {
         setNewReviewDesc(event.target.value);
     };
 
-    const handleSubmitReview = () => {
-        // In a real application, you would:
-        // 1. Get the ID of the user being reviewed (loggedInAccount.accountID).
-        // 2. Get the ID and name of the reviewer (the currently logged-in user).
-        // 3. Send the newReviewRating and newReviewDesc to your backend API to save the review.
-        // 4. After successfully saving, you would likely refetch the reviews for this account
-        //    or update the local state to include the new review.
+    const handleSubmitReview = async() => {
+        const reviewObject = {
+            "rev_rating" : newReviewRating,
+            "rev_date" : new Date().toISOString().slice(0, 10),
+            "rev_description" : newReviewDesc,
+            "rev_rated_by" : user.user.user_id,
+            "user_id" : accId
+        }
+        try{
+            const response = await send.sendReview(reviewObject);
+            console.log(response.message);
+            fetchReview();
+        }catch (error){
+            console.log("Something went wrong! Error "+error);
+        }
 
-        console.log('Submitting Review:', {
-            ReviewTo: loggedInAccount.accountID,
-            Reviewer: 'Current User Name', // Replace with actual current user's name
-            ReviewRatings: newReviewRating,
-            ReviewDesc: newReviewDesc,
-            ReviewDate: new Date().toLocaleDateString(), // Basic date
-        });
-
-        // For this example, we'll just close the modal and reset the form.
         handleCloseAddReview();
-        // In a real app, you'd likely update the reviewsData or fetch again.
     };
 
     const renderStarRating = () => {
@@ -226,7 +223,7 @@ const AccountInfo = () => {
                         {userReview  && (
                             <div className="mb-4">
                                 <h4 className="font-semibold text-gray-700">
-                                    Average Rating: <span className="text-yellow-500">{totalRating/userReview.length.toFixed(2)}</span> ({userReview.length} reviews)
+                                    Average Rating: <span className="text-yellow-500">{(totalRating/userReview.length).toFixed(1)}</span> ({userReview.length} reviews)
                                 </h4>
                             </div>
                         )}
@@ -358,7 +355,7 @@ const AccountInfo = () => {
                 {/* Hero Section */}
                 <section
                     className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-24 text-center bg-cover bg-center animate__animated animate__fadeIn"
-                    style={{ backgroundImage: "url('main_assets/images/image_main_banner3.png')" }}
+                    style={{ backgroundImage: "url('../public/main_assets/images/image_main_banner3.png')" }}
                 >
                     <div className="container mx-auto px-6">
                         <h1 className="text-4xl font-bold mb-4 animate__animated animate__bounceIn">My Account Information</h1>
@@ -373,13 +370,13 @@ const AccountInfo = () => {
                         <div className="flex flex-col items-center mb-6">
                             <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-orange-400">
                                 <img
-                                    src={loggedInAccount.profile}
-                                    alt={loggedInAccount.accountFullName}
+                                    src={loggedInAccount.user_img}
+                                    alt={loggedInAccount.user_name}
                                     className="object-cover w-full h-full"
                                 />
                             </div>
-                            <h2 className="text-2xl font-bold text-purple-600 mt-4">{loggedInAccount.accountFullName}</h2>
-                            <p className="text-gray-500">{loggedInAccount.accountEmail}</p>
+                            <h2 className="text-2xl font-bold text-purple-600 mt-4">{loggedInAccount.user_name}</h2>
+                            <p className="text-gray-500">{loggedInAccount.user_email}</p>
                         </div>
 
                         {/* Tabs */}

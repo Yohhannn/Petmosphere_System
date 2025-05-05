@@ -72,9 +72,9 @@ const Home = () => {
                 {/* Main Feed Area */}
                 <div className="container mx-auto px-6 py-8">
                     <div className="space-y-6">
-                        {posts.map((post) => (
+                        {posts.map((post,index) => (
                             <div
-                                key={post.pet.pet_id}
+                                key={index}
                                 className="bg-white shadow-md rounded-lg overflow-hidden animate__animated animate__fadeInUp md:flex md:flex-row md:max-w-2xl md:mx-auto"
                             >
                                 {/* Image Section (Left on wider screens) */}
@@ -109,7 +109,7 @@ const Home = () => {
                                         <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
                                         <p className="text-gray-700 leading-relaxed mb-3 line-clamp-3">{post.pet.pet_description}</p>
                                         <div className="mt-2"> {/* Container for tags */}
-                                            {post.pet.pet_tag.split(',').map((tag, index) => (
+                                            {post.pet.pet_tag.split(',').map((tag,index) => (
                                                 <span
                                                     key={index}
                                                     className="inline-block bg-orange-200 rounded-full px-3 py-1 text-sm font-semibold text-orange-700 mr-2 mb-2"

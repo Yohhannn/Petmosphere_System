@@ -52,8 +52,6 @@ const SignUp = () => {
       "user_location": address,     // Include address
     };
     const response = await send.signUp(signUpObject);
-    console.log(response.message);
-    console.log(signUpObject);
     if (response.message.includes('successfully')) {
       navigate('/login');
     }else if(response.message.includes('email')) {

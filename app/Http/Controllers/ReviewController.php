@@ -33,6 +33,7 @@ class ReviewController extends Controller
             'rev_description' => 'nullable|string|max:255',
             'rev_rated_by' => 'required|integer|exists:user,user_id',
             'user_id' => 'required|integer|exists:user,user_id',
+            'rev_date' => 'required|date',
         ]);
         $review = Review::create($validated);
         return response()->json(["message" => "Sucessfully created reviews","data" => $review],201);

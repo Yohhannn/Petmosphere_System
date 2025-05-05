@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Inner_Footer from '../../components/inner_footer';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
@@ -6,7 +6,7 @@ import { posts } from '../../data/postsData';
 import 'animate.css';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-
+import * as fetch from '../fetchRequest/fetch.js';
 export function meta() {
     return [
         { title: "( ✦ ) PETMOSPHERE - PETS" },
@@ -16,12 +16,19 @@ export function meta() {
 
 const Pets = () => {
     const [searchQuery, setSearchQuery] = useState('');
-
+    const [pets,setPets] = useState([]);
     // Filtering posts based on search query (using PetName and Breed)
-    const filteredPets = posts.filter(
+    useEffect(() => {
+        const pets = async() => {
+            const response = await fetch.getPosts();
+            setPets(response.data);
+        }
+        pets();
+    }, []);
+    const filteredPets = pets.filter(
         (post) =>
-            post.PetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            post.Breed.toLowerCase().includes(searchQuery.toLowerCase())
+            post.pet.pet_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            post.pet.breed.breed_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -59,25 +66,25 @@ const Pets = () => {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {filteredPets.map((post) => (
+                        {filteredPets.map((post,index) => (
                             <div
-                                key={post.PetID}
+                                key={index}
                                 className="card bg-white shadow-md border border-purple-600/20 rounded-xl p-6 transform transition-transform hover:scale-105 animate__animated animate__fadeInUp"
                             >
                                 {/* Pet Image (display the first image if available) */}
-                                {post.PetImages && post.PetImages.length > 0 && (
+
                                     <img
-                                        src={post.PetImages[0]}
-                                        alt={post.PetName}
+                                        src={post.pet.pet_img}
+                                        alt={post.pet.pet_name}
                                         className="w-full h-48 object-cover rounded-lg mb-4 border-4 border-orange-400"
                                     />
-                                )}
 
-                                <h3 className="text-lg font-bold text-purple-600 mb-1">{post.PetName}</h3>
-                                <p className="text-orange-400 font-semibold mb-2">{post.Breed} ({post.PetType})</p>
-                                <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{post.PetDescription}</p>
+
+                                <h3 className="text-lg font-bold text-purple-600 mb-1">{post.pet.pet_name}</h3>
+                                <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
+                                <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{post.pet.pet_description}</p>
                                 <div className="mt-2 flex flex-wrap"> {/* Changed to a flex wrap container */}
-                                    {post.PetTags.map((tag, index) => (
+                                    {post.pet.pet_tag.split(',').map((tag, index) => (
                                         <span
                                             key={index}
                                             className="inline-block bg-orange-200 rounded-full px-3 py-1 text-sm font-semibold text-orange-700 mr-2 mb-2" // Added mr-2 and mb-2 for spacing
@@ -89,7 +96,7 @@ const Pets = () => {
 
                                 {/* Post Actions */}
                                 <div className="mt-4 flex justify-end">
-                                    <Link to={`/pet/${post.PetID}/details`} className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors text-sm font-semibold">
+                                    <Link to={`/pet/${post.pet.pet_id}/details`} className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors text-sm font-semibold">
                                         View More
                                     </Link>
                                 </div>
