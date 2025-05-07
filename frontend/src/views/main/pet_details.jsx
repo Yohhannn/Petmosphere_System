@@ -13,11 +13,14 @@ const PetDetails = () => {
     const [showAdoptionDialog, setShowAdoptionDialog] = useState(false); // State for the dialog
     const [adoptionMessage, setAdoptionMessage] = useState(''); // State for the adoption message
 
+    // Placeholder for the logged-in user's ID.
+    // **Replace this with your actual way of getting the logged-in user ID.**
+    const loggedInUserId = 8;
+
     useEffect(() => {
         const foundPet = async () => {
             const numericId = parseInt(petId);
             const response = await fetch.getPostsBy(numericId);
-
             setPet(response.data);
         };
         foundPet();
@@ -132,20 +135,32 @@ const PetDetails = () => {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <Link
-                                to={`/chat/${pet.user.user_id}`}
-                                className="inline-flex items-center gap-2 bg-orange-400 hover:bg-orange-300 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
-                            >
-                                <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
-                                <span> Chat with Owner</span>
-                            </Link>
-                            <button
-                                onClick={() => setShowAdoptionDialog(true)}
-                                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
-                            >
-                                <img src="/main_assets/icons/icon_heart.png" alt="Make Adoption Request" className='w-5 h-5' />
-                                <span>Make Adoption Request</span>
-                            </button>
+                            {pet.user_id !== loggedInUserId && (
+                                <Link
+                                    to={`/chat/${pet.user.user_id}`}
+                                    className="inline-flex items-center gap-2 bg-orange-400 hover:bg-orange-300 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
+                                >
+                                    <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
+                                    <span> Chat with Owner</span>
+                                </Link>
+                            )}
+
+                            {pet.user_id === loggedInUserId ? (
+                                <Link
+                                    to="/inbox"
+                                    className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
+                                >
+                                    <span>View Adoption Requests</span>
+                                </Link>
+                            ) : (
+                                <button
+                                    onClick={() => setShowAdoptionDialog(true)}
+                                    className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
+                                >
+                                    <img src="/main_assets/icons/icon_heart.png" alt="Make Adoption Request" className='w-5 h-5' />
+                                    <span>Make Adoption Request</span>
+                                </button>
+                            )}
                         </div>
 
 

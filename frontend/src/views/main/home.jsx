@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
@@ -18,18 +18,24 @@ export function meta() {
 }
 
 const Home = () => {
-    const [posts,setPost] = useState([]);
-    const [type,setType] = useState([]);
-    const [breed,setBreed] = useState([]);
-    useEffect(()=>{
-        const getPost = async() => {
+    const [posts, setPost] = useState([]);
+    const [type, setType] = useState([]);
+    const [breed, setBreed] = useState([]);
+
+    // Placeholder for the logged-in user's ID.
+    // **Replace this with your actual way of getting the logged-in user ID.**
+    const loggedInUserId = 8;
+
+    useEffect(() => {
+        const getPost = async () => {
             const response = await fetch.getPosts();
             setPost(response.data);
             setType(response.type);
             setBreed(response.breed);
-        }
+        };
         getPost();
-    });
+    }, []);
+
     const filteredPost = posts.filter(
         (post) =>
             post.post_status === 'Available' // Added this condition to filter by status
@@ -71,14 +77,14 @@ const Home = () => {
                 {/* Main Feed Area */}
                 <div className="container mx-auto px-6 py-8">
                     <div className="space-y-6">
-                        {posts.map((post,index) => (
+                        {posts.map((post, index) => (
                             <div
                                 key={index}
                                 className="bg-white shadow-md rounded-lg overflow-hidden animate__animated animate__fadeInUp md:flex md:flex-row md:max-w-2xl md:mx-auto"
                             >
                                 {/* Image Section (Left on wider screens) */}
                                 <div className="w-full md:w-1/2">
-                                    { (
+                                    {(
                                         <img
                                             src={post.pet.pet_img}
                                             alt={post.pet.pet_name}
@@ -99,25 +105,25 @@ const Home = () => {
                                             />
                                             <div>
                                                 <h3 className="text-sm font-semibold text-gray-800">
-                                                <Link to={`/account/${post.user.user_id}`} className="text-gray-800 hover:underline">
-                                                {post.user.user_name}
-                                                </Link>
+                                                    <Link to={`/account/${post.user.user_id}`} className="text-gray-800 hover:underline">
+                                                        {post.user.user_name}
+                                                    </Link>
                                                 </h3>
                                                 <p className="text-xs text-gray-500">
                                                     Posted {moment(post.post_date).fromNow()}
                                                 </p>
                                             </div>
                                         </div>
-                                        
+
                                         <h2 className="text-2xl font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft flex items-center">
-                                        <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
-                                        {post.pet.pet_name}
+                                            <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
+                                            {post.pet.pet_name}
                                         </h2>
 
                                         <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
                                         <p className="text-gray-700 leading-relaxed mb-3 line-clamp-3">{post.pet.pet_description}</p>
                                         <div className="mt-2"> {/* Container for tags */}
-                                            {post.pet.pet_tag.split(',').map((tag,index) => (
+                                            {post.pet.pet_tag.split(',').map((tag, index) => (
                                                 <span
                                                     key={index}
                                                     className="inline-block bg-orange-200 rounded-full px-3 py-1 text-sm font-semibold text-orange-700 mr-2 mb-2"
@@ -135,12 +141,21 @@ const Home = () => {
                                     {/* Post Actions */}
                                     <div className="border-t border-gray-200 pt-2 mt-4">
                                         <div className="flex justify-between items-center text-sm text-gray-600">
-                                            <Link
-                                                to={`/chat/${post.user_id}`}
-                                                className="bg-orange-400 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
-                                            >
-                                                <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
-                                            </Link>
+                                            {post.user_id === loggedInUserId ? (
+                                                <Link
+                                                    to="/inbox" // Redirects to /pets for now
+                                                    className="bg-purple-600 hover:bg-orange-400 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
+                                                >
+                                                    View Adoption Requests
+                                                </Link>
+                                            ) : (
+                                                <Link
+                                                    to={`/chat/${post.user_id}`}
+                                                    className="bg-orange-400 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
+                                                >
+                                                    <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
+                                                </Link>
+                                            )}
                                             <Link to={`/pet/${post.post_id}/details`} className="text-purple-600 hover:underline font-semibold">
                                                 View More
                                             </Link>

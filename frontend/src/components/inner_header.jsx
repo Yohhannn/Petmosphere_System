@@ -168,7 +168,7 @@ const Inner_Header = () => {
           </li>
           <li>
             <Link
-              to="/inbox"
+              to={`/inbox/${user.user.user_id}`}
               onClick={closeMenu}
               className={`transition flex justify-between items-center ${isActive('/inbox') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'}`}
             >
@@ -177,7 +177,7 @@ const Inner_Header = () => {
           </li>
           <li>
             <Link
-              to="/account"
+              to={`/account/${user.user.user_id}`}
               onClick={closeMenu}
               className={`transition flex justify-between items-center ${isActive('/account') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'}`}
             >

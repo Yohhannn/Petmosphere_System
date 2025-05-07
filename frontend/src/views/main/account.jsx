@@ -469,7 +469,7 @@ const AccountInfo = () => {
                 </div>
             )}
 
-            {/* Add Review Modal */}
+            {/* Add Review Modal - NAA PA DIRI ANG CODE D HAHA */}
             {isAddReviewOpen && (
                 <div className="fixed inset-0 bg-orange-300 bg-opacity-50 flex justify-center items-center animate__animated animate__fadeIn">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
