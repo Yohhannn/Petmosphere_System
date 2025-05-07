@@ -20,6 +20,12 @@ import AccountInfo from './views/main/account';
 import Alt_AboutUs from './views/main/alt_about';
 import InboxPage from './views/main/inbox';
 
+import AdminDashboard from './views/admin/admin_dashboard';
+import AdminUsers from './views/admin/admin_users';
+import AdminPosts from './views/admin/admin_posts';
+import AdminControls from './views/admin/admin_controls';
+import AdminInfo from './views/admin/admin_info';
+
 import PromptPostSuccess from './prompt/prompt_post_success';
 
 const router = createBrowserRouter ([
@@ -41,7 +47,13 @@ const router = createBrowserRouter ([
     {path: '/account/:accId', element: <AccountInfo />,},
     {path: '/inbox/:accId', element: <InboxPage />,},
     {path: '/alt_about', element: <Alt_AboutUs />,},
-    {path: '/success', element: <PromptPostSuccess />,}
+    {path: '/success', element: <PromptPostSuccess />,},
+
+    {path: '/admin/dashboard', element: <AdminDashboard />,},
+    {path: '/admin/users', element: <AdminUsers />,},
+    {path: '/admin/posts', element: <AdminPosts />,},
+    {path: '/admin/info', element: <AdminInfo />,},
+    {path: '/admin/controls', element: <AdminControls />,},
 
 
 
