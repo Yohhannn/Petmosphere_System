@@ -13,10 +13,14 @@ class Review extends Model
       'rev_description',
         'rev_date',
         'rev_rated_by',
-        'user_id'
+        'user_id',
+        'pet_id'
     ];
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+    public function pet(){
+        return $this->belongsTo(Pet::class, 'pet_id');
     }
     public function reviewBy(){
         return $this->belongsTo(User::class, 'rev_rated_by');

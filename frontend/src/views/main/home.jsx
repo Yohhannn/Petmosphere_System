@@ -19,36 +19,32 @@ export function meta() {
 
 const Home = () => {
     const [posts, setPost] = useState([]);
-    const [type, setType] = useState([]);
-    const [breed, setBreed] = useState([]);
     const [verify, setVerification] = useState(false);
-    
+
     // Placeholder for the logged-in user's ID.
     // **Replace this with your actual way of getting the logged-in user ID.**
-    const loggedInUserId = 8;
     const userCookie = Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
+    const loggedInUserId = user.user.user_id;
     useEffect(() => {
         const getPost = async () => {
             const response = await fetch.getPosts();
-            const userData = await fetch.getUserBy(user.user.user_id);
-            if (userData.data.user_verified === 0) {
-                console.log('please verify your account first');
-            } else {
-                setVerification(true);
-            }
-            setPost(response.data);
-            setType(response.type);
-            setBreed(response.breed);
+            const filteredPost = response.data.filter(
+                (post) =>
+                    post.post_status === 'Available' // Added this condition to filter by status
+            );
+            setPost(filteredPost);
         };
-
         getPost();
     }, []);
-
-    const filteredPost = posts.filter(
-        (post) =>
-            post.post_status === 'Available' // Added this condition to filter by status
-    );
+    const verifyAccount = async() =>{
+        const userData = await fetch.getUserBy(loggedInUserId);
+        if (userData.data.user_verified === 0) {
+            console.log('please verify your account first');
+        } else {
+            setVerification(true);
+        }
+    }
 
     return (
         <>
@@ -74,7 +70,7 @@ const Home = () => {
                         <p className="text-lg max-w-2xl mx-auto mb-6">
                             Discover adorable pets looking for their forever homes and connect with their current owners.
                         </p>
-                        <Link
+                        <Link onClick={verifyAccount}
                             to={verify ? "/post_pet" : '/home'}
                             className="inline-block bg-orange-400 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
                         >
@@ -126,7 +122,7 @@ const Home = () => {
 
                                         <h2 className="text-2xl font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft flex items-center">
                                             <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
-                                            {post.pet.pet_name}
+                                            <Link to={`/pet/${post.post_id}/details`}>{post.pet.pet_name}</Link>
                                         </h2>
 
                                         <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>

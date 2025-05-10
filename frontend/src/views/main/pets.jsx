@@ -21,7 +21,11 @@ const Pets = () => {
     useEffect(() => {
         const pets = async() => {
             const response = await fetch.getPosts();
-            setPets(response.data);
+            const filterAvailablePet = response.data.filter(
+                (post) =>
+                    post.post_status === 'Available' // Added this condition to filter by status
+            );
+            setPets(filterAvailablePet);
         }
         pets();
     }, []);

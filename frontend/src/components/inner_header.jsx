@@ -12,9 +12,6 @@ const Inner_Header = () => {
   const isActive = (path) => location.pathname === path;
   const userCookie =  Cookies.get('userCredentials');
   const user = userCookie ? JSON.parse(userCookie) : null;
-  if(!user){
-      window.location.href = "/";
-  }
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -118,11 +115,11 @@ const Inner_Header = () => {
               </Link>
             </li>
 
-            <li className={`${isActive(`/inbox/${user.user.user_id}`) ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'} transition`}>
-              <Link to={`/inbox/${user.user.user_id}`} className="flex flex-col items-center">
+            <li className={`${isActive(`/inbox`) ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'} transition`}>
+              <Link to={`/inbox`} className="flex flex-col items-center">
                 <img
                   src={
-                    isActive(`/inbox/${user.user.user_id}`)
+                    isActive(`/inbox`)
                       ? '/main_assets/icons/icon_inbox_active.png'
                       : '/main_assets/icons/icon_inbox.png'
                   }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate, useParams} from 'react-router-dom';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import moment from 'moment';
@@ -20,9 +20,9 @@ const PetDetails = () => {
 
     // Placeholder for the logged-in user's ID.
     // **Replace this with your actual way of getting the logged-in user ID.**
-    const loggedInUserId = 8;
     const userCookie =  Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
+    const loggedInUserId = user.user.user_id;
     useEffect(() => {
         const foundPet = async () => {
             const numericId = parseInt(petId);
@@ -33,7 +33,7 @@ const PetDetails = () => {
     }, [petId]);
     useEffect(() => {
         const checkVerify = async() => {
-            const userDetails = await fetch.getUserBy(user.user.user_id);
+            const userDetails = await fetch.getUserBy(loggedInUserId);
             if (userDetails.data.user_verified !== 0) {
                 setVerification(true);
                 setUserId(userDetails.data.user_id);
@@ -53,18 +53,21 @@ const PetDetails = () => {
             </div>
         );
     }
-
-    const handleAdoptionRequest = async () => {
-        const adoptionObject = {
+    const AdoptionObject = () =>{
+        return {
             "req_status": "Pending",
             'req_date': new Date().toISOString().split('T')[0],
             'user_id': user_id,
             'pet_id': pet_id,
             'req_message': adoptionMessage,
-        }
-        const checkAdoption = await send.checkAdoption(adoptionObject);
-        if (checkAdoption.data) { console.log('You already make a request to this pet'); return; }
-        const response = await send.sendAdoptionRequest(adoptionObject);
+        };
+    }
+    const VerifyRequest = async() =>{
+        const checkAdoption = await send.checkAdoption(AdoptionObject());
+        if (checkAdoption.data) { console.log('You already make a request to this pet'); return false; }
+    }
+    const handleAdoptionRequest = async () => {
+        const response = await send.sendAdoptionRequest(AdoptionObject());
         if (response.message.includes('successfully')) {
             // In a real app, you'd send an API request here.
             console.log('Adoption request sent for:', pet, 'with message:', adoptionMessage);
@@ -184,7 +187,7 @@ const PetDetails = () => {
                                 </Link>
                             ) : (
                                 <button
-                                        onClick={() => { verify ? setShowAdoptionDialog(true): console.log('please verify first'); setPetId(pet.pet_id)}}
+                                        onClick={() => {!VerifyRequest() && verify ? setShowAdoptionDialog(true): console.log('please verify first'); setPetId(pet.pet_id)}}
                                     className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
                                 >
                                     <img src="/main_assets/icons/icon_heart.png" alt="Make Adoption Request" className='w-5 h-5' />

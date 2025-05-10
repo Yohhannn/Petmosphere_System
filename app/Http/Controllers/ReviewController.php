@@ -13,14 +13,14 @@ class ReviewController extends Controller
         return response()->json(["message" => "Sucessfully get data of Reviews","data" => $reviews],200);
     }
     public function getReviewById($req_id){
-        $reviews = Review::with('user','reviewBy')->find($req_id);
+        $reviews = Review::with('user','pet','reviewBy')->find($req_id);
         if(!$reviews){
             return response()->json(["message" => "Review not found"],404);
         }
         return response()->json(["message" => "Sucessfully get data of Reviews","data" => $reviews],200);
     }
     public function getReviewByUserId($id){
-        $reviews = Review::where('user_id',$id)->with('user','reviewBy')->get();
+        $reviews = Review::where('user_id',$id)->with('user','pet','reviewBy')->get();
         if(!$reviews){
             return response()->json(["message" => "Review not found"],404);
         }
@@ -33,6 +33,7 @@ class ReviewController extends Controller
             'rev_description' => 'nullable|string|max:255',
             'rev_rated_by' => 'required|integer|exists:user,user_id',
             'user_id' => 'required|integer|exists:user,user_id',
+            'pet_id' => 'required|integer|exists:pet,pet_id',
             'rev_date' => 'required|date',
         ]);
         $review = Review::create($validated);
@@ -49,6 +50,7 @@ class ReviewController extends Controller
             'rev_description' => 'nullable|string|max:255',
             'rev_rated_by' => 'required|integer|exists:user,user_id',
             'user_id' => 'required|integer|exists:user,user_id',
+            'pet_id' => 'required|integer|exists:pet,pet_id',
         ]);
         $review->update($validated);
         return response()->json(["message" => "Sucessfully updated reviews","data" => $review],201);

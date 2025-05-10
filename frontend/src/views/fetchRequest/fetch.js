@@ -36,4 +36,12 @@ export  async function getBreed(){
     const response = await fetch(base_url+"/Breed");
     return await response.json();
 }
+export  async function getAdoptionRequestByUserId(id){
+    const response = await fetch(base_url+`/AdoptionRequest/user/${id}`);
+    return await response.json();
+}
+export  async function getAdoptionRequest(){
+    const response = await fetch(base_url+`/AdoptionRequest`);
+    return await response.json();
+}
 

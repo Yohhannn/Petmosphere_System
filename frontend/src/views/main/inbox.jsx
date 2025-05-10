@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faInbox, faPlusCircle, faPaperPlane, faFilter, faCog, faExclamationTriangle, faBullhorn, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faInbox, faPaperPlane, faFilter, faCog, faExclamationTriangle, faBullhorn, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
-
+import * as fetch from '../fetchRequest/fetch.js';
+import * as send from '../postRequest/send.js';
+import Cookies from 'js-cookie';
+import {updateAdoptionRequestStatus} from "../postRequest/send.js";
 // Mock data (consider moving to a separate file if it grows)
-const petRequestsData = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com', contactNumber: '123-456-7890', address: '123 Main St', requestStatus: 'Pending', petName: 'Buddy', petTags: ['dog', 'friendly'], message: 'I would love to adopt Buddy!', dateRequested: '2024-07-24', inboxViewStatus: 'unread' },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', contactNumber: '987-654-3210', address: '456 Oak Ave', requestStatus: 'Approved', petName: 'Whiskers', petTags: ['cat', 'playful'], message: 'Whiskers seems like a great fit for my family.', dateRequested: '2024-07-23', inboxViewStatus: 'read' },
-    { id: 3, name: 'Peter Jones', email: 'peter.jones@example.com', contactNumber: '555-123-4567', address: '789 Pine Ln', requestStatus: 'Rejected', petName: 'Rocky', petTags: ['dog', 'energetic'], message: 'I am interested in adopting Rocky.', dateRequested: '2024-07-22', inboxViewStatus: 'read' },
-    { id: 4, name: 'Mary Brown', email: 'mary.brown@example.com', contactNumber: '111-222-3333', address: '101 Elm St', requestStatus: 'Completed', petName: 'Fluffy', petTags: ['cat', 'calm'], message: 'I want to adopt Fluffy.', dateRequested: '2024-07-21', inboxViewStatus: 'read' },
-    { id: 5, name: 'David Wilson', email: 'david.wilson@example.com', contactNumber: '444-555-6666', address: '222 Maple Dr', requestStatus: 'Pending', petName: 'Max', petTags: ['dog', 'loyal'], message: 'I am interested in adopting Max.', dateRequested: '2024-07-20', inboxViewStatus: 'unread' },
-];
+// const petRequestsData = [
+//     { id: 1, name: 'John Doe', email: 'john.doe@example.com', contactNumber: '123-456-7890', address: '123 Main St', req_status: 'Pending', petName: 'Buddy', petTags: ['dog', 'friendly'], message: 'I would love to adopt Buddy!', dateRequested: '2024-07-24', req_view_status: 'unread' },
+//     { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', contactNumber: '987-654-3210', address: '456 Oak Ave', req_status: 'Approved', petName: 'Whiskers', petTags: ['cat', 'playful'], message: 'Whiskers seems like a great fit for my family.', dateRequested: '2024-07-23', req_view_status: 'read' },
+//     { id: 3, name: 'Peter Jones', email: 'peter.jones@example.com', contactNumber: '555-123-4567', address: '789 Pine Ln', req_status: 'Rejected', petName: 'Rocky', petTags: ['dog', 'energetic'], message: 'I am interested in adopting Rocky.', dateRequested: '2024-07-22', req_view_status: 'read' },
+//     { id: 4, name: 'Mary Brown', email: 'mary.brown@example.com', contactNumber: '111-222-3333', address: '101 Elm St', req_status: 'Completed', petName: 'Fluffy', petTags: ['cat', 'calm'], message: 'I want to adopt Fluffy.', dateRequested: '2024-07-21', req_view_status: 'read' },
+//     { id: 5, name: 'David Wilson', email: 'david.wilson@example.com', contactNumber: '444-555-6666', address: '222 Maple Dr', req_status: 'Pending', petName: 'Max', petTags: ['dog', 'loyal'], message: 'I am interested in adopting Max.', dateRequested: '2024-07-20', req_view_status: 'unread' },
+// ];
 
-const sentMessagesData = [
-    { id: 1, snt_name: 'Edmark Talingting', snt_email: 'sheltera@example.com', snt_contactNumber: '555-987-6543', snt_address: '789 Shelter Rd', snt_requestStatus: 'Pending', snt_petName: 'Buddy', snt_petTags: ['dog', 'friendly'], snt_message: 'Inquiry about Buddy', snt_dateRequested: '2024-07-25', snt_dateUpdated: '2024-07-25' },
-    { id: 2, snt_name: 'Jodeci Pacibe', snt_email: 'shelterb@example.com', snt_contactNumber: '555-234-5678', snt_address: '123 Rescue Ln', snt_requestStatus: 'Approved', snt_petName: 'Whiskers', snt_petTags: ['cat', 'playful'], snt_message: 'Application for Whiskers', snt_dateRequested: '2024-07-24', snt_dateUpdated: '2024-07-24' },
-    { id: 2, snt_name: 'Jodeci Pacibe', snt_email: 'shelterb@example.com', snt_contactNumber: '555-234-5678', snt_address: '123 Rescue Ln', snt_requestStatus: 'Completed', snt_petName: 'PDiddy', snt_petTags: ['oil', 'baby'], snt_message: 'Application for Diddy', snt_dateRequested: '2024-07-24', snt_dateUpdated: '2024-07-24' },
-];
+// const sentMessagesData = [
+//     { id: 1, snt_name: 'Edmark Talingting', snt_email: 'sheltera@example.com', snt_contactNumber: '555-987-6543', snt_address: '789 Shelter Rd', snt_req_status: 'Pending', snt_petName: 'Buddy', snt_petTags: ['dog', 'friendly'], snt_message: 'Inquiry about Buddy', snt_dateRequested: '2024-07-25', snt_dateUpdated: '2024-07-25' },
+//     { id: 2, snt_name: 'Jodeci Pacibe', snt_email: 'shelterb@example.com', snt_contactNumber: '555-234-5678', snt_address: '123 Rescue Ln', snt_req_status: 'Approved', snt_petName: 'Whiskers', snt_petTags: ['cat', 'playful'], snt_message: 'Application for Whiskers', snt_dateRequested: '2024-07-24', snt_dateUpdated: '2024-07-24' },
+//     { id: 2, snt_name: 'Jodeci Pacibe', snt_email: 'shelterb@example.com', snt_contactNumber: '555-234-5678', snt_address: '123 Rescue Ln', snt_req_status: 'Completed', snt_petName: 'PDiddy', snt_petTags: ['oil', 'baby'], snt_message: 'Application for Diddy', snt_dateRequested: '2024-07-24', snt_dateUpdated: '2024-07-24' },
+// ];
 
 const systemMessagesData = [
     { id: 1, sys_admin_name: 'Rexshimura', sys_message_type: 'Warning', sys_message: 'The image you posted was flagged as inappropriate. Please review our guidelines.', sys_date_sent: '2025-05-06' },
@@ -76,29 +79,54 @@ const InboxPage = () => {
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [filterStatus, setFilterStatus] = useState('');
     const [modalStatus, setModalStatus] = useState('');
-    const [messages, setMessages] = useState(petRequestsData);
-    const [sentMessages, setSentMessages] = useState(sentMessagesData);
-    const [systemMessages, setSystemMessages] = useState(systemMessagesData);
+    const [messages, setMessages] = useState([]);
+    const [sentMessages, setSentMessages] = useState([]);
+    const [systemMessages] = useState(systemMessagesData);
+
+    let fetchAdoptionRequestByUser;
+    let fetchAllAdoptionRequest;
+    const userCookie = Cookies.get('userCredentials');
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    useEffect(() => {
+        fetchAdoptionRequestByUser = async () =>{
+            const response = await fetch.getAdoptionRequestByUserId(user.user.user_id);
+            setSentMessages(response.data);
+            console.log(response.data);
+        }
+        fetchAllAdoptionRequest = async () =>{
+            const response = await fetch.getAdoptionRequest();
+            const filteredRequestFromPet = response.data ? response.data.filter(
+                m => m.pet.user.user_id === user.user.user_id) : [];
+            setMessages(filteredRequestFromPet);
+        }
+        fetchAdoptionRequestByUser();
+        fetchAllAdoptionRequest();
+    }, [modalStatus]);
+    const updateAdoptionRequestView = async (id,data) =>{
+        const response = await send.updateAdoptionRequestView(id,data);
+        console.log(response.messages);
+    }
+
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSelectedMessage(null);
-        setFilterStatus(''); // Reset filter when tab changes
+        setFilterStatus('');
+        fetchAdoptionRequestByUser;
+        fetchAllAdoptionRequest;// Reset filter when tab changes
     };
 
     const handleMessageClick = (message) => {
         setSelectedMessage(message);
         if (activeTab === 'Inbox') {
-            setModalStatus(message.requestStatus);
-            if (message.inboxViewStatus === 'unread') {
-                setMessages(prevMessages =>
-                    prevMessages.map(m =>
-                        m.id === message.id ? { ...m, inboxViewStatus: 'read' } : m
-                    )
-                );
+            setModalStatus(message.req_status);
+            if (message.req_view_status === 'unread') {
+                updateAdoptionRequestView(message.req_id,{"req_view_status" : 'read'});
+                fetchAllAdoptionRequest;
+                fetchAdoptionRequestByUser;
             }
         } else if (activeTab === 'Sent') {
-            setModalStatus(message.snt_requestStatus);
+            setModalStatus(message.req_status);
         } else if (activeTab === 'System') {
             // No specific modal status for system messages yet
         }
@@ -108,23 +136,27 @@ const InboxPage = () => {
         setSelectedMessage(null);
     };
 
-    const handleSaveStatus = () => {
+    const handleSaveStatus = async() => {
         if (selectedMessage && activeTab === 'Inbox') {
-            setMessages(prevMessages =>
-                prevMessages.map(msg =>
-                    msg.id === selectedMessage.id ? { ...msg, requestStatus: modalStatus } : msg
-                )
-            );
+            try{
+                await updateAdoptionRequestStatus(selectedMessage.req_id,{"req_status" : modalStatus});
+                fetchAllAdoptionRequest;
+                fetchAdoptionRequestByUser;
+            }catch (e){
+                console.log("an error occured "+e);
+            }
+
+
         }
         setSelectedMessage(null);
     };
 
     const filteredMessages = filterStatus
-        ? messages.filter(message => message.requestStatus === filterStatus)
+        ? messages.filter(message => message.req_status === filterStatus)
         : messages;
 
     const filteredSentMessages = filterStatus
-        ? sentMessages.filter(message => message.snt_requestStatus === filterStatus)
+        ? sentMessages.filter(message => message.req_status === filterStatus)
         : sentMessages;
 
     // No filter for system messages for now, can be added later if needed pero kamo nalang butang hahaha
@@ -139,8 +171,8 @@ const InboxPage = () => {
             <ul className="space-y-2">
                 {messageList.map((message) => (
                     <li
-                        key={message.id}
-                        className={`bg-white border rounded-md shadow-sm p-3 cursor-pointer transition-colors duration-200 ${selectedMessage?.id === message.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                        key={message.req_id}
+                        className={`bg-white border rounded-md shadow-sm p-3 cursor-pointer transition-colors duration-200 ${selectedMessage?.req_id === message.req_id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
                         onClick={() => handleMessageClick(message)}
                     >
                         <div className="flex justify-between items-center">
@@ -148,7 +180,7 @@ const InboxPage = () => {
                                 {tab === 'Inbox' && (
                                     <FontAwesomeIcon
                                         icon={faEnvelope}
-                                        className={`text-lg ${message.inboxViewStatus === 'unread' ? 'text-purple-600' : 'text-gray-500'}`}
+                                        className={`text-lg ${message.req_view_status === 'unread' ? 'text-purple-600' : 'text-gray-500'}`}
                                     />
                                 )}
                                 {tab === 'Sent' && (
@@ -158,23 +190,23 @@ const InboxPage = () => {
                                     <FontAwesomeIcon icon={faCog} className="text-lg text-gray-700" />
                                 )}
                                 <span className="font-semibold text-gray-800">
-                                    {tab === 'Inbox' ? message.name : tab === 'Sent' ? message.snt_name : message.sys_admin_name}
+                                    {tab === 'Inbox' ? message.user.user_name : tab === 'Sent' ? message.user.user_name : message.sys_admin_name}
                                 </span>
                             </div>
                             <span className="text-sm text-gray-500">
-                                {tab === 'Inbox' ? message.dateRequested : tab === 'Sent' ? message.snt_dateRequested : message.sys_date_sent}
+                                {tab === 'Inbox' ? message.req_date : tab === 'Sent' ? message.req_date : message.sys_date_sent}
                             </span>
                         </div>
                         <p className="text-gray-700 truncate">
                             {tab === 'Inbox'
-                                ? `${message.petName} - ${message.message}`
+                                ? `${message.pet.pet_name} - ${message.req_message}`
                                 : tab === 'Sent'
-                                    ? `${message.snt_petName} - ${message.snt_message}`
+                                    ? `${message.pet.pet_name} - ${message.req_message}`
                                     : message.sys_message}
                         </p>
                         <div className="mt-1">
-                            {tab === 'Inbox' && getStatusBadge(message.requestStatus)}
-                            {tab === 'Sent' && getStatusBadge(message.snt_requestStatus)}
+                            {tab === 'Inbox' && getStatusBadge(message.req_status)}
+                            {tab === 'Sent' && getStatusBadge(message.req_status)}
                             {tab === 'System' && getSystemMessageBadge(message.sys_message_type)}
                         </div>
                     </li>
@@ -207,10 +239,10 @@ const InboxPage = () => {
                             </div>
                             <div className="text-sm text-gray-600">
                                 <span className="font-semibold">Total:</span> {messages.length} |
-                                <span className="font-semibold text-yellow-700"> Pending:</span> {messages.filter(m => m.requestStatus === 'Pending').length} |
-                                <span className="font-semibold text-green-700"> Approved:</span> {messages.filter(m => m.requestStatus === 'Approved').length} |
-                                <span className="font-semibold text-red-700"> Rejected:</span> {messages.filter(m => m.requestStatus === 'Rejected').length} |
-                                <span className="font-semibold text-blue-500"> Completed:</span> {messages.filter(m => m.requestStatus === 'Completed').length}
+                                <span className="font-semibold text-yellow-700"> Pending:</span> {messages.filter(m => m.req_status === 'Pending').length} |
+                                <span className="font-semibold text-green-700"> Approved:</span> {messages.filter(m => m.req_status === 'Approved').length} |
+                                <span className="font-semibold text-red-700"> Rejected:</span> {messages.filter(m => m.req_status === 'Rejected').length} |
+                                <span className="font-semibold text-blue-500"> Completed:</span> {messages.filter(m => m.req_status === 'Completed').length}
                             </div>
                         </div>
                         {renderMessageList(filteredMessages, 'Inbox')}
@@ -238,10 +270,10 @@ const InboxPage = () => {
                             </div>
                             <div className="text-sm text-gray-600">
                                 <span className="font-semibold">Total:</span> {sentMessages.length} |
-                                <span className="font-semibold text-yellow-700"> Pending:</span> {sentMessages.filter(m => m.snt_requestStatus === 'Pending').length} |
-                                <span className="font-semibold text-green-700"> Approved:</span> {sentMessages.filter(m => m.snt_requestStatus === 'Approved').length} |
-                                <span className="font-semibold text-red-700"> Rejected:</span> {sentMessages.filter(m => m.snt_requestStatus === 'Rejected').length} |
-                                <span className="font-semibold text-blue-500"> Completed:</span> {sentMessages.filter(m => m.snt_requestStatus === 'Completed').length}
+                                <span className="font-semibold text-yellow-700"> Pending:</span> {sentMessages.filter(m => m.req_status === 'Pending').length} |
+                                <span className="font-semibold text-green-700"> Approved:</span> {sentMessages.filter(m => m.req_status === 'Approved').length} |
+                                <span className="font-semibold text-red-700"> Rejected:</span> {sentMessages.filter(m => m.req_status === 'Rejected').length} |
+                                <span className="font-semibold text-blue-500"> Completed:</span> {sentMessages.filter(m => m.req_status === 'Completed').length}
                             </div>
                         </div>
                         {renderMessageList(filteredSentMessages, 'Sent')}
@@ -311,7 +343,7 @@ const InboxPage = () => {
                                     className={`${activeTab === 'Inbox'
                                         ? 'border-purple-600 text-purple-600'
                                         : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
-                                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
                                 >
                                     <FontAwesomeIcon icon={faInbox} className="mr-1" />
                                     Received
@@ -321,7 +353,7 @@ const InboxPage = () => {
                                     className={`${activeTab === 'Sent'
                                         ? 'border-purple-600 text-purple-600'
                                         : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
-                                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
                                 >
                                     <FontAwesomeIcon icon={faPaperPlane} className="mr-1" />
                                     Sent
@@ -331,7 +363,7 @@ const InboxPage = () => {
                                     className={`${activeTab === 'System'
                                         ? 'border-purple-600 text-purple-600'
                                         : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
-                                        } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
                                 >
                                     <FontAwesomeIcon icon={faCog} className="mr-1" />
                                     System
@@ -350,16 +382,16 @@ const InboxPage = () => {
                             <div>
                                 <h2 className="text-xl font-bold text-gray-800">
                                     {activeTab === 'Inbox'
-                                        ? `${selectedMessage.petName} - Adoption Request`
+                                        ? `${selectedMessage.pet.pet_name} - Adoption Request`
                                         : activeTab === 'Sent'
-                                            ? `${selectedMessage.snt_petName} - Message Details`
+                                            ? `${selectedMessage.pet.pet_name} - Message Details`
                                             : `${selectedMessage.sys_message_type} - System Notification`}
                                 </h2>
                                 <p className="text-sm text-gray-500">
                                     {activeTab === 'Inbox'
-                                        ? `Requested By: ${selectedMessage.name} | ${selectedMessage.dateRequested}`
+                                        ? `Requested By: ${selectedMessage.user.user_name} | ${selectedMessage.req_date}`
                                         : activeTab === 'Sent'
-                                            ? `Sent To: ${selectedMessage.snt_name} | ${selectedMessage.snt_dateRequested}`
+                                            ? `Sent To: ${selectedMessage.user.user_name} | ${selectedMessage.req_date}`
                                             : `Sent On: ${selectedMessage.sys_date_sent}`}
                                 </p>
                             </div>
@@ -383,39 +415,40 @@ const InboxPage = () => {
                             </button>
                         </div>
                         <div className="space-y-2 text-gray-800">
-                            {activeTab === 'Inbox' ? (
+                            {activeTab === 'Inbox' || activeTab === 'Sent' ? (
                                 <>
-                                    <p><span className="font-semibold">Name:</span> {selectedMessage.name}</p>
-                                    <p><span className="font-semibold">Email:</span> {selectedMessage.email}</p>
-                                    <p><span className="font-semibold">Contact Number:</span> {selectedMessage.contactNumber}</p>
-                                    <p><span className="font-semibold">Address:</span> {selectedMessage.address}</p>
-                                    <p><span className="font-semibold">Request Status:</span> {getStatusBadge(selectedMessage.requestStatus)}</p>
-                                    <p><span className="font-semibold">Pet Name:</span> {selectedMessage.petName}</p>
-                                    <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.petTags.join(', ')}</p>
+                                    <p><span className="font-semibold">Name:</span> {selectedMessage.user.user_name}</p>
+                                    <p><span className="font-semibold">Email:</span> {selectedMessage.user.user_email}</p>
+                                    <p><span className="font-semibold">Contact Number:</span> {selectedMessage.user.user_phone}</p>
+                                    <p><span className="font-semibold">Address:</span> {selectedMessage.user.user_location}</p>
+                                    <p><span className="font-semibold">Request Status:</span> {getStatusBadge(selectedMessage.req_status)}</p>
+                                    <p><span className="font-semibold">Pet Name:</span> {selectedMessage.pet.pet_name}</p>
+                                    <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.pet.pet_tag}</p>
                                     <p><span className="font-semibold">Message:</span></p>
-                                    <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.message}</p>
+                                    <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.req_message}</p>
                                     <p className="text-gray-800 text-sm mb-2 leading-relaxed whitespace-pre-line">Your Request Response:</p>
                                 </>
-                            ) : activeTab === 'Sent' ? (
-                                <>
-                                    <p><span className="font-semibold">Name:</span> {selectedMessage.snt_name}</p>
-                                    <p><span className="font-semibold">Email:</span> {selectedMessage.snt_email}</p>
-                                    <p><span className="font-semibold">Contact Number:</span> {selectedMessage.snt_contactNumber}</p>
-                                    <p><span className="font-semibold">Address:</span> {selectedMessage.snt_address}</p>
-                                    <p><span className="font-semibold">Request Status:</span> {getStatusBadge(selectedMessage.snt_requestStatus)}</p>
-                                    <p><span className="font-semibold">Pet Name:</span> {selectedMessage.snt_petName}</p>
-                                    <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.snt_petTags.join(', ')}</p>
-                                    <p><span className="font-semibold">Message:</span></p>
-                                    <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.snt_message}</p>
-                                    <p><span className="font-semibold">Date Sent:</span> {selectedMessage.snt_dateRequested}</p>
-                                    <p><span className="font-semibold">Last Updated:</span> {selectedMessage.snt_dateUpdated}</p>
-                                    { selectedMessage.snt_requestStatus === 'Completed' && (
-                                        <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors">
-                                            <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
-                                        </button>
-                                    )}
-                                </>
-                            ) : (
+                             ) //: activeTab === 'Sent' ? (
+                            //     <>
+                            //         <p><span className="font-semibold">Name:</span> {selectedMessage.user.user_name}</p>
+                            //         <p><span className="font-semibold">Email:</span> {selectedMessage.snt_email}</p>
+                            //         <p><span className="font-semibold">Contact Number:</span> {selectedMessage.snt_contactNumber}</p>
+                            //         <p><span className="font-semibold">Address:</span> {selectedMessage.snt_address}</p>
+                            //         <p><span className="font-semibold">Request Status:</span> {getStatusBadge(selectedMessage.snt_req_status)}</p>
+                            //         <p><span className="font-semibold">Pet Name:</span> {selectedMessage.snt_petName}</p>
+                            //         <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.snt_petTags.join(', ')}</p>
+                            //         <p><span className="font-semibold">Message:</span></p>
+                            //         <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.snt_message}</p>
+                            //         <p><span className="font-semibold">Date Sent:</span> {selectedMessage.snt_dateRequested}</p>
+                            //         <p><span className="font-semibold">Last Updated:</span> {selectedMessage.snt_dateUpdated}</p>
+                            //         { selectedMessage.snt_req_status === 'Completed' && (
+                            //             <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors">
+                            //                 <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
+                            //             </button>
+                            //         )}
+                            //     </>
+                            // )
+                                : (
                                 <>
                                     <p><span className="font-semibold">Admin:</span> {selectedMessage.sys_admin_name}</p>
                                     <p><span className="font-semibold">Type:</span> {getSystemMessageBadge(selectedMessage.sys_message_type)}</p>
@@ -433,11 +466,11 @@ const InboxPage = () => {
                                             value={modalStatus}
                                             onChange={(e) => setModalStatus(e.target.value)}
                                             className={`block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm
-                                                ${['Approved', 'Rejected', 'Completed'].includes(selectedMessage.requestStatus)
-                                                    ? 'text-gray-400'
-                                                    : 'text-gray-700'
-                                                }`}
-                                            disabled={['Approved', 'Rejected', 'Completed'].includes(selectedMessage.requestStatus)}
+                                                ${['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)
+                                                ? 'text-gray-400'
+                                                : 'text-gray-700'
+                                            }`}
+                                            disabled={['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)}
                                         >
                                             <option value="Pending">Pending</option>
                                             <option value="Approved">Approved</option>
@@ -449,19 +482,19 @@ const InboxPage = () => {
                                     </div>
                                     <button
                                         onClick={() => {
-                                            if (['Approved', 'Rejected', 'Completed'].includes(selectedMessage.requestStatus)) {
+                                            if (['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)) {
                                                 handleCloseMessage();
                                             } else {
                                                 handleSaveStatus();
                                             }
                                         }}
                                         className={`bg-purple-500 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded shadow-md text-sm w-full sm:w-auto
-                                            ${['Approved', 'Rejected', 'Completed'].includes(selectedMessage.requestStatus)
-                                                ? 'bg-gray-400 text-white cursor-pointer'
-                                                : 'bg-purple-500 hover:bg-purple-700 text-white'
-                                            }`}
+                                            ${['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)
+                                            ? 'bg-gray-400 text-white cursor-pointer'
+                                            : 'bg-purple-500 hover:bg-purple-700 text-white'
+                                        }`}
                                     >
-                                        {['Approved', 'Rejected', 'Completed'].includes(selectedMessage.requestStatus)
+                                        {['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)
                                             ? 'Done'
                                             : 'Save'}
                                     </button>

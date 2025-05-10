@@ -41,8 +41,11 @@ use App\Http\Controllers\AdminController;
 
     Route::get('/AdoptionRequest', [AdoptionRequestController::class, 'getAllAdoptionRequest']);
     Route::get('/AdoptionRequest/{id}', [AdoptionRequestController::class, 'getAdoptionRequestById']);
+    Route::get('/AdoptionRequest/user/{id}', [AdoptionRequestController::class, 'getAdoptionRequestByUserId']);
     Route::post('/AdoptionRequest', [AdoptionRequestController::class, 'createAdoptionRequest']);
     Route::put('/AdoptionRequest/{id}', [AdoptionRequestController::class, 'updateAdoptionRequest']);
+    Route::put('/AdoptionRequest/update/{id}', [AdoptionRequestController::class, 'updateAdoptionRequestView']);
+    Route::put('/AdoptionRequest/update/status/{id}', [AdoptionRequestController::class, 'updateAdoptionRequestStatus']);
     Route::delete('/AdoptionRequest/{id}', [AdoptionRequestController::class, 'deleteAdoptionRequest']);
 
     Route::get('/Breed', [BreedController::class, 'getAllBreed']);

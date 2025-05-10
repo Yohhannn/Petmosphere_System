@@ -35,7 +35,7 @@ const router = createBrowserRouter ([
     {path: '/login', element: <Login />,},
     {path: '/signup', element: <SignUp />,},
     {path: '/test', element: <TestComponent />,}, //Test if tailwind works lol
-    
+
     {path: '/about', element: <AboutUs />,},
     {path: '/contact', element: <ContactUs />,},
     {path: '/team', element: <Team />,},
@@ -48,12 +48,12 @@ const router = createBrowserRouter ([
             {path: '/post_pet', element: <PostPet />,},
             { path: '/pet/:petId/details', element: <PetDetails /> },
             {path: '/account/:accId', element: <AccountInfo />,},
-            {path: '/inbox/:accId', element: <InboxPage />,},
+            {path: '/inbox', element: <InboxPage />,},
             {path: '/alt_about', element: <Alt_AboutUs />,},
             {path: '/success', element: <PromptPostSuccess />,},
         ]
     },
-    
+
 
     {path: '/admin/dashboard', element: <AdminDashboard />,},
     {path: '/admin/users', element: <AdminUsers />,},

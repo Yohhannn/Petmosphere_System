@@ -10,7 +10,7 @@ import moment from 'moment';
 import Cookies from 'js-cookie';
 import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 
 
 export function meta() {
@@ -172,7 +172,6 @@ const AccountInfo = () => {
                     </div>
                 );
             case 'Reviews':
-                console.log(userReview);
                 if(userReview.length <= 0){
                     return (
                         <div>
@@ -209,6 +208,10 @@ const AccountInfo = () => {
                                             <FontAwesomeIcon icon={faUserCircle} className="mr-2 text-xl text-purple-500" />
                                             <span className="font-semibold">{review.review_by.user_name}</span>
                                         </div>
+                                        <h2 className="text-1xl font-bold text-purple-600 mb-2  flex items-center">
+                                            <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
+                                            <Link to={`/pet/${review.pet_id}/details`}>{review.pet.pet_name}</Link>
+                                        </h2>
                                         <div className="flex items-center mb-2">
                                             {[...Array(review.rev_rating)].map((_, index) =>(
                                                 <FontAwesomeIcon key={index} icon={faStarSolid} className="mr-1 text-yellow-500" />

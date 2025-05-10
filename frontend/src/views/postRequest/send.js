@@ -56,6 +56,28 @@ export async function sendAdoptionRequest(data){
     });
     return await response.json();
 }
+export async function updateAdoptionRequestView(id,data){
+    const response = await fetch(base_url+`/AdoptionRequest/update/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updateAdoptionRequestStatus(id,data){
+    const response = await fetch(base_url+`/AdoptionRequest/update/status/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
 export async function checkAdoption(data){
     const response = await fetch(base_url+"/AdoptionRequest/verify",{
         method: "POST",
