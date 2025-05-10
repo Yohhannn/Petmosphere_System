@@ -28,4 +28,12 @@ export  async function getPostByUserId(id){
     const response = await fetch(base_url+`/Post/User/${id}`);
     return await response.json();
 }
+export  async function getType(){
+    const response = await fetch(base_url+"/Type");
+    return await response.json();
+}
+export  async function getBreed(){
+    const response = await fetch(base_url+"/Breed");
+    return await response.json();
+}
 

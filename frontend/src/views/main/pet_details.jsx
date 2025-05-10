@@ -5,10 +5,15 @@ import ScrollToTopButton from '../utility/util_scroll_up';
 import moment from 'moment';
 import 'animate.css'; // Import animate.css
 import * as fetch from '../fetchRequest/fetch.js';
+import * as send from '../postRequest/send.js';
+import Cookies from "js-cookie";
 
 const PetDetails = () => {
     const { petId } = useParams();
     const [pet, setPet] = useState(null);
+    const [pet_id, setPetId] = useState(0);
+    const [user_id, setUserId] = useState(0);
+    const [verify, setVerification] = useState(false);
     const navigate = useNavigate();
     const [showAdoptionDialog, setShowAdoptionDialog] = useState(false); // State for the dialog
     const [adoptionMessage, setAdoptionMessage] = useState(''); // State for the adoption message
@@ -16,7 +21,8 @@ const PetDetails = () => {
     // Placeholder for the logged-in user's ID.
     // **Replace this with your actual way of getting the logged-in user ID.**
     const loggedInUserId = 8;
-
+    const userCookie =  Cookies.get('userCredentials');
+    const user = userCookie ? JSON.parse(userCookie) : null;
     useEffect(() => {
         const foundPet = async () => {
             const numericId = parseInt(petId);
@@ -25,7 +31,16 @@ const PetDetails = () => {
         };
         foundPet();
     }, [petId]);
-
+    useEffect(() => {
+        const checkVerify = async() => {
+            const userDetails = await fetch.getUserBy(user.user.user_id);
+            if (userDetails.data.user_verified !== 0) {
+                setVerification(true);
+                setUserId(userDetails.data.user_id);
+            }
+        }
+        checkVerify()
+    },[user])
     if (!pet) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
@@ -39,12 +54,27 @@ const PetDetails = () => {
         );
     }
 
-    const handleAdoptionRequest = () => {
-        // In a real app, you'd send an API request here.
-        console.log('Adoption request sent for:', pet, 'with message:', adoptionMessage);
-        setShowAdoptionDialog(false); // Close the dialog
-        setAdoptionMessage(''); // Clear the message
-        // You might also want to show a success message to the user.
+    const handleAdoptionRequest = async () => {
+        const adoptionObject = {
+            "req_status": "Pending",
+            'req_date': new Date().toISOString().split('T')[0],
+            'user_id': user_id,
+            'pet_id': pet_id,
+            'req_message': adoptionMessage,
+        }
+        const checkAdoption = await send.checkAdoption(adoptionObject);
+        if (checkAdoption.data) { console.log('You already make a request to this pet'); return; }
+        const response = await send.sendAdoptionRequest(adoptionObject);
+        if (response.message.includes('successfully')) {
+            // In a real app, you'd send an API request here.
+            console.log('Adoption request sent for:', pet, 'with message:', adoptionMessage);
+            setShowAdoptionDialog(false); // Close the dialog
+            setAdoptionMessage(''); // Clear the message
+            // You might also want to show a success message to the user.
+            console.log(response.message);
+        } else {
+            console.log(response.message);
+        }
     };
 
     const handleCancelAdoption = () => {
@@ -135,7 +165,7 @@ const PetDetails = () => {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            {pet.user_id !== loggedInUserId && (
+                            {pet.user.user_id !== loggedInUserId && (
                                 <Link
                                     to={`/chat/${pet.user.user_id}`}
                                     className="inline-flex items-center gap-2 bg-orange-400 hover:bg-orange-300 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
@@ -154,7 +184,7 @@ const PetDetails = () => {
                                 </Link>
                             ) : (
                                 <button
-                                    onClick={() => setShowAdoptionDialog(true)}
+                                        onClick={() => { verify ? setShowAdoptionDialog(true): console.log('please verify first'); setPetId(pet.pet_id)}}
                                     className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
                                 >
                                     <img src="/main_assets/icons/icon_heart.png" alt="Make Adoption Request" className='w-5 h-5' />

@@ -1,18 +1,20 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { PlusCircle, XCircle, ImagePlus, Loader2 } from 'lucide-react';
-
+import React, {useCallback, useEffect, useState} from 'react';
+import {AnimatePresence, motion} from 'framer-motion';
+import {ImagePlus, Loader2, PlusCircle, XCircle} from 'lucide-react';
+import * as fetch from '../fetchRequest/fetch.js';
+import * as send from '../postRequest/send.js';
 // Import the success component
 import PromptPostSuccess from '../../prompt/prompt_post_success';
+import Cookies from "js-cookie";
 // Define pet types and breeds (you can expand these lists)
-const petTypes = ['Dog', 'Cat', 'Bird', 'Rabbit', 'Other'];
-const dogBreeds = ['Labrador Retriever', 'German Shepherd', 'Golden Retriever', 'Bulldog', 'Poodle', 'Beagle', 'Rottweiler', 'Boxer', 'Dachshund', 'Shih Tzu', 'Other'];
-const catBreeds = ['Maine Coon', 'Siamese', 'Persian', 'Bengal', 'Ragdoll', 'British Shorthair', 'Sphynx', 'Abyssinian', 'Burmese', 'Himalayan', 'Other'];
-const birdBreeds = ['Canary', 'Parrot', 'Finch', 'Cockatiel', 'Lovebird', 'Budgerigar', 'Other'];
-const rabbitBreeds = ['Dutch', 'Mini Rex', 'Holland Lop', 'French Lop', 'Angora', 'Lionhead', 'Other'];
-const otherBreeds = ['Hamster', 'Guinea Pig', 'Turtle', 'Snake', 'Iguana', 'Ferret', 'Other'];
 
-// Animation Variants
+const fetchAll = async() => {
+    const response1 = fetch.getType();
+    const response2 = fetch.getBreed();
+    return await Promise.all([response1, response2]);
+}
+
+// Animation Variant
 const formContainerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeInOut' } },
@@ -39,7 +41,9 @@ const classNames = (...classes) => {
 const PostPetForm = () => {
     // State for form fields
     const [petName, setPetName] = useState('');
-    const [petType, setPetType] = useState('');
+    const [petType, setPetType] = useState([]);
+    const [Type, setType] = useState('');
+    const [petBreed, setPetBreed] = useState([]);
     const [breed, setBreed] = useState('');
     const [petTags, setPetTags] = useState([]);
     const [newTag, setNewTag] = useState('');
@@ -62,7 +66,16 @@ const PostPetForm = () => {
             setPetImages(prevImages => [...prevImages, ...newImages]);
         }
     }, []);
-
+    useEffect(() => {
+        const fetchPet = async() => {
+            const [types,breeds] = await fetchAll();
+            const petType = types.data;
+            const petBreed = breeds.data.filter((x) => x.type_id === parseInt(Type));
+            setPetType(petType);
+            setPetBreed(petBreed);
+        }
+       fetchPet();
+    }, [Type]);
     // Function to remove an image
     const removeImage = useCallback((index) => {
         setPetImages(prevImages => prevImages.filter((_, i) => i !== index));
@@ -113,8 +126,30 @@ const PostPetForm = () => {
                 });
             });
             const base64Images = await Promise.all(imagePromises);
-
+            const userCookie =  Cookies.get('userCredentials');
+            const user = userCookie ? JSON.parse(userCookie) : null;
             // Construct the data object to send
+            const postObject = {
+                post_descrip: postDescription,
+                post_status: 'Pending',
+                user_id: user.user.user_id,
+                post_img: '/path/to/profile.jpg',
+                post_date: new Date().toISOString().split('T')[0],
+                post_reason : reason
+            };
+            const petObject = {
+                pet_name: petName,
+                type_id: parseInt(Type),
+                breed_id: parseInt(breed),
+                pet_tag: petTags.join(','),
+                pet_age: petAge,
+                pet_description: petDescription,
+                pet_reason: reason,
+                pet_health: health,
+                pet_status: 'Available',
+                user_id: user.user.user_id,
+                pet_location : user.user.user_location
+            }
             const formData = {
                 PetName: petName,
                 PetType: petType,
@@ -133,51 +168,40 @@ const PostPetForm = () => {
                 CurrentOwnerProfile: '/path/to/profile.jpg', // Replace
                 TimePosted: new Date()
             };
-
+            console.log(formData);
+            console.log(petObject);
+            console.log(postObject);
+            const pet = await send.sendPet(petObject);
+            postObject['pet_id'] = pet.data.pet_id;
+            console.log(pet);
+            const post = await send.sendPost(postObject);
+            console.log(post);
             // Simulate a delay (replace with your actual API call)
             await new Promise(resolve => setTimeout(resolve, 2000));
-            console.log('Form Data:', formData); // Log the data
-
-            // If the submission is successful
-            setSubmissionSuccess(true);
-
-            // Reset the form
-            setPetName('');
-            setPetType('');
-            setBreed('');
-            setPetTags([]);
-            setNewTag('');
-            setPetAge('');
-            setPetDescription('');
-            setReason('');
-            setHealth('');
-            setPetImages([]);
-            setPostDescription('');
-
+            if(post.message.includes('successfully')){
+                // If the submission is successful
+                setSubmissionSuccess(true);
+                setPetName('');
+                setType('');
+                setBreed('');
+                setPetTags([]);
+                setNewTag('');
+                setPetAge('');
+                setPetDescription('');
+                setReason('');
+                setHealth('');
+                setPetImages([]);
+                setPostDescription('');
+            }
         } catch (error) {
             setSubmissionError(error.message || 'An error occurred while submitting the form.');
         } finally {
             setIsSubmitting(false);
         }
-    }, [petName, petType, breed, petTags, petAge, petDescription, reason, health, petImages, postDescription]);
+    }, [petName, Type, breed, petTags, petAge, petDescription, reason, health, petImages, postDescription]);
 
     // Get breed options based on selected pet type
-    const breedOptions = () => {
-        switch (petType) {
-            case 'Dog':
-                return dogBreeds;
-            case 'Cat':
-                return catBreeds;
-            case 'Bird':
-                return birdBreeds;
-            case 'Rabbit':
-                return rabbitBreeds;
-            case 'Other':
-                return otherBreeds;
-            default:
-                return [];
-        }
-    };
+
 
     return (
         <>
@@ -197,7 +221,6 @@ const PostPetForm = () => {
                                     Fill out the form below to list a pet for adoption.
                                 </p>
                             </div>
-
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <AnimatePresence>
                                     {/* Pet Name */}
@@ -218,14 +241,14 @@ const PostPetForm = () => {
                                         <motion.div variants={inputVariants} className="space-y-1">
                                             <label htmlFor="petType" className="block text-sm font-semibold text-gray-700">Pet Type <span className="text-red-500">*</span></label>
                                             <select
-                                                value={petType}
-                                                onChange={(e) => setPetType(e.target.value)}
+                                                value={Type}
+                                                onChange={(e) => setType(e.target.value)}
                                                 required
                                                 className="w-full px-4 py-2 border border-[#8E57B2] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white text-black"
                                             >
                                                 <option value="">Select pet type</option>
-                                                {petTypes.map(type => (
-                                                    <option key={type} value={type}>{type}</option>
+                                                {petType.map(type => (
+                                                    <option  value={type.type_id}>{type.type_name}</option>
                                                 ))}
                                             </select>
                                         </motion.div>
@@ -236,12 +259,12 @@ const PostPetForm = () => {
                                                 value={breed}
                                                 onChange={(e) => setBreed(e.target.value)}
                                                 required
-                                                disabled={!petType}
+                                                disabled={!Type}
                                                 className="w-full px-4 py-2 border border-[#8E57B2] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white text-black"
                                             >
                                                 <option value="">Select breed</option>
-                                                {petType && breedOptions().map(breedOption => (
-                                                    <option key={breedOption} value={breedOption}>{breedOption}</option>
+                                                {Type && petBreed.map(breedOption => (
+                                                    <option value={breedOption.breed_id}>{breedOption.breed_name}</option>
                                                 ))}
                                             </select>
                                         </motion.div>
@@ -269,7 +292,6 @@ const PostPetForm = () => {
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {petTags.map(tag => (
                                                 <div
-                                                    key={tag}
                                                     className={classNames(
                                                         "inline-flex items-center px-2 py-1 rounded-full",
                                                         "bg-purple-500/20 text-purple-300 text-xs font-medium",
@@ -355,11 +377,10 @@ const PostPetForm = () => {
                                         </p>
                                         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
                                             <AnimatePresence>
-                                                {petImages.map((image, index) => {
+                                                {petImages.map((image,index) => {
                                                     const imageUrl = typeof image === 'string' ? image : URL.createObjectURL(image);
                                                     return (
                                                         <motion.div
-                                                            key={index}
                                                             variants={imageVariants}
                                                             initial="hidden"
                                                             animate="visible"

@@ -10,7 +10,7 @@ import moment from 'moment';
 import Cookies from 'js-cookie';
 import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 
 export function meta() {
@@ -32,14 +32,14 @@ const AccountInfo = () => {
     const [newReviewDesc, setNewReviewDesc] = useState('');
     const {accId} = useParams();
     const [isMyAcc, setMyAcc] = useState(false);
-    const [user,setUser]= useState(null);
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
     useEffect(() => {
         const userCookie =  Cookies.get('userCredentials');
         const user = userCookie ? JSON.parse(userCookie) : null;
         setUser(user);
         const fetchUserData = async () => {
             try {
-                if (user) {
                     const response = await fetch.getUserBy(accId);
                     const response2 = await fetch.getReviewByUserId(accId);
                     const response3 = await fetch.getPostByUserId(accId);
@@ -47,25 +47,23 @@ const AccountInfo = () => {
                     setUserReview(response2.data);
                     setUserPost(response3.data);
                     setMyAcc(user.user.user_id === parseInt(accId));
-                } else {
-                    window.location.href = '/';
-                }
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
         };
 
         fetchUserData();
-    }, []);
+    }, [accId]);
 
     const handleLogoutClick = () => {
         setIsLogoutModalOpen(true);
     };
     const handleConfirmLogout = () => {
+        Cookies.remove('userCredentials');
         // Perform logout logic here (e.g., clearing session, local storage)
         setIsLogoutModalOpen(false);
         // Redirect to the home page
-        window.location.href = "/";
+        navigate('/');
     };
 
     const handleCancelLogout = () => {

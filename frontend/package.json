@@ -14,6 +14,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "animate.css": "^4.1.1",
     "framer-motion": "^12.9.4",
+    "frontend": "file:",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.506.0",
     "moment": "^2.30.1",

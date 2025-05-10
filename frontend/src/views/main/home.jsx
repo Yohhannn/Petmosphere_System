@@ -5,7 +5,7 @@ import 'animate.css';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import moment from 'moment'; // For formatting time
 import * as fetch from '../fetchRequest/fetch.js';
-
+import Cookies  from 'js-cookie';
 export function meta() {
     return [
         { title: '( ✦ ) PETMOSPHERE - HOME' },
@@ -21,18 +21,27 @@ const Home = () => {
     const [posts, setPost] = useState([]);
     const [type, setType] = useState([]);
     const [breed, setBreed] = useState([]);
-
+    const [verify, setVerification] = useState(false);
+    
     // Placeholder for the logged-in user's ID.
     // **Replace this with your actual way of getting the logged-in user ID.**
     const loggedInUserId = 8;
-
+    const userCookie = Cookies.get('userCredentials');
+    const user = userCookie ? JSON.parse(userCookie) : null;
     useEffect(() => {
         const getPost = async () => {
             const response = await fetch.getPosts();
+            const userData = await fetch.getUserBy(user.user.user_id);
+            if (userData.data.user_verified === 0) {
+                console.log('please verify your account first');
+            } else {
+                setVerification(true);
+            }
             setPost(response.data);
             setType(response.type);
             setBreed(response.breed);
         };
+
         getPost();
     }, []);
 
@@ -66,7 +75,7 @@ const Home = () => {
                             Discover adorable pets looking for their forever homes and connect with their current owners.
                         </p>
                         <Link
-                            to="/post_pet"
+                            to={verify ? "/post_pet" : '/home'}
                             className="inline-block bg-orange-400 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
                         >
                             Post a Pet for Adoption

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'user_email',
         'user_pass',
         'user_createdate',
+        'user_verified'
     ];
     public $timestamps = false;
     protected $hidden = [

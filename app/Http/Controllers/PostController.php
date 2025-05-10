@@ -52,11 +52,10 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'post_date' => 'required|date',
-            'post_img' => 'required|string|max:250',
+            'post_img' => 'required|string|max:500',
             'post_descrip' => 'required|string|max:100',
             'pet_id' => 'required|integer|exists:pet,pet_id',
             'user_id' => 'required|integer|exists:user,user_id',
-            'post_tag' => 'required|string|max:250',
         ]);
 
         $post = Post::create($validated);
@@ -79,7 +78,7 @@ class PostController extends Controller
         }
         $validated = $request->validate([
             'post_date' => 'required|date',
-            'post_img' => 'required|string|max:250',
+            'post_img' => 'required|string|max:500',
             'post_descrip' => 'required|string|max:100',
             'pet_id' => 'required|integer|exists:pet,pet_id',
             'post_reason' => 'required|string|max:250',

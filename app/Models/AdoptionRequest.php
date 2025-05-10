@@ -13,6 +13,7 @@ class AdoptionRequest extends Model
         'req_date',
         'pet_id',
         'user_id',
+        'req_message'
     ];
     public function pet(){
         return $this->belongsTo(Pet::class, 'pet_id');

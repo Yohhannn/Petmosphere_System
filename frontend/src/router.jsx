@@ -25,7 +25,7 @@ import AdminUsers from './views/admin/admin_users';
 import AdminPosts from './views/admin/admin_posts';
 import AdminControls from './views/admin/admin_controls';
 import AdminInfo from './views/admin/admin_info';
-
+import Validation from './views/main/validation';
 import PromptPostSuccess from './prompt/prompt_post_success';
 
 const router = createBrowserRouter ([
@@ -35,19 +35,25 @@ const router = createBrowserRouter ([
     {path: '/login', element: <Login />,},
     {path: '/signup', element: <SignUp />,},
     {path: '/test', element: <TestComponent />,}, //Test if tailwind works lol
-
+    
     {path: '/about', element: <AboutUs />,},
     {path: '/contact', element: <ContactUs />,},
     {path: '/team', element: <Team />,},
 
-    {path: '/home', element: <Home />,},
-    {path: '/pets', element: <Pets />,},
-    {path: '/post_pet', element: <PostPet />,},
-    { path: '/pet/:petId/details', element: <PetDetails /> },
-    {path: '/account/:accId', element: <AccountInfo />,},
-    {path: '/inbox/:accId', element: <InboxPage />,},
-    {path: '/alt_about', element: <Alt_AboutUs />,},
-    {path: '/success', element: <PromptPostSuccess />,},
+    {
+        path: '/', element: <Validation />,
+        children: [
+            {path: '/home', element: <Home />,},
+            {path: '/pets', element: <Pets />,},
+            {path: '/post_pet', element: <PostPet />,},
+            { path: '/pet/:petId/details', element: <PetDetails /> },
+            {path: '/account/:accId', element: <AccountInfo />,},
+            {path: '/inbox/:accId', element: <InboxPage />,},
+            {path: '/alt_about', element: <Alt_AboutUs />,},
+            {path: '/success', element: <PromptPostSuccess />,},
+        ]
+    },
+    
 
     {path: '/admin/dashboard', element: <AdminDashboard />,},
     {path: '/admin/users', element: <AdminUsers />,},

@@ -30,8 +30,7 @@ const Login = () => {
       if(data.message.includes('Invalid')){
         setErrorMessage(data.message);
         setTimeout(() => setErrorMessage(''), 3000);
-      }else if(data.message.includes("successfully")){
-          console.log(data.message);
+      } else if (data.message.includes("successfully")) {
           navigate("/home");
           Cookies.set('userCredentials',JSON.stringify(data),{expires: 7});
       }else{
