@@ -19,6 +19,8 @@ import PetDetails from './views/main/pet_details';
 import AccountInfo from './views/main/account';
 import Alt_AboutUs from './views/main/alt_about';
 import InboxPage from './views/main/inbox';
+import RequestPage from './views/main/request_tab';
+
 
 import AdminDashboard from './views/admin/admin_dashboard';
 import AdminUsers from './views/admin/admin_users';
@@ -39,6 +41,7 @@ const router = createBrowserRouter ([
     {path: '/about', element: <AboutUs />,},
     {path: '/contact', element: <ContactUs />,},
     {path: '/team', element: <Team />,},
+    {path: '/requestp', element: <RequestPage />,},
 
     {
         path: '/', element: <Validation />,

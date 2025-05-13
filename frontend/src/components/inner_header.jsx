@@ -86,7 +86,7 @@ const Inner_Header = () => {
             </li>
 
             <li className={`${isActive('/chat') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'} transition`}>
-              <Link to="/chat" className="flex flex-col items-center">
+              <Link to="/requestp" className="flex flex-col items-center">
                 <img
                   src={
                     isActive('/chat')
@@ -156,7 +156,7 @@ const Inner_Header = () => {
           </li>
           <li>
             <Link
-              to="/chat"
+              to="/requestp"
               onClick={closeMenu}
               className={`transition flex justify-between items-center ${isActive('/chat') ? 'text-[#fab36e]' : 'hover:text-[#fab36e]'}`}
             >
