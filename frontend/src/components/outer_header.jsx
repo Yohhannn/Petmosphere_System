@@ -112,11 +112,11 @@ const Outer_Header = () => {
             >
               <span className="md:hidden">Team</span>
               <img
-                src={
-                  isActive('/team')
-                    ? '/main_assets/icons/icon_group_active.svg'
-                    : '/main_assets/icons/icon_group_default.svg'
-                }
+                  src={
+                    isActive('/team')
+                      ? '/main_assets/icons/icon_group_active.png'
+                      : '/main_assets/icons/icon_group.png'
+                  }
                 alt="team-icon"
                 className="w-5 h-5"
               />
@@ -130,11 +130,11 @@ const Outer_Header = () => {
             >
               <span className="md:hidden">About</span>
               <img
-                src={
-                  isActive('/about')
-                    ? '/main_assets/icons/icon_about_active.svg'
-                    : '/main_assets/icons/icon_about_default.svg'
-                }
+                  src={
+                    isActive('/about')
+                      ? '/main_assets/icons/icon_about_active.png'
+                      : '/main_assets/icons/icon_about.png'
+                  }
                 alt="about-icon"
                 className="w-5 h-5"
               />
@@ -148,11 +148,11 @@ const Outer_Header = () => {
             >
               <span className="md:hidden">Contact</span>
               <img
-                src={
-                  isActive('/contact')
-                    ? '/main_assets/icons/icon_call_active.svg'
-                    : '/main_assets/icons/icon_call_default.svg'
-                }
+                  src={
+                    isActive('/contact')
+                      ? '/main_assets/icons/icon_contact_active.png'
+                      : '/main_assets/icons/icon_contact.png'
+                  }
                 alt="contact-icon"
                 className="w-5 h-5"
               />
