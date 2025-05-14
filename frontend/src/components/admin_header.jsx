@@ -10,11 +10,6 @@ const Admin_Header = () => {
   const closeMenu = () => setIsMenuOpen(false);
 
   const isActive = (path) => location.pathname === path;
-  const userCookie = Cookies.get('userCredentials');
-  const user = userCookie ? JSON.parse(userCookie) : null;
-  if (!user) {
-    window.location.href = "/";
-  }
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
