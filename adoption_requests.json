@@ -1,0 +1,24 @@
+﻿
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"message":"Successfully get data 
+                    Adoption","data":[{"req_id":1,"req_status":"complete","req_date":"2025-04-26","user_id":1,"pet_id":1,"req_message":null,"req_view_status":"unread","pet":{"pet_id":1,"...
+RawContent        : HTTP/1.1 200 OK
+                    Host: 127.0.0.1:8000
+                    Connection: close
+                    Access-Control-Allow-Origin: *
+                    Cache-Control: no-cache, private
+                    Content-Type: application/json
+                    Date: Tue, 13 May 2025 00:23:20 GMT
+                    X-Power...
+Forms             : {}
+Headers           : {[Host, 127.0.0.1:8000], [Connection, close], [Access-Control-Allow-Origin, *], [Cache-Control, no-cache, private]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 7108
+
+
+

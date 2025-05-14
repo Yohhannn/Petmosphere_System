@@ -36,12 +36,14 @@ class PetController extends Controller
         $validated = $request->validate([
             'pet_name' => 'required|string|max:50',
             'pet_location' => 'required|string|max:50',
-            'pet_age' => 'required|integer|min:0',
+            'pet_age' => 'required|string|max:20',
             'pet_description' => 'required|string|max:100',
             'pet_status' => 'required|string|max:50',
             'breed_id' => 'required|exists:breed,breed_id',
             'type_id' => 'required|exists:type,type_id',
             'user_id' => 'required|exists:user,user_id',
+            'pet_tag' => 'string|max:250',
+            'pet_medical' => 'string|max:100',
         ]);
         $pet = Pet::create($validated);
         return response()->json(['message' => 'Pet created successfully', 'data' => $pet]);
@@ -55,11 +57,13 @@ class PetController extends Controller
             $validated = $request->validate([
                 'pet_name' => 'sometimes|string|max:50',
                 'pet_location' => 'sometimes|string|max:50',
-                'pet_age' => 'sometimes|integer|min:0',
+                'pet_age' => 'sometimes|string|max:20',
                 'pet_description' => 'sometimes|string|max:100',
                 'pet_status' => 'sometimes|string|max:50',
                 'breed_id' => 'required|exists:breed,breed_id',
                 'type_id' => 'required|exists:type,type_id',
+                'pet_tag' => 'string|max:250',
+                'pet_medical' => 'string|max:100',
             ]);
 
             $pet->update($validated);

@@ -20,11 +20,10 @@ class User extends Authenticatable
         'user_phone',
         'user_location',
         'user_prof_pic',
-        'user_valid_id',
         'user_email',
         'user_pass',
         'user_createdate',
-        'user_type',
+        'user_verified'
     ];
     public $timestamps = false;
     protected $hidden = [
