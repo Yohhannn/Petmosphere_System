@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Inner_Header from '../../components/inner_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import moment from 'moment'; // For formatting time
+import { Link, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 import * as fetch from '../fetchRequest/fetch.js';
-import Cookies  from 'js-cookie';
+import Cookies from 'js-cookie';
+
 export function meta() {
     return [
         { title: '( ✦ ) PETMOSPHERE - HOME' },
@@ -19,36 +20,56 @@ export function meta() {
 
 const Home = () => {
     const [posts, setPost] = useState([]);
-    const [verify, setVerification] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
+    const [verified, setVerified] = useState(false);
 
-    // Placeholder for the logged-in user's ID.
-    // **Replace this with your actual way of getting the logged-in user ID.**
     const userCookie = Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
-    const loggedInUserId = user.user.user_id;
+    const loggedInUserId = user?.user?.user_id;
+
     useEffect(() => {
         const getPost = async () => {
             const response = await fetch.getPosts();
             const filteredPost = response.data.filter(
-                (post) =>
-                    post.post_status === 'Available' // Added this condition to filter by status
+                (post) => post.post_status === 'Available'
             );
             setPost(filteredPost);
         };
         getPost();
     }, []);
-    const verifyAccount = async() =>{
-        const userData = await fetch.getUserBy(loggedInUserId);
-        if (userData.data.user_verified === 0) {
-            console.log('please verify your account first');
+
+    useEffect(() => {
+        const checkVerificationStatus = async () => {
+            if (loggedInUserId) {
+                const userData = await fetch.getUserBy(loggedInUserId);
+                setVerified(userData?.data?.user_verified === 0); // Set the state
+            } else {
+                setVerified(false);
+            }
+        };
+        checkVerificationStatus();
+    }, [loggedInUserId]);
+
+    const handlePostPetClick = () => {
+        if (verified) {
+            navigate('/post_pet');
         } else {
-            setVerification(true);
+            setIsModalOpen(true);
         }
-    }
+    };
+
+    const handleVerifyNowClick = () => {
+        setIsModalOpen(false);
+        navigate('/account/verify/:accId');
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <>
-            {/* Sticky Header */}
             <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md animate__animated animate__fadeIn">
                 <Inner_Header />
             </div>
@@ -56,7 +77,6 @@ const Home = () => {
             <ScrollToTopButton />
 
             <div className="bg-gray-100 mt-20 min-h-screen animate__animated animate__fadeIn">
-                {/* Hero Section (remains mostly the same) */}
                 <section
                     className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-16 text-center bg-cover bg-center animate__animated animate__fadeIn"
                     style={{
@@ -70,16 +90,15 @@ const Home = () => {
                         <p className="text-lg max-w-2xl mx-auto mb-6">
                             Discover adorable pets looking for their forever homes and connect with their current owners.
                         </p>
-                        <Link onClick={verifyAccount}
-                            to={verify ? "/post_pet" : '/home'}
+                        <button
+                            onClick={handlePostPetClick}
                             className="inline-block bg-orange-400 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
                         >
                             Post a Pet for Adoption
-                        </Link>
+                        </button>
                     </div>
                 </section>
 
-                {/* Main Feed Area */}
                 <div className="container mx-auto px-6 py-8">
                     <div className="space-y-6">
                         {posts.map((post, index) => (
@@ -87,7 +106,6 @@ const Home = () => {
                                 key={index}
                                 className="bg-white shadow-md rounded-lg overflow-hidden animate__animated animate__fadeInUp md:flex md:flex-row md:max-w-2xl md:mx-auto"
                             >
-                                {/* Image Section (Left on wider screens) */}
                                 <div className="w-full md:w-1/2">
                                     {(
                                         <img
@@ -98,10 +116,8 @@ const Home = () => {
                                     )}
                                 </div>
 
-                                {/* Information Section (Right on wider screens) */}
                                 <div className="p-4 md:w-1/2 flex flex-col justify-between">
                                     <div>
-                                        {/* Owner Info (Always shown at the top) */}
                                         <div className="flex items-center mb-2">
                                             <img
                                                 src={post.user.user_prof_pic}
@@ -127,7 +143,7 @@ const Home = () => {
 
                                         <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
                                         <p className="text-gray-700 leading-relaxed mb-3 line-clamp-3">{post.pet.pet_description}</p>
-                                        <div className="mt-2"> {/* Container for tags */}
+                                        <div className="mt-2">
                                             {post.pet.pet_tag.split(',').map((tag, index) => (
                                                 <span
                                                     key={index}
@@ -137,18 +153,16 @@ const Home = () => {
                                                 </span>
                                             ))}
                                         </div>
-                                        {/* Display Post Description below tags */}
                                         {post.post_descrip && (
                                             <p className="text-gray-600 text-sm mt-3">{post.post_descrip}</p>
                                         )}
                                     </div>
 
-                                    {/* Post Actions */}
                                     <div className="border-t border-gray-200 pt-2 mt-4">
                                         <div className="flex justify-between items-center text-sm text-gray-600">
                                             {post.user_id === loggedInUserId ? (
                                                 <Link
-                                                    to="/inbox" // Redirects to /pets for now
+                                                    to="/inbox"
                                                     className="bg-purple-600 hover:bg-orange-400 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
                                                 >
                                                     View Adoption Requests
@@ -178,6 +192,31 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 text-center shadow-lg animate__animated animate__zoomIn">
+                        <h2 className="text-xl font-semibold mb-4 text-purple-600">Verify Your Account</h2>
+                        <p className="text-gray-700 mb-6">
+                            To post a pet for adoption, you need to verify your account.
+                        </p>
+                        <div className="flex justify-center">
+                            <button
+                                onClick={handleVerifyNowClick}
+                                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 mr-2"
+                            >
+                                Verify Now!
+                            </button>
+                            <button
+                                onClick={handleCloseModal}
+                                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors duration-200"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

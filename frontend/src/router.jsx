@@ -21,6 +21,8 @@ import Alt_AboutUs from './views/main/alt_about';
 import InboxPage from './views/main/inbox';
 import RequestPage from './views/main/request_tab';
 
+import AccountEdit from './views/main/account/edit';
+import AccountVerify from './views/main/account/verify';
 
 import AdminDashboard from './views/admin/admin_dashboard';
 import AdminUsers from './views/admin/admin_users';
@@ -49,11 +51,13 @@ const router = createBrowserRouter ([
             {path: '/home', element: <Home />,},
             {path: '/pets', element: <Pets />,},
             {path: '/post_pet', element: <PostPet />,},
-            { path: '/pet/:petId/details', element: <PetDetails /> },
+            {path: '/pet/:petId/details', element: <PetDetails /> },
             {path: '/account/:accId', element: <AccountInfo />,},
             {path: '/inbox', element: <InboxPage />,},
             {path: '/alt_about', element: <Alt_AboutUs />,},
             {path: '/success', element: <PromptPostSuccess />,},
+            {path: '/account/edit/:accId', element: <AccountEdit/>,},
+            {path: '/account/verify/:accId', element: <AccountVerify/>,},
         ]
     },
 
