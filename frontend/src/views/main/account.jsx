@@ -305,6 +305,9 @@ const AccountInfo = () => {
                         <p className="text-gray-700">Additional account settings or information will appear here.</p>
                         {isMyAcc && (
                             <div className="flex justify-end mt-6 space-x-4">
+                                <button className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-400 transition-colors">
+                                    Verify Account
+                                </button>
                                 <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
                                     Edit Profile
                                 </button>
@@ -359,15 +362,46 @@ const AccountInfo = () => {
                 <div className="container mx-auto px-6 py-10">
                     <div className="bg-white shadow-md border rounded-lg p-6 max-w-3xl mx-auto animate__animated animate__fadeInUp">
                         <div className="flex flex-col items-center mb-6">
-                            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-orange-400">
-                                <img
-                                    src={loggedInAccount.user_img}
-                                    alt={loggedInAccount.user_name}
-                                    className="object-cover w-full h-full"
-                                />
-                            </div>
-                            <h2 className="text-2xl font-bold text-purple-600 mt-4">{loggedInAccount.user_name}</h2>
-                            <p className="text-gray-500">{loggedInAccount.user_email}</p>
+                        <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-orange-400">
+                            <img
+                            src={loggedInAccount.user_img}
+                            alt={loggedInAccount.user_name}
+                            className="object-cover w-full h-full"
+                            />
+                        </div>
+                        <h2 className="text-2xl font-bold text-purple-600 mt-4">{loggedInAccount.user_name}</h2>
+                        <p className="text-gray-500">{loggedInAccount.user_email}</p>
+                        <input
+                            type="file"
+                            id="profileImageInput"
+                            className="hidden"
+                            onChange={(event) => {
+                            const file = event.target.files[0];
+                            if (file) {
+                                // Handle the uploaded file here (e.g., upload to server, update state)
+                                console.log("Selected file:", file);
+                                // You might want to display a preview of the image here as well
+                                const reader = new FileReader();
+                                reader.onloadend = () => {
+                                // For example, update the loggedInAccount.user_img state
+                                // setLoggedInAccount({...loggedInAccount, user_img: reader.result});
+                                console.log("Image loaded:", reader.result);
+                                // **Important:** You'll need to implement the logic to
+                                // actually save this new image URL (or the file itself)
+                                // to your backend and update the loggedInAccount data.
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                            }}
+                        />
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mt-2 text-sm"
+                            onClick={() => {
+                            document.getElementById("profileImageInput").click();
+                            }}
+                        >
+                            + Upload Image
+                        </button>
                         </div>
 
                         {/* Tabs */}
