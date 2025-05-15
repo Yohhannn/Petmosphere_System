@@ -169,13 +169,14 @@ const PetDetails = () => {
 
                         <div className="flex flex-col gap-4">
                             {pet.user.user_id !== loggedInUserId && (
-                                <Link
-                                    to={`/chat/${pet.user.user_id}`}
-                                    className="inline-flex items-center gap-2 bg-orange-400 hover:bg-orange-300 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
-                                >
-                                    <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
-                                    <span> Chat with Owner</span>
-                                </Link>
+                                // <Link
+                                //     to={`/chat/${pet.user.user_id}`}
+                                //     className="inline-flex items-center gap-2 bg-orange-400 hover:bg-orange-300 text-white font-semibold py-3 px-6 rounded-full transition-colors duration-300 shadow-md animate__animated animate__fadeInUp"
+                                // >
+                                //     <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
+                                //     <span> Chat with Owner</span>
+                                // </Link>
+                                <></>
                             )}
 
                             {pet.user_id === loggedInUserId ? (

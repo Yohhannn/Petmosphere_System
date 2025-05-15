@@ -168,12 +168,7 @@ const Home = () => {
                                                     View Adoption Requests
                                                 </Link>
                                             ) : (
-                                                <Link
-                                                    to={`/chat/${post.user_id}`}
-                                                    className="bg-orange-400 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-300"
-                                                >
-                                                    <img src="/main_assets/icons/icon_chat_owner.png" alt="chat_with_owner" className='w-5 h-5' />
-                                                </Link>
+                                                <></>
                                             )}
                                             <Link to={`/pet/${post.post_id}/details`} className="text-purple-600 hover:underline font-semibold">
                                                 View More
