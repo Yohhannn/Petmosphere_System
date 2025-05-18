@@ -1,4 +1,17 @@
 const base_url = "http://localhost:8000/api";
+const cloud_name = "dqkyngbew";
+const preset = "Petmosphere";
+
+export async function uploadImage(file){
+    const formData = new FormData();
+    formData.append("file",file);
+    formData.append("upload_preset",preset);
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,{
+        method: "POST",
+        body: formData
+    });
+    return await response.json();
+}
 export async function login(data){
     const response = await fetch(base_url+"/login",{
         method: "POST",
@@ -69,6 +82,61 @@ export async function updateAdoptionRequestView(id,data){
 }
 export async function updateAdoptionRequestStatus(id,data){
     const response = await fetch(base_url+`/AdoptionRequest/update/status/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updateRequestRejectStatus(id,data){
+    const response = await fetch(base_url+`/AdoptionRequest/update/rejected/status/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updatePostStatus(id,data){
+    const response = await fetch(base_url+`/Post/status/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updateUserVerification(id,data){
+    const response = await fetch(base_url+`/User/verified/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updateUser(id,data){
+    const response = await fetch(base_url+`/User/${id}`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updatePetStatus(id,data){
+    const response = await fetch(base_url+`/Pet/status/${id}`,{
         method: "PUT",
         headers: {
             "Content-Type": "application/json",

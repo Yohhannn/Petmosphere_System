@@ -20,6 +20,7 @@ class User extends Authenticatable
         'user_phone',
         'user_location',
         'user_prof_pic',
+        'user_valid_id_pic',
         'user_email',
         'user_pass',
         'user_createdate',

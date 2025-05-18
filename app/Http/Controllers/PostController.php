@@ -34,6 +34,19 @@ class PostController extends Controller
             'data' => $post,
         ]);
     }
+    public function getPostByPetId($id)
+    {
+        $post = Post::where('pet_id',$id)->with('user','pet','pet.type','pet.breed')->get();
+        if (!$post) {
+            return response()->json([
+                'message' => "pet id  doesn't exist".$id], 404);
+        }
+
+        return response()->json([
+            'message' => 'Post retrieved successfully',
+            'data' => $post,
+        ]);
+    }
     public function getPostByUserId($id)
     {
         $post = Post::where('user_id',$id)->with('user','pet','pet.type','pet.breed')->get();
@@ -56,6 +69,7 @@ class PostController extends Controller
             'post_descrip' => 'required|string|max:100',
             'pet_id' => 'required|integer|exists:pet,pet_id',
             'user_id' => 'required|integer|exists:user,user_id',
+            'post_reason' => 'required|string|max:100',
         ]);
 
         $post = Post::create($validated);
@@ -82,6 +96,22 @@ class PostController extends Controller
             'post_descrip' => 'required|string|max:100',
             'pet_id' => 'required|integer|exists:pet,pet_id',
             'post_reason' => 'required|string|max:250',
+        ]);
+        $post->update($validated);
+        return response()->json(['message' => 'Post updated successfully',"data" => $post],200);
+    }
+    public function updatePostStatus(Request $request, $id)
+    {
+        $post = Post::where('pet_id',$id)->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => "id doesn't exist",
+                'data' => null
+            ], 404);
+        }
+        $validated = $request->validate([
+            'post_status' => 'required|string|max:20'
         ]);
         $post->update($validated);
         return response()->json(['message' => 'Post updated successfully',"data" => $post],200);

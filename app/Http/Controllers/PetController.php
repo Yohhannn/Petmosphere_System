@@ -15,6 +15,14 @@ class PetController extends Controller
         $pets = Pet::with('breed','type','user')->get();
         return response()->json(["message" => "Successfully Fetch Data","data"=> $pets],200);
     }
+    public function getPetByUserId($id)
+    {
+        $pets = Pet::where('user_id',$id)->with('breed','type','user')->get();
+        if ($pets) {
+            return response()->json(["message" => "Successfully Fetch Data", "data" => $pets], 200);
+        }
+        return response()->json(["message" => "Pet id doesn't exist"], 404);
+    }
     public function getPetById($id)
     {
         $pets = Pet::with('breed','type','user')->find($id);
@@ -64,6 +72,20 @@ class PetController extends Controller
                 'type_id' => 'required|exists:type,type_id',
                 'pet_tag' => 'string|max:250',
                 'pet_medical' => 'string|max:100',
+            ]);
+
+            $pet->update($validated);
+
+            return response()->json(['message' => 'Pet updated successfully', 'data' => $pet]);
+        }
+        return response()->json(["message" => "Id doesn't exist"], 404);
+    }
+    public function updatePetStatus(Request $request, $id)
+    {
+        $pet = Pet::findOrFail($id);
+        if($pet) {
+            $validated = $request->validate([
+                'pet_status' => 'sometimes|string|max:50',
             ]);
 
             $pet->update($validated);

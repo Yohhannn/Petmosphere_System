@@ -5,11 +5,10 @@ import ScrollToTopButton from '../utility/util_scroll_up';
 import 'animate.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as faStarSolid, faCalendarAlt, faUserCircle, faPlusCircle, faStar as faStarRegular } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarSolid, faCalendarAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import Cookies from 'js-cookie';
 import * as fetch from '../fetchRequest/fetch.js';
-import * as send from '../postRequest/send.js';
 import {Link, useNavigate, useParams} from "react-router-dom";
 
 
@@ -25,28 +24,29 @@ const AccountInfo = () => {
     const [loggedInAccount,setAccount] = useState(null);
     const [userReview,setUserReview] = useState([]);
     const [userPost,setUserPost] = useState([]);
+    const [userPet,setUserPet] = useState([]);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Details');
-    const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
-    const [newReviewRating, setNewReviewRating] = useState(1);
-    const [newReviewDesc, setNewReviewDesc] = useState('');
     const {accId} = useParams();
     const [isMyAcc, setMyAcc] = useState(false);
-    const [user, setUser] = useState(null);
+    const [userDetails, setUser] = useState(null);
+    const [isVerify,setIsVerify] =useState(false);
     const navigate = useNavigate();
+    const userCookie =  Cookies.get('userCredentials');
+    const user = userCookie ? JSON.parse(userCookie) : null;
     useEffect(() => {
-        const userCookie =  Cookies.get('userCredentials');
-        const user = userCookie ? JSON.parse(userCookie) : null;
         setUser(user);
         const fetchUserData = async () => {
             try {
                     const response = await fetch.getUserBy(accId);
                     const response2 = await fetch.getReviewByUserId(accId);
                     const response3 = await fetch.getPostByUserId(accId);
+                    setUserPet(response3.data);
                     setAccount(response.data);
                     setUserReview(response2.data);
                     setUserPost(response3.data);
                     setMyAcc(user.user.user_id === parseInt(accId));
+                    setIsVerify(response.data.user_verified !==0);
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -74,9 +74,7 @@ const AccountInfo = () => {
         setActiveTab(tab);
     };
 
-    const handleOpenAddReview = () => {
-        setIsAddReviewOpen(true);
-    };
+
     const fetchUser = async() =>{
         const response = await fetch.getUserBy(accId);
         setAccount(response.data);
@@ -89,53 +87,7 @@ const AccountInfo = () => {
         const response = await fetch.getPostByUserId(accId);
         setUserPost(response.data);
     }
-    const handleCloseAddReview = () => {
-        setIsAddReviewOpen(false);
-        setNewReviewRating(1);
-        setNewReviewDesc('');
-    };
 
-    const handleRatingChange = (rating) => {
-        setNewReviewRating(rating);
-    };
-
-    const handleDescChange = (event) => {
-        setNewReviewDesc(event.target.value);
-    };
-
-    const handleSubmitReview = async() => {
-        const reviewObject = {
-            "rev_rating" : newReviewRating,
-            "rev_date" : new Date().toISOString().slice(0, 10),
-            "rev_description" : newReviewDesc,
-            "rev_rated_by" : user.user.user_id,
-            "user_id" : accId
-        }
-        try{
-            const response = await send.sendReview(reviewObject);
-            console.log(response.message);
-            fetchReview();
-        }catch (error){
-            console.log("Something went wrong! Error "+error);
-        }
-
-        handleCloseAddReview();
-    };
-
-    const renderStarRating = () => {
-        const stars = [];
-        for (let i = 1; i <= 5; i++) {
-            stars.push(
-                <FontAwesomeIcon
-                    key={i}
-                    icon={i <= newReviewRating ? faStarSolid : faStarRegular}
-                    className={`cursor-pointer text-xl ${i <= newReviewRating ? 'text-yellow-500' : 'text-gray-300'}`}
-                    onClick={() => handleRatingChange(i)}
-                />
-            );
-        }
-        return stars;
-    };
 
     const renderTabContent = () => {
 
@@ -165,6 +117,12 @@ const AccountInfo = () => {
                             <h3 className="font-semibold text-purple-600">Address:</h3>
                             <p>{loggedInAccount.user_location}</p>
                         </div>
+                        {isMyAcc &&(
+                        <div>
+                            <h3 className="font-semibold text-purple-600">User Status:</h3>
+                            <p>{loggedInAccount.user_verified === 1 ? "Verified" : "Not Verified"}</p>
+                        </div>
+                            )}
                         <div>
                             <h3 className="font-semibold text-purple-600">Date Created:</h3>
                             <p>{loggedInAccount.user_createdate}</p>
@@ -183,22 +141,12 @@ const AccountInfo = () => {
 
                     );
                 }
-                const totalRating = userReview
-                    .map(review => review.rev_rating)
-                    .reduce((sum, rating) => sum + rating, 0);
+
                 return (
                     <div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-semibold text-purple-600">Your Reviews</h3>
                         </div>
-
-                        {userReview  && (
-                            <div className="mb-4">
-                                <h4 className="font-semibold text-gray-700">
-                                    Average Rating: <span className="text-yellow-500">{(totalRating/userReview.length).toFixed(1)}</span> ({userReview.length} reviews)
-                                </h4>
-                            </div>
-                        )}
 
                         {userReview ? (
                             <ul className="space-y-4">
@@ -231,7 +179,7 @@ const AccountInfo = () => {
                         )}
                     </div>
                 );
-            case 'Recent Posts':
+            case 'Your Posts':
                 console.log(userPost);
                 // Filter posts where the OwnerAccountID matches the logged-in account ID
                 if(userPost.length <= 0){
@@ -241,14 +189,14 @@ const AccountInfo = () => {
                 }
                 return (
                     <div>
-                        <h3 className="font-semibold text-purple-600 mb-2">Your Recent Posts</h3>
+                        <h3 className="font-semibold text-purple-600 mb-2">{isMyAcc ? "Your Posts" : loggedInAccount.user_name+"'s"+" Posts"}</h3>
                         {userPost.length > 0 ? (
                             <ul className="space-y-4">
                                 {userPost.map(post => (
                                     <li key={post.pet.pet_id} className="bg-white border rounded-md shadow-sm p-4">
                                         <div className="flex items-center mb-2">
                                             <img
-                                                src={post.pet.pet_img}
+                                                src={post.post_img}
                                                 alt={post.pet.pet_name}
                                                 className="w-16 h-16 object-cover rounded mr-4"
                                             />
@@ -289,12 +237,37 @@ const AccountInfo = () => {
                     </div>
                 );
 
-            case 'History':
-
+            case 'Your Pets':
+                if(userPet.length <= 0){
+                    return (
+                        <p className="text-gray-700">You haven't posted any pets for adoption yet.</p>
+                    );
+                }
                 return (
                     <div>
-                        <h3 className="font-semibold text-purple-600 mb-2">Adoption History</h3>
-                        <p className="text-gray-700">Additional account settings or information will appear here.</p>
+                        <h3 className="font-semibold text-purple-600 mb-2">Pets</h3>
+                        {userPet.length > 0 ? (
+                            <ul className="space-y-4">
+                                {userPet.map(pet => (
+                                    <li key={pet.pet.pet_id} className="bg-white border rounded-md shadow-sm p-4">
+                                        <div className="flex items-center mb-2">
+                                            <img
+                                                src={pet.post_img}
+                                                alt={pet.pet.pet_name}
+                                                className="w-16 h-16 object-cover rounded mr-4"
+                                            />
+                                            <div>
+                                                <h4 className="text-xl font-semibold text-gray-800"><Link to={`/pet/${pet.pet.pet_id}/details`}>{pet.pet.pet_name}</Link></h4>
+                                                <p className="text-xl text-gray-600">{pet.pet.breed.breed_name} ({pet.pet.type.type_name})</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-l text-gray-900 leading-relaxed line-clamp-2">{pet.pet.pet_description}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-700">You haven't posted any pets for adoption yet.</p>
+                        )}
                     </div>
                 );
 
@@ -305,12 +278,13 @@ const AccountInfo = () => {
                         <p className="text-gray-700">Additional account settings or information will appear here.</p>
                         {isMyAcc && (
                             <div className="flex justify-end mt-6 space-x-4">
-                                <Link to="/account/verify/:accId">
+                                {((!isVerify && loggedInAccount.user_valid_id_pic === null) && (
+                                <Link to="/account/verify">
                                 <button className="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-400 transition-colors">
                                     Verify Account
                                 </button>
-                                </Link>
-                                <Link to="/account/edit/:accId">
+                                </Link> ))}
+                                <Link to="/account/edit">
                                 <button className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors">
                                     Edit Profile
                                 </button>
@@ -368,7 +342,7 @@ const AccountInfo = () => {
                         <div className="flex flex-col items-center mb-6">
                         <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-orange-400">
                             <img
-                            src={loggedInAccount.user_img}
+                            src={loggedInAccount.user_prof_pic}
                             alt={loggedInAccount.user_name}
                             className="object-cover w-full h-full"
                             />
@@ -401,27 +375,27 @@ const AccountInfo = () => {
                                     Reviews
                                 </button>
                                 <button
-                                    onClick={() => {handleTabChange('Recent Posts');fetchPost()}}
+                                    onClick={() => {handleTabChange('Your Posts');fetchPost()}}
                                     className={`${
-                                        activeTab === 'Recent Posts'
+                                        activeTab === 'Your Posts'
                                             ? 'border-purple-600 text-purple-600'
                                             : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
                                     } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                                 >
-                                    Recent Posts
+                                    {isMyAcc ? "Your Posts" : loggedInAccount.user_name+"'s"+" Posts"}
                                 </button>
 
                                 {/* Only the logginin account can see */}
                                 {isMyAcc && (
                                     <button
-                                    onClick={() => handleTabChange('History')}
+                                    onClick={() => handleTabChange('Your Pets')}
                                     className={`${
-                                        activeTab === 'History'
+                                        activeTab === 'Your Pets'
                                             ? 'border-purple-600 text-purple-600'
                                             : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300'
                                     } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                                 >
-                                    History
+                                    Your Pets
                                 </button>
                                 )}
 
@@ -478,42 +452,7 @@ const AccountInfo = () => {
             )}
 
             {/* Add Review Modal - NAA PA DIRI ANG CODE D HAHA */}
-            {isAddReviewOpen && (
-                <div className="fixed inset-0 bg-orange-300 bg-opacity-50 flex justify-center items-center animate__animated animate__fadeIn">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                        <h2 className="text-xl font-bold mb-4 text-gray-800">Add a Review</h2>
-                        <div className="mb-4">
-                            <h3 className="font-semibold text-gray-700 mb-2">Rating:</h3>
-                            <div className="flex items-center">
-                                {renderStarRating()}
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <h3 className="font-semibold text-gray-700 mb-2">Your Review:</h3>
-                            <textarea
-                                value={newReviewDesc}
-                                onChange={handleDescChange}
-                                className="w-full h-32 px-4 py-2 border rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"  // Added bg-white here
-                                placeholder="Write your review here..."
-                            />
-                        </div>
-                        <div className="flex justify-end space-x-4">
-                            <button
-                                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg shadow hover:bg-gray-400 transition-colors"
-                                onClick={handleCloseAddReview}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-orange-400 transition-colors"
-                                onClick={handleSubmitReview}
-                            >
-                                Submit Review
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </>
     );
 };

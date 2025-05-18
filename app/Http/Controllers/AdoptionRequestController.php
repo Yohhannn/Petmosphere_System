@@ -27,7 +27,7 @@ class AdoptionRequestController extends Controller
         }
         return response()->json(["message" => "Request id not found"],404);
     }
-    public function checkAdoption(Request $request){
+    public function CheckAdoption(Request $request){
         $user_id = $request->input('user_id');
         $pet_id = $request->input('pet_id');
         $adoption = AdoptionRequest::where('user_id', $user_id)->where('pet_id', $pet_id)->first();
@@ -83,6 +83,24 @@ class AdoptionRequestController extends Controller
             return response()->json(["message" => "Request updated successfully","data" => $adoption],200);
         }
         return response()->json(["message" => "Request id not found"],404);
+    }
+    public function updateRequestRejectStatus(Request $request, $id) {
+        $validated = $request->validate([
+            'req_status' => 'required|string|max:20',
+            'pet_id' => 'required|integer|exists:pet,pet_id',
+        ]);
+
+        $updatedCount = AdoptionRequest::where('user_id', '!=', $id)->where('pet_id',$validated['pet_id'])
+            ->update(['req_status' => $validated['req_status']]);
+
+        if ($updatedCount > 0) {
+            return response()->json([
+                "message" => "Requests updated successfully",
+                "updated_count" => $updatedCount
+            ], 200);
+        }
+
+        return response()->json(["message" => "No requests found to update"], 404);
     }
     public function deleteAdoptionRequest($id){
         $adoption = AdoptionRequest::find($id);
