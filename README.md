@@ -22,3 +22,6 @@ Petmosphere aims to simplify pet adoption, promote responsible pet ownership, an
 4. php artisan migrate
 5. php artisan serve
 6. Run the postman
+
+
+
