@@ -164,7 +164,7 @@ const AdminPosts = () => {
                 <p className="text-gray-700 text-sm">{post.caption}</p>
                 <button
                   onClick={() => handleViewMore(post)}
-                  className="text-purple-600 text-sm hover:underline"
+                  className="text-purple-600 text-sm hover:text-orange-500 transition-colors duration-200" // added hover color
                 >
                   ↗
                 </button>
