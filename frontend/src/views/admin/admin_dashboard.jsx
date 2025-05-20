@@ -147,12 +147,6 @@ const AdminDashboard = () => {
           <div className="max-w-6xl mx-auto mt-12">
             <div className="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
               <h4 className="text-2xl font-semibold text-black">Recent Sign-Ups</h4>
-              <Link
-                to="/admin/users"
-                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                View More
-              </Link>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md mt-4">
               <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm overflow-y-auto max-h-48">
@@ -169,12 +163,6 @@ const AdminDashboard = () => {
           <div className="max-w-6xl mx-auto mt-12">
             <div className="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
               <h4 className="text-2xl font-semibold text-black">Recent Adoptions</h4>
-              <Link
-                to="/test"
-                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                View More
-              </Link>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md mt-4">
               <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm overflow-y-auto max-h-48">
@@ -192,7 +180,7 @@ const AdminDashboard = () => {
             <div className="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
               <h4 className="text-2xl font-semibold text-black">Recent Verifications</h4>
               <Link
-                to="/test"
+                to="/admin/users"
                 className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
                 View More
