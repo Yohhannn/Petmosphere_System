@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import Admin_Header from '../../components/admin_header';
+import ScrollToTopButton from '../utility/util_scroll_up';
 
 const AdminControls = () => {
-  const [animalTypes, setAnimalTypes] = useState(['Dog', 'Cat', 'Bird']);
+  const [animalTypes, setAnimalTypes] = useState(['Dog', 'Cat', 'Bird', 'Fish', 'Hamster']);
   const [breeds, setBreeds] = useState([
     { id: 1, type: 'Dog', name: 'Golden Retriever' },
     { id: 2, type: 'Cat', name: 'Persian' },
+    { id: 3, type: 'Dog', name: 'German Shepherd' },
+    { id: 4, type: 'Cat', name: 'Siamese' },
+    { id: 5, type: 'Bird', name: 'Parrot' },
+    { id: 6, type: 'Fish', name: 'Goldfish' },
+    { id: 7, type: 'Hamster', name: 'Syrian' }
   ]);
-  const [locations, setLocations] = useState(['Cebu City', 'Madridejos']);
-  const [postRequirements, setPostRequirements] = useState(
-    'Must upload at least one clear pet photo.'
-  );
 
   // Modal states
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalInput, setModalInput] = useState('');
-  const [modalType, setModalType] = useState(''); // 'type', 'breed', 'location'
+  const [modalType, setModalType] = useState(''); // 'type', 'breed'
   const [selectedType, setSelectedType] = useState(''); // for breeds
 
   // Edit/Delete modal states
@@ -28,7 +30,7 @@ const AdminControls = () => {
 
   // Open Add modal
   const openAddModal = (type) => {
-    setModalTitle(`Add ${type === 'type' ? 'Animal Type' : type === 'breed' ? 'Breed' : 'Location'}`);
+    setModalTitle(`Add ${type === 'type' ? 'Animal Type' : 'Breed'}`);
     setModalType(type);
     setModalInput('');
     setSelectedType('');
@@ -39,7 +41,7 @@ const AdminControls = () => {
 
   // Open Edit modal
   const openEditModal = (type, item) => {
-    setModalTitle(`Edit ${type === 'type' ? 'Animal Type' : type === 'breed' ? 'Breed' : 'Location'}`);
+    setModalTitle(`Edit ${type === 'type' ? 'Animal Type' : 'Breed'}`);
     setModalType(type);
     setEditMode(true);
     setItemToEdit(item);
@@ -49,8 +51,6 @@ const AdminControls = () => {
     } else if (type === 'breed') {
       setModalInput(item.name);
       setSelectedType(item.type);
-    } else if (type === 'location') {
-      setModalInput(item);
     }
 
     setShowModal(true);
@@ -101,18 +101,6 @@ const AdminControls = () => {
         }
         setBreeds([...breeds, { id: Date.now(), name: modalInput.trim(), type: selectedType }]);
       }
-    } else if (modalType === 'location') {
-      if (editMode) {
-        // Edit location
-        setLocations(locations.map((loc) => (loc === itemToEdit ? modalInput.trim() : loc)));
-      } else {
-        // Add location
-        if (locations.includes(modalInput.trim())) {
-          alert('Location already exists.');
-          return;
-        }
-        setLocations([...locations, modalInput.trim()]);
-      }
     }
 
     setShowModal(false);
@@ -130,148 +118,110 @@ const AdminControls = () => {
       setBreeds(breeds.filter((b) => b.type !== itemToDelete));
     } else if (modalType === 'breed') {
       setBreeds(breeds.filter((b) => b.id !== itemToDelete.id));
-    } else if (modalType === 'location') {
-      setLocations(locations.filter((loc) => loc !== itemToDelete));
     }
 
     setShowDeleteModal(false);
     setItemToDelete(null);
   };
 
-  // OPTIONAL RA
-  const handlePostRequirementsChange = (e) => setPostRequirements(e.target.value);
-  const handleSavePostRequirements = () => alert('Save post requirements:\n' + postRequirements);
-
   return (
     <>
-      <Admin_Header />
+      {/* Sticky Header */}
+      <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md animate__animated animate__fadeIn">
+        <Admin_Header />
+      </div>
+
+      <ScrollToTopButton />
+
+      <section
+        className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-24 text-center bg-cover bg-center animate__animated animate__fadeIn"
+        style={{ backgroundImage: "url('../main_assets/images/image_main_banner4.png')" }}
+      >
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl font-bold mb-4 animate__animated animate__bounceIn">Admin Controls</h1>
+          <p className="text-lg max-w-2xl mx-auto">
+            View the Overview of the System.
+          </p>
+        </div>
+      </section>
+
       <div className="bg-gray-100 min-h-screen px-10 py-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Admin Controls</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Modifications</h2>
 
-        {/* Animal Types Section */}
-        <section className="mb-10 bg-white p-6 rounded shadow-md">
-          <h3 className="text-xl font-semibold mb-4 text-black">🐾 Animal Types</h3>
-          <ul className="mb-4 space-y-2">
-            {animalTypes.map((type) => (
-              <li
-                key={type}
-                className="flex justify-between items-center border-b border-gray-200 py-1 text-black"
-              >
-                <span>{type}</span>
-                <div>
-                  <button
-                    className="text-blue-600 mr-3 hover:underline"
-                    onClick={() => openEditModal('type', type)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="text-red-600 hover:underline"
-                    onClick={() => openDeleteModal('type', type)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <button
-            className="bg-[#955CA4] text-[#F9B233] px-4 py-2 rounded hover:bg-yellow-700"
-            onClick={() => openAddModal('type')}
-          >
-            + Add Animal Type
-          </button>
-        </section>
+        {/* Animal Types and Breeds Section */}
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Animal Types Section */}
+          <section className="bg-white p-6 rounded shadow-md md:w-1/2">
+            <h3 className="text-xl font-semibold mb-4 text-black">🐾 Animal Types</h3>
+            <ul className="mb-4 space-y-2 max-h-48 overflow-y-auto">
+              {animalTypes.map((type) => (
+                <li
+                  key={type}
+                  className="flex justify-between items-center border-b border-gray-200 py-1 text-black"
+                >
+                  <span>{type}</span>
+                  <div>
+                    <button
+                      className="text-blue-600 mr-3 hover:underline"
+                      onClick={() => openEditModal('type', type)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="text-red-600 hover:underline"
+                      onClick={() => openDeleteModal('type', type)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="bg-[#955CA4] text-[#F9B233] px-4 py-2 rounded hover:bg-yellow-700"
+              onClick={() => openAddModal('type')}
+            >
+              + Add Animal Type
+            </button>
+          </section>
 
-        {/* Breeds Section */}
-        <section className="mb-10 bg-white p-6 rounded shadow-md">
-          <h3 className="text-xl font-semibold mb-4 text-black">🧬 Breeds</h3>
-          <ul className="mb-4 space-y-2 max-h-48 overflow-y-auto rounded p-2">
-            {breeds.map((breed) => (
-              <li
-                key={breed.id}
-                className="flex justify-between items-center border-b border-gray-200 py-1 text-black"
-              >
-                <span>
-                  <strong>{breed.type}:</strong> {breed.name}
-                </span>
-                <div>
-                  <button
-                    className="text-blue-600 mr-3 hover:underline"
-                    onClick={() => openEditModal('breed', breed)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="text-red-600 hover:underline"
-                    onClick={() => openDeleteModal('breed', breed)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <button
-            className="bg-[#955CA4] text-[#F9B233] px-4 py-2 rounded hover:bg-yellow-700"
-            onClick={() => openAddModal('breed')}
-          >
-            + Add Breed
-          </button>
-        </section>
-
-        {/* Locations Section */}
-        <section className="mb-10 bg-white p-6 rounded shadow-md">
-          <h3 className="text-xl font-semibold mb-4 text-black">📍 Locations</h3>
-          <ul className="mb-4 space-y-2">
-            {locations.map((loc) => (
-              <li
-                key={loc}
-                className="flex justify-between items-center border-b border-gray-200 py-1 text-black"
-              >
-                <span>{loc}</span>
-                <div>
-                  <button
-                    className="text-blue-600 mr-3 hover:underline"
-                    onClick={() => openEditModal('location', loc)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="text-red-600 hover:underline"
-                    onClick={() => openDeleteModal('location', loc)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <button
-            className="bg-[#955CA4] text-[#F9B233] px-4 py-2 rounded hover:bg-yellow-700"
-            onClick={() => openAddModal('location')}
-          >
-            + Add Location
-          </button>
-        </section>
-
-        {/* OPTIONAL - Post Requirements Section */}
-        <section className="bg-white p-6 rounded shadow-md max-w-xl mx-auto">
-          <h3 className="text-xl font-semibold mb-4 text-black">Post Requirements</h3>
-          <textarea
-            value={postRequirements}
-            onChange={handlePostRequirementsChange}
-            rows={5}
-            className="w-full border border-gray-300 rounded p-2 mb-4 resize-none bg-gradient-to-b from-white to-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            placeholder="Set the posting rules or guidelines here..."
-          />
-          <button
-            className="bg-[#955CA4] text-[#F9B233] px-4 py-2 rounded hover:bg-yellow-700"
-            onClick={handleSavePostRequirements}
-          >
-            Save Requirements
-          </button>
-        </section>
+          {/* Breeds Section */}
+          <section className="bg-white p-6 rounded shadow-md md:w-1/2">
+            <h3 className="text-xl font-semibold mb-4 text-black">🧬 Breeds</h3>
+            <ul className="mb-4 space-y-2 max-h-48 overflow-y-auto">
+              {breeds.map((breed) => (
+                <li
+                  key={breed.id}
+                  className="flex justify-between items-center border-b border-gray-200 py-1 text-black"
+                >
+                  <span>
+                    <strong>{breed.type}:</strong> {breed.name}
+                  </span>
+                  <div>
+                    <button
+                      className="text-blue-600 mr-3 hover:underline"
+                      onClick={() => openEditModal('breed', breed)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="text-red-600 hover:underline"
+                      onClick={() => openDeleteModal('breed', breed)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="bg-[#955CA4] text-[#F9B233] px-4 py-2 rounded hover:bg-yellow-700"
+              onClick={() => openAddModal('breed')}
+            >
+              + Add Breed
+            </button>
+          </section>
+        </div>
 
         {/* Add/Edit Modal */}
         {showModal && (
@@ -283,7 +233,7 @@ const AdminControls = () => {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#955CA4]"
+                  className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#955CA4] bg-white text-black"
                 >
                   <option value="" disabled>
                     Select animal type
@@ -300,7 +250,7 @@ const AdminControls = () => {
                 type="text"
                 value={modalInput}
                 onChange={(e) => setModalInput(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#955CA4]"
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#955CA4] bg-white text-black"
                 placeholder="Enter here..."
               />
 

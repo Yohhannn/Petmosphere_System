@@ -1,269 +1,549 @@
 import React, { useState } from 'react';
 import Admin_Header from '../../components/admin_header';
+import ScrollToTopButton from '../utility/util_scroll_up';
 
 const Users = () => {
-  // Mock user data ONLI HUHU
+  // Mock user data
   const [users, setUsers] = useState([
     {
       id: 1,
       name: 'Jane Doe',
-      role: 'Adopter',
+      email: 'jane.doe@example.com',
+      verified: true,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-24',
+      warnings: 1,
       active: true,
-      banned: false,
-      adoptionHistory: ['Golden Retriever', 'Persian Cat'],
     },
     {
       id: 2,
       name: 'John Smith',
-      role: 'Owner',
+      email: 'john.smith@example.com',
+      verified: false,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-23',
+      warnings: 0,
       active: true,
-      banned: false,
-      adoptionHistory: [],
     },
     {
       id: 3,
-      name: 'Admin Joe',
-      role: 'Admin',
+      name: 'Alice Johnson',
+      email: 'alice.johnson@example.com',
+      verified: false,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-22',
+      warnings: 2,
       active: true,
-      banned: false,
-      adoptionHistory: [],
+    },
+    {
+      id: 4,
+      name: 'Bob Williams',
+      email: 'bob.williams@example.com',
+      verified: true,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-21',
+      warnings: 0,
+      active: true,
+    },
+    {
+      id: 5,
+      name: 'Eva Brown',
+      email: 'eva.brown@example.com',
+      verified: false,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-20',
+      warnings: 3,
+      active: false,
+    },
+    {
+      id: 6,
+      name: 'Michael Davis',
+      email: 'michael.davis@example.com',
+      verified: true,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-19',
+      warnings: 1,
+      active: true,
+    },
+    {
+      id: 7,
+      name: 'David Lee',
+      email: 'david.lee@example.com',
+      verified: true,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-18',
+      warnings: 5,
+      active: true,
+    },
+    {
+      id: 8,
+      name: 'Sarah Kim',
+      email: 'sarah.kim@example.com',
+      verified: false,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-17',
+      warnings: 1,
+      active: true,
+    },
+    {
+      id: 9,
+      name: 'Kevin Chen',
+      email: 'kevin.chen@example.com',
+      verified: false,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-16',
+      warnings: 0,
+      active: true,
+    },
+    {
+      id: 10,
+      name: 'Priya Patel',
+      email: 'priya.patel@example.com',
+      verified: true,
+      idPhotoUrl: 'https://via.placeholder.com/60',
+      dateOfRequest: '2024-07-15',
+      warnings: 2,
+      active: true,
     },
   ]);
 
-  // filter users by role
-  const [filterRole, setFilterRole] = useState('All');
-  // which user's adoption history to show
-  const [showHistoryFor, setShowHistoryFor] = useState(null);
-
-  // based on selected role
-  const filteredUsers =
-    filterRole === 'All' ? users : users.filter((u) => u.role === filterRole);
-
-  // (replace with actual logic or API calls)
-  const handleViewProfile = (user) => alert(`View profile: ${user.name}`);
-  const handleToggleActive = (userId) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId ? { ...u, active: !u.active } : u
-      )
-    );
-  };
-  const handleBanWarn = (userId) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === userId ? { ...u, banned: !u.banned } : u
-      )
-    );
-  };
-
-  // OPTIONAL Admin add/remove handlers
-  const handleAddAdmin = () => alert('Add new admin (not implemented)');
-  const handleRemoveAdmin = (userId) => alert('Remove admin (not implemented)');
-
-  // verify si user muna
   const [modalUser, setModalUser] = useState(null);
+  const [modalType, setModalType] = useState(''); // 'warn', 'deactivate', 'activate'
+  const [modalMessage, setModalMessage] = useState('');
+  const [verificationStatus, setVerificationStatus] = useState({
+    approve: false,
+    reject: false,
+  });
+  const [verificationDescription, setVerificationDescription] = useState('');
 
+  const handleVerifyUser = (userId) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, verified: true } : u))
+    );
+    setModalUser(null);
+    setVerificationStatus({ approve: false, reject: false });
+    setVerificationDescription('');
+  };
+
+  const handleRejectUser = (userId) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, verified: false } : u))
+    );
+    setModalUser(null);
+    setVerificationStatus({ approve: false, reject: false });
+    setVerificationDescription('');
+  };
+
+  const handleUnverifyUser = (userId) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, verified: false } : user))
+    );
+  };
+
+  const handleDeactivateUser = (userId) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, active: false } : user)) // Add a new 'active' property
+    );
+    setModalUser(null);
+  };
+
+  const handleActivateUser = (userId) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === userId ? { ...user, active: true } : user))
+    );
+    setModalUser(null);
+  };
+
+  const handleDeleteUser = (userId) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+  };
+
+  const unverifiedUsers = users.filter((u) => !u.verified);
+  const verifiedUsers = users.filter((u) => u.verified && u.active);
+  const deactivatedUsers = users.filter((u) => u.verified && !u.active);
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setVerificationStatus((prev) => ({
+      approve: false,
+      reject: false,
+      [name]: checked,
+    }));
+  };
+
+  const showModal = (user, type, message = '') => {
+    setModalUser(user);
+    setModalType(type);
+    setModalMessage(message);
+  };
+
+  const performAction = () => {
+    if (!modalUser) return;
+    switch (modalType) {
+      case 'warn':
+        // Implement warn functionality
+        alert(`Warn user ${modalUser.name} with message: ${modalMessage}`);
+        break;
+      case 'deactivate':
+        handleDeactivateUser(modalUser.id);
+        break;
+      case 'activate':
+        handleActivateUser(modalUser.id);
+        break;
+      default:
+        break;
+    }
+    setModalUser(null);
+    setModalType('');
+    setModalMessage('');
+  };
 
   return (
     <>
-      <Admin_Header />
-      <div className="bg-gray-100 min-h-screen px-10 py-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Users Management</h2>
+      {/* Sticky Header */}
+      <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md animate__animated animate__fadeIn">
+        <Admin_Header />
+      </div>
 
-        <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-md mb-8">
-          <h3 className="text-xl font-semibold mb-4 text-red-700">Unverified Users</h3>
-          {users.filter(u => !u.verified).length === 0 ? (
-            <p className="text-gray-500">No unverified users at the moment.</p>
+      <ScrollToTopButton />
+
+      <section
+        className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-24 text-center bg-cover bg-center animate__animated animate__fadeIn"
+        style={{ backgroundImage: "url('../main_assets/images/image_main_banner4.png')" }}
+      >
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl font-bold mb-4 animate__animated animate__bounceIn">User Management</h1>
+          <p className="text-lg max-w-2xl mx-auto">
+            View the Overview of the System.
+          </p>
+        </div>
+      </section>
+
+      <div className="bg-gray-100 min-h-screen px-10 py-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Pending Verifications
+        </h2>
+
+        <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
+          {unverifiedUsers.length === 0 ? (
+            <p className="text-center text-gray-500">
+              No unverified users at the moment.
+            </p>
           ) : (
-            users.filter(u => !u.verified).map(user => (
-              <div key={user.id} className="flex justify-between items-center border-b py-2">
-                <div>
-                  <p className="font-semibold text-black">{user.name}</p>
-                  <p className="text-sm text-gray-600">{user.role}</p>
-                </div>
-                <button
-                  onClick={() => setModalUser(user)}
-                  className="bg-[#955CA4] text-white px-3 py-1 rounded hover:bg-[#F9B233] hover:text-[#955CA4]"
+            <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scroll">
+              {unverifiedUsers.map((user) => (
+                <li
+                  key={user.id}
+                  className="border-b border-gray-200 pb-3 flex flex-col md:flex-row md:justify-between items-start md:items-center"
                 >
-                  View ID
-                </button>
-              </div>
-            ))
+                  <div className="flex items-center">
+                    <img
+                      src={user.idPhotoUrl}
+                      alt={`${user.name}'s Profile`}
+                      className="rounded-full w-16 h-16 mr-4 border-2 border-gray-300"
+                    />
+                    <div className="flex flex-col items-start ">
+                      <p className="text-lg text-black">
+                        <b className="text-purple-600">{user.name}</b>
+                      </p>
+                      <p className="text-lg text-black">{user.email}</p>
+                      <p className="text-sm text-gray-500">
+                        Account ID: {user.id}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        <b>Status: </b>
+                        <span className="text-red-500">Unverified</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pr-2">
+                    {/* Added padding here */}
+                    <button
+                      onClick={() => setModalUser(user)} // Corrected this line
+                      className="bg-[#955CA4] text-white px-3 py-1 rounded hover:bg-[#F9B233] hover:text-[#955CA4] mt-4 md:mt-0 text-xs"
+                    >
+                      Verify Valid ID
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* All Verified Accounts Section */}
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 mt-12 text-center">
+          All Verified Accounts
+        </h2>
+        <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
+          {verifiedUsers.length === 0 ? (
+            <p className="text-center text-gray-500">No verified users.</p>
+          ) : (
+            <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scroll">
+              {verifiedUsers.map((user) => (
+                <li
+                  key={user.id}
+                  className="border-b border-gray-200 pb-3 flex flex-col md:flex-row md:justify-between items-start md:items-center"
+                >
+                  <div className="flex items-center">
+                    <img
+                      src={user.idPhotoUrl}
+                      alt={`${user.name}'s Profile`}
+                      className="rounded-full w-16 h-16 mr-4 border-2 border-gray-300"
+                    />
+                    <div className="flex flex-col items-start">
+                      <p className="text-lg text-black">
+                        <b className="text-purple-600">{user.name}</b>
+                      </p>
+                      <p className="text-lg text-black">{user.email}</p>
+                      <p className="text-sm text-gray-500">
+                        Account ID: {user.id}
+                      </p>
+                      <p className="text-sm text-green-500">
+                        <b>Status:</b> Verified
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <b>Total Violations:</b> {user.warnings}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <b>Is Active:</b>{' '}
+                        {user.active ? (
+                          <span className="text-green-500">Yes</span>
+                        ) : (
+                          <span className="text-red-500">No</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2 mt-4 md:mt-0 pr-2">
+                    {' '}
+                    {/* Added padding here */}
+                    <button
+                      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-xs"
+                      onClick={() => showModal(user, 'warn', 'Enter warning message:')}
+                    >
+                      Warn
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
+                      onClick={() => showModal(user, 'deactivate', 'Are you sure you want to deactivate this account?')
+                      }
+                    >
+                      Deactivate
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* All Deactivated Accounts Section */}
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 mt-12 text-center">
+          All Deactivated Accounts
+        </h2>
+        <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
+          {deactivatedUsers.length === 0 ? (
+            <p className="text-center text-gray-500">No deactivated users.</p>
+          ) : (
+            <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scroll">
+              {deactivatedUsers.map((user) => (
+                <li
+                  key={user.id}
+                  className="border-b border-gray-200 pb-3 flex flex-col md:flex-row md:justify-between items-start md:items-center"
+                >
+                  <div className="flex items-center">
+                    <img
+                      src={user.idPhotoUrl}
+                      alt={`${user.name}'s Profile`}
+                      className="rounded-full w-16 h-16 mr-4 border-2 border-gray-300"
+                    />
+                    <div className="flex flex-col items-start">
+                      <p className="text-lg text-black">
+                        <b className="text-purple-600">{user.name}</b>
+                      </p>
+                      <p className="text-lg text-black">{user.email}</p>
+                      <p className="text-sm text-gray-500">
+                        Account ID: {user.id}
+                      </p>
+                      <p className="text-sm text-green-500">
+                        <b>Status:</b> Verified
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <b>Is Active:</b>
+                        <span className="text-red-500"> No</span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <b>Total Violations:</b> {user.warnings}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2 mt-4 md:mt-0 pr-2">
+                    {' '}
+                    {/* Added padding here */}
+                    <button
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-xs"
+                      onClick={() => showModal(user, 'activate', 'Are you sure you want to activate this account?')}
+                    >
+                      Activate
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </div>
           )}
         </div>
 
         {modalUser && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg w-96 text-center">
-              <h2 className="text-xl font-semibold mb-3 text-black">Verify {modalUser.name}</h2>
-              <img
-                src={modalUser.idPhotoUrl}
-                alt="Uploaded ID"
-                className="w-full mb-4 border rounded text-black"
-              />
-              <div className="flex justify-center space-x-3">
-                <button
-                  className="bg-[#955CA4] -600 text-[#F9B233] px-4 py-2 rounded hover:bg-[#F9B233] hover:text-[#955CA4]"
-                  onClick={() => {
-                    setUsers((prev) =>
-                      prev.map((u) =>
-                        u.id === modalUser.id ? { ...u, verified: true } : u
-                      )
-                    );
-                    setModalUser(null);
-                  }}
-                >
-                  Accept
-                </button>
-                <button
-                  className="bg-[#955CA4] -600 text-[#F9B233] px-4 py-2 rounded hover:bg-[#F9B233] hover:text-[#955CA4]"
-                  onClick={() => setModalUser(null)}
-                >
-                  Close
-                </button>
-              </div>
+            <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
+              <h2 className="text-xl font-semibold mb-3 text-black text-center">
+                {modalType === 'warn' && 'Warn User'}
+                {modalType === 'deactivate' && 'Deactivate User'}
+                {modalType === 'activate' && 'Activate User'}
+                {modalType !== 'warn' && modalType !== 'deactivate' && modalType !== 'activate' && 'Verify User'}
+              </h2>
+              {modalType === 'warn' && (
+                <textarea
+                  placeholder="Enter warning message"
+                  value={modalMessage}
+                  onChange={(e) => setModalMessage(e.target.value)}
+                  className="mb-4 w-full border border-gray-300 rounded-md p-2 bg-white text-black flex-grow"
+                  style={{ minHeight: '100px' }}
+                />
+              )}
+              {modalType === 'deactivate' && (
+                <p className="text-gray-700 mb-4">Are you sure you want to deactivate this account?</p>
+              )}
+              {modalType === 'activate' && (
+                <p className="text-gray-700 mb-4">Are you sure you want to activate this account?</p>
+              )}
+              {(modalType === 'undefined' || !['warn', 'deactivate', 'activate'].includes(modalType)) && (
+                <div className="flex flex-col md:flex-row gap-8">
+                  {/* Left side: Image */}
+                  <div className="md:w-1/2">
+                    <img
+                      src={modalUser.idPhotoUrl}
+                      alt="Uploaded ID"
+                      className="w-full mb-4 border rounded text-black"
+                      style={{ maxHeight: '500px', objectFit: 'contain' }}
+                    />
+                  </div>
+
+                  {/* Right side: Controls */}
+                  <div className="md:w-1/2 flex flex-col">
+                    <div className="flex  mb-4 justify-start">
+                      <div className="flex items-center space-x-2 mr-4">
+                        <input
+                          type="checkbox"
+                          id="approve"
+                          name="approve"
+                          checked={verificationStatus.approve}
+                          onChange={handleCheckboxChange}
+                        />
+                        <label className="text-black" htmlFor="approve">
+                          Approve
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="reject"
+                          name="reject"
+                          checked={verificationStatus.reject}
+                          onChange={handleCheckboxChange}
+                        />
+                        <label className="text-black" htmlFor="reject">
+                          Reject
+                        </label>
+                      </div>
+                    </div>
+                    <textarea
+                      placeholder="Add description (optional)"
+                      value={verificationDescription}
+                      onChange={(e) => setVerificationDescription(e.target.value)}
+                      className="mb-4 w-full border border-gray-300 rounded-md p-2 bg-white text-black flex-grow"
+                      style={{ minHeight: '100px' }}
+                    />
+                    <div className="flex justify-end space-x-3 mt-auto">
+                      <button
+                        className="bg-[#955CA4] text-white px-4 py-2 rounded hover:bg-[#F9B233] hover:text-white disabled:opacity-50 text-xs"
+                        onClick={() => {
+                          if (verificationStatus.approve) {
+                            handleVerifyUser(modalUser.id);
+                          } else if (verificationStatus.reject) {
+                            handleRejectUser(modalUser.id);
+                          }
+                        }}
+                        disabled={!verificationStatus.approve && !verificationStatus.reject}
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        className="bg-[#955CA4] text-white px-4 py-2 rounded hover:bg-[#F9B233] hover:text-white text-xs"
+                        onClick={() => {
+                          setModalUser(null);
+                          setVerificationStatus({ approve: false, reject: false });
+                          setVerificationDescription('');
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {['warn', 'deactivate', 'activate'].includes(modalType) && (
+                <div className="flex justify-end space-x-3 mt-6">
+                  <button
+                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 text-xs"
+                    onClick={() => {
+                      setModalUser(null);
+                      setModalType('');
+                      setModalMessage('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="bg-[#955CA4] text-white px-4 py-2 rounded hover:bg-[#F9B233] hover:text-white text-xs"
+                    onClick={performAction}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
-
-
-        {/* Filter by role */}
-        <div className="mb-6 text-center">
-          <label className="mr-3 font-semibold text-[#955CA4]">Filter by role:</label>
-          <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-            className="border border-[#955CA4] rounded px-3 py-1 bg-[#955CA4] text-[#F9B233] font-semibold"
-          >
-            <option value="All">All</option>
-            <option value="Adopter">Adopter</option>
-            <option value="Owner">Owner</option>
-            <option value="Admin">Admin</option>
-          </select>
-        </div>
-
-        {/* Add Admin button (OPTIONAL) */}
-        {filterRole === 'Admin' && (
-          <div className="mb-6 text-center">
-            <button
-              onClick={handleAddAdmin}
-              className="bg-[#955CA4] -600 text-[#F9B233] px-4 py-2 rounded hover:bg-[#F9B233] hover:text-[#955CA4]"
-            >
-              + Add Admin
-            </button>
-          </div>
-        )}
-
-        {/* Users list */}
-        <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
-          {filteredUsers.length === 0 ? (
-            <p className="text-center text-gray-500">No users found.</p>
-          ) : (
-            <ul className="space-y-4">
-              {filteredUsers.map((user) => (
-                <li
-                  key={user.id}
-                  className="border-b border-gray-200 pb-3 flex flex-col md:flex-row md:justify-between md:items-center"
-                >
-                  <div>
-                    <p className="text-lg font-semibold text-black">{user.name}</p>
-                    <p className="text-sm text-gray-600">
-                      Role: <strong>{user.role}</strong> | Status:{' '}
-                      <span
-                        className={`font-semibold ${
-                          user.active ? 'text-green-600' : 'text-red-600'
-                        }`}
-                      >
-                        {user.active ? 'Active' : 'Inactive'}
-                      </span>{' '}
-                      | {user.banned ? (
-                        <span className="text-red-600 font-semibold">Banned</span>
-                      ) : (
-                        <span className="text-gray-500">Not banned</span>
-                      )}
-                    </p>
-                  </div>
-
-                  <div className="mt-3 md:mt-0 space-x-2 flex flex-wrap justify-end">
-                    <button
-                      onClick={() => handleViewProfile(user)}
-                      className="bg-[#955CA4] -600 text-white px-3 py-1 rounded hover:bg-[#F9B233] hover:text-[#955CA4]"
-                    >
-                      View Profile
-                    </button>
-
-                    <button
-                      onClick={() => handleToggleActive(user.id)}
-                      className={`px-3 py-1 rounded ${
-                        user.active
-                          ? 'bg-[#955CA4] -600 text-white hover:bg-[#F9B233] hover:text-[#955CA4]'
-                          : 'bg-[#955CA4] -600 text-white hover:bg-[#F9B233] hover:text-[#955CA4]'
-                      }`}
-                    >
-                      {user.active ? 'Deactivate' : 'Activate'}
-                    </button>
-
-                    <button
-                      onClick={() => handleBanWarn(user.id)}
-                      className={`px-3 py-1 rounded ${
-                        user.banned
-                          ? 'bg-[#955CA4] -600 text-white hover:bg-[#F9B233] hover:text-[#955CA4]'
-                          : 'bg-[#955CA4] -600 text-white hover:bg-[#F9B233] hover:text-[#955CA4]'
-                      }`}
-                    >
-                      {user.banned ? 'Unban' : 'Ban / Warn'}
-                    </button>
-
-                    {/* Show remove admin only if user is admin */}
-                    {user.role === 'Admin' && (
-                      <button
-                        onClick={() => handleRemoveAdmin(user.id)}
-                        className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800"
-                      >
-                        Remove Admin
-                      </button>
-                    )}
-
-                    {/* Toggle adoption history */}
-                    {user.role !== 'Admin' && (
-                      <button
-                        onClick={() =>
-                          setShowHistoryFor(showHistoryFor === user.id ? null : user.id)
-                        }
-                        className="bg-[#955CA4] -600 text-white hover:bg-[#F9B233] hover:text-[#955CA4] px-3 py-1 rounded mt-2"
-                      >
-                        {showHistoryFor === user.id
-                          ? 'Hide Adoption History'
-                          : 'View Adoption History'}
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Adoption history */}
-                  {showHistoryFor === user.id && user.adoptionHistory.length > 0 && (
-                    <div className="mt-3 bg-gray-50 p-3 rounded text-sm text-gray-700 max-w-md">
-                      <strong>Adoption History:</strong>
-                      <ul className="list-disc ml-5 mt-1">
-                        {user.adoptionHistory.map((pet, idx) => (
-                          <li key={idx}>{pet}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {showHistoryFor === user.id && user.adoptionHistory.length === 0 && (
-                    <div className="mt-3 bg-gray-50 p-3 rounded text-sm text-gray-700 max-w-md">
-                      <em>No adoption history.</em>
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
+      <style jsx global>{`
+        .custom-scroll::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+          background: #e0e0e0;
+          border-radius: 10px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+          background-color: #955CA4;
+          border-radius: 10px;
+          border: 2px solid #e0e0e0;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+          background-color: #F9B233;
+        }
+        .custom-scroll {
+          scrollbar-width: thin;
+          scrollbar-color: #955CA4 #e0e0e0;
+        }
+      `}</style>
     </>
   );
 };
 
 export default Users;
+
