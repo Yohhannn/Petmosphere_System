@@ -10,8 +10,10 @@ const samplePosts = [
       name: 'Olivia Wilson',
       date: '08/10/25',
       avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+      email: 'olivia.wilson@example.com', // Added email
     },
     image: 'https://images.unsplash.com/photo-1558788353-f76d92427f16',
+    petName: 'Charlie',
     caption: 'Golden retriever',
     description: 'Friendly and active dog.',
     characteristics: 'Playful, Loyal, Gentle',
@@ -22,8 +24,10 @@ const samplePosts = [
       name: 'Liam Smith',
       date: '08/09/25',
       avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
+      email: 'liam.smith@example.com', // Added email
     },
     image: 'https://images.unsplash.com/photo-1601758123927-196fd3f8a1b3',
+    petName: 'Luna',
     caption: 'Siberian cat',
     description: 'Fluffy and independent.',
     characteristics: 'Quiet, Curious, Elegant',
@@ -128,6 +132,7 @@ const AdminPosts = () => {
                   <img src={post.user.avatar} alt="User" className="w-8 h-8 rounded-full" />
                   <div>
                     <p className="text-white font-semibold text-sm">{post.user.name}</p>
+                    <p className="text-white text-xs">{post.user.email}</p> {/* Display email */}
                     <p className="text-white text-xs">{post.user.date}</p>
                   </div>
                 </div>
@@ -163,7 +168,7 @@ const AdminPosts = () => {
                       {/* show textarea if decline was clicked once */}
                       {showDeclineReasonFor === post.id && (
                         <textarea
-                          className="mt-2 w-full border rounded p-2 text-black text-sm"
+                          className="mt-2 w-full border rounded p-2 text-black text-sm bg-white" // Added bg-white here
                           rows="3"
                           placeholder="Reason for declining..."
                           value={declineReason}
@@ -180,6 +185,7 @@ const AdminPosts = () => {
 
               {/* Caption + View Button */}
               <div className="bg-white px-4 py-2 flex justify-between items-center">
+                <p className="text-gray-700 text-sm font-bold">{post.petName}</p>
                 <p className="text-gray-700 text-sm">{post.caption}</p>
                 <button
                   onClick={() => handleViewMore(post)}
@@ -208,6 +214,7 @@ const AdminPosts = () => {
                   <img src={post.user.avatar} alt="User" className="w-8 h-8 rounded-full" />
                   <div>
                     <p className="text-white font-semibold text-sm">{post.user.name}</p>
+                    <p className="text-white text-xs">{post.user.email}</p> {/* Display email */}
                     <p className="text-white text-xs">{post.user.date}</p>
                   </div>
                 </div>
@@ -220,6 +227,7 @@ const AdminPosts = () => {
               />
 
               <div className="bg-white px-4 py-2">
+                 <p className="text-gray-700 text-sm font-bold">{post.petName}</p>
                 <p className="text-gray-700 text-sm">{post.caption}</p>
               </div>
             </div>
@@ -290,3 +298,4 @@ const AdminPosts = () => {
 };
 
 export default AdminPosts;
+
