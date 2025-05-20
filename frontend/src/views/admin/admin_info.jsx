@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Admin_Header from '../../components/admin_header';
+import ScrollToTopButton from '../utility/util_scroll_up';
 
 const AdminInfo = () => {
   // Sample editable content state (can be connected to database/API later)
@@ -20,7 +21,24 @@ const AdminInfo = () => {
 
   return (
     <>
-      <Admin_Header />
+            {/* Sticky Header */}
+            <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md animate__animated animate__fadeIn">
+        <Admin_Header />
+      </div>
+
+      <ScrollToTopButton />
+
+      <section
+        className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-24 text-center bg-cover bg-center animate__animated animate__fadeIn"
+        style={{ backgroundImage: "url('../main_assets/images/image_main_banner4.png')" }}
+      >
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl font-bold mb-4 animate__animated animate__bounceIn">Manage Information</h1>
+          <p className="text-lg max-w-2xl mx-auto">
+            View the Overview of the System.
+          </p>
+        </div>
+      </section>
       <div className="p-8 bg-gray-50 min-h-screen">
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Infromation Management</h2>
 
