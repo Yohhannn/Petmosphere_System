@@ -2,6 +2,7 @@ import React from 'react';
 import Admin_Header from '../../components/admin_header';
 
 const AdminDashboard = () => {
+    
   return (
     <>
       <Admin_Header />

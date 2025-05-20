@@ -18,26 +18,44 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-      console.log(email+" "+password);
-      const credentials = {
-          "user_email" : email,
-          "user_pass" : password
-      }
-      const data = await send.login(credentials);
-      if(data.message.includes('Invalid')){
-        setErrorMessage(data.message);
-        setTimeout(() => setErrorMessage(''), 3000);
-      } else if (data.message.includes("successfully")) {
-          navigate("/home");
-          Cookies.set('userCredentials',JSON.stringify(data),{expires: 7});
-      }else{
-          setErrorMessage('An error occured');
-          setTimeout(() => setErrorMessage(''), 3000);
-      }
-  }
+        const isEmail = (str) => {
+            // Simple email regex
+            return /\S+@\S+\.\S+/.test(str);
+        };
+
+        let credentials;
+        if (isEmail(email)) {
+            credentials = {
+                user_email: email,
+                user_pass: password,
+            };
+        } else {
+            credentials = {
+                admin_username: email,
+                admin_pass: password,
+            };
+        }
+        console.log(credentials);
+        const data = await send.login(credentials);
+
+        if (data.message.includes('Invalid')) {
+            setErrorMessage(data.message);
+            setTimeout(() => setErrorMessage(''), 3000);
+        } else if (data.message.includes('successfully')) {
+            if(data.user){
+                navigate('/home');
+                Cookies.set('userCredentials', JSON.stringify(data), { expires: 7 });
+            }else{
+                navigate('/admin/dashboard');
+            }
+        } else {
+            setErrorMessage('An error occured');
+            setTimeout(() => setErrorMessage(''), 3000);
+        }
+    };
 
   return (
     <div
@@ -84,7 +102,7 @@ const Login = () => {
 
             <input
               id="email"
-              type="email"
+              type="text"
               required
               value={email}
               onChange={e => setEmail(e.target.value)}

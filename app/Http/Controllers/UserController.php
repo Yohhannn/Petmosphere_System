@@ -98,7 +98,10 @@ class UserController extends Controller
         if(!$user){
             return response()->json(["message" => "User not found"],404);
         }
-        $user->delete();
+        $updateInactive = [
+            "is_active" => 0
+        ];
+        $user->update($updateInactive);
         return response()->json(["message" => "User deleted successfully"],200);
     }
 
