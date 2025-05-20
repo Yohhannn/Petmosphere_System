@@ -1,3 +1,3 @@
-const WebVersion = "Version 3.2.2 - Pre Alpha";
+const WebVersion = "Version 3.3.0 - Pre Alpha";
 
 export default WebVersion;
