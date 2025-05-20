@@ -27,6 +27,7 @@ const AdminInfo = () => {
       </div>
 
       <ScrollToTopButton />
+      {/* grrr goods */}
 
       <section
         className="mt-20 bg-gradient-to-t from-purple-600 to-orange-400 text-white py-24 text-center bg-cover bg-center animate__animated animate__fadeIn"
