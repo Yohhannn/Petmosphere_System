@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,15 +19,28 @@ class User extends Authenticatable
         'user_phone',
         'user_location',
         'user_prof_pic',
+        'user_valid_id_pic',
         'user_email',
         'user_pass',
         'user_createdate',
-        'user_verified'
+        'user_verified',
+        'is_active'
     ];
     public $timestamps = false;
     protected $hidden = [
         'user_pass',
         'remember_token',
     ];
+    public function getAuthPassword()
+    {
+        return $this->user_pass;
+    }
 
+    /**
+     * Override username field to use `user_email`
+     */
+    public function username()
+    {
+        return 'user_email';
+    }
 }

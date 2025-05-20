@@ -1,14 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import * as send from '../../postRequest/send.js';
+import * as fetch from '../../fetchRequest/fetch.js';
+import PromptVerificationSuccess from '../../../prompt/prompt_verification_success.jsx';
 
 const AccountVerify = () => {
   const [validId, setValidId] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const fileInputRef = useRef(null);
+  const [success,setSuccess] = useState(false);
   const navigate = useNavigate();
   const [fileName, setFileName] = useState(''); // State to store the filename
     const [fileError, setFileError] = useState('');
-
+    const userCookie =  Cookies.get('userCredentials');
+    const user = userCookie ? JSON.parse(userCookie) : null;
   const handleValidIdChange = (event) => {
     const file = event.target.files[0];
         setFileError(''); // Clear any previous error
@@ -37,11 +43,18 @@ const AccountVerify = () => {
     console.log('Valid ID:', validId);
   };
 
-  const handleYesConfirm = () => {
-    console.log('ID uploaded! Waiting for admin approval.');
-    setIsConfirmModalOpen(false);
-    // In a real application, you would send the ID data to a server here.
-    // You might also want to redirect the user to a "waiting" page.
+  const handleYesConfirm = async() => {
+    const image = await send.uploadImage(validId);
+    const response = await send.updateUserVerification(user.user.user_id,{user_valid_id_pic : image.secure_url});
+    if(response.message.includes('successfully')) {
+        setSuccess(true);
+        const userDetail = await fetch.getUserBy(user.user.user_id);
+        Cookies.set('userCredentials',JSON.stringify({user: userDetail.data}),{expires: 7});
+        console.log('ID uploaded! Waiting for admin approval.');
+        setIsConfirmModalOpen(false);
+    }else {
+        console.log("error");
+    }
   };
 
   const handleCancelConfirm = () => {
@@ -118,15 +131,18 @@ const AccountVerify = () => {
               <button className="btn btn-secondary bg-gray-300 hover:bg-gray-400 text-gray-800" onClick={handleCancelConfirm}>
                 Cancel
               </button>
-              <Link to="/home">
                 <button className="btn btn-primary bg-purple-500 hover:bg-purple-700 border-none text-orange-100" onClick={handleYesConfirm}>
                   Yes
                 </button>
-              </Link>
             </div>
           </div>
         </div>
       )}
+        {success&&(
+            <>
+                <PromptVerificationSuccess/>
+            </>
+        )}
     </>
   );
 };

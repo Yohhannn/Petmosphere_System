@@ -56,8 +56,8 @@ const router = createBrowserRouter ([
             {path: '/inbox', element: <InboxPage />,},
             {path: '/alt_about', element: <Alt_AboutUs />,},
             {path: '/success', element: <PromptPostSuccess />,},
-            {path: '/account/edit/:accId', element: <AccountEdit/>,},
-            {path: '/account/verify/:accId', element: <AccountVerify/>,},
+            {path: '/account/edit', element: <AccountEdit/>,},
+            {path: '/account/verify', element: <AccountVerify/>,},
         ]
     },
 

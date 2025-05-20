@@ -16,12 +16,24 @@ export async function getPostsBy(id){
     const response = await fetch(base_url+`/Post/${id}`);
     return await response.json();
 }
+export async function getPetByUserId(id){
+    const response = await fetch(base_url+`/Pet/user/${id}`);
+    return await response.json();
+}
+export async function getPostsByPet(id){
+    const response = await fetch(base_url+`/Post/pet/${id}`);
+    return await response.json();
+}
 export async function getUserBy(id){
     const response = await fetch(base_url+`/User/${id}`);
     return await response.json();
 }
 export  async function getReviewByUserId(id){
     const response = await fetch(base_url+`/Review/User/${id}`);
+    return await response.json();
+}
+export  async function getReviewByPetId(id){
+    const response = await fetch(base_url+`/Review/Pet/${id}`);
     return await response.json();
 }
 export  async function getPostByUserId(id){

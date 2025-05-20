@@ -19,6 +19,13 @@ class ReviewController extends Controller
         }
         return response()->json(["message" => "Sucessfully get data of Reviews","data" => $reviews],200);
     }
+    public function getReviewByPetId($req_id){
+    $reviews = Review::where('pet_id',$req_id)->first();
+    if(!$reviews){
+        return response()->json(["message" => "Review not found"],404);
+    }
+    return response()->json(["message" => "Sucessfully get data of Reviews","data" => $reviews],200);
+}
     public function getReviewByUserId($id){
         $reviews = Review::where('user_id',$id)->with('user','pet','reviewBy')->get();
         if(!$reviews){

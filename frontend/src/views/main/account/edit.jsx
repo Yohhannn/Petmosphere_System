@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-
+import Cookies from 'js-cookie';
+import * as send from '../../postRequest/send.js';
+import * as fetch from "../../fetchRequest/fetch.js";
 const AccountEdit = () => {
   const [name, setName] = useState('');
   const [contactNumber, setContactNumber] = useState('');
@@ -9,11 +11,10 @@ const AccountEdit = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate(); // Initialize navigate
-
-  const handleProfilePictureChange = (event) => {
+    const userCookie =  Cookies.get('userCredentials');
+    const user = userCookie ? JSON.parse(userCookie) : null;
+    const handleProfilePictureChange = async(event) => {
     const file = event.target.files[0];
-    console.log("handleProfilePictureChange: File object:", file);
-
     if (file) {
       setProfilePicture(file);
       console.log("handleProfilePictureChange: File set to state");
@@ -31,9 +32,21 @@ const AccountEdit = () => {
     console.log('Profile Picture:', profilePicture);
   };
 
-  const handleYesConfirm = () => {
-    console.log('Account updated!');
-    setIsConfirmModalOpen(false);
+  const handleYesConfirm = async() => {
+      const image = await send.uploadImage(profilePicture);
+     const updatedDetails = {
+        user_name : name,
+        user_phone : contactNumber,
+        user_location : address,
+        user_prof_pic : image.secure_url
+    }
+    const response = await send.updateUser(user.user.user_id,updatedDetails);
+    if(response.message.includes('successfully')){
+        const userDetail = await fetch.getUserBy(user.user.user_id);
+        Cookies.set('userCredentials',JSON.stringify({user: userDetail.data}),{expires: 7});
+        setIsConfirmModalOpen(false);
+        navigate(`/account/${user.user.user_id}`);
+    }
   };
 
   const handleCancelConfirm = () => {
@@ -64,7 +77,7 @@ const AccountEdit = () => {
           <div className="mb-6 flex flex-col items-center">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-purple-400">
               <img
-                src={profilePicture ? URL.createObjectURL(profilePicture) : "#"}
+                src={profilePicture ? URL.createObjectURL(profilePicture) : user.user.user_prof_pic}
                 alt="Profile Preview"
                 className="w-full h-full object-cover"
               />
@@ -73,6 +86,7 @@ const AccountEdit = () => {
               <input
                 type="file"
                 id="profilePicture"
+                accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff,.svg,.heic,.avif"
                 className="file-input file-input-bordered w-full max-w-xs bg-white text-gray-800 border border-gray-300"
                 onChange={handleProfilePictureChange}
                 style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer' }}
@@ -142,11 +156,9 @@ const AccountEdit = () => {
               <button className="btn btn-secondary border-gray-300 bg-gray-300 hover:bg-gray-400 text-gray-800" onClick={handleCancelConfirm}>
                 Cancel
               </button>
-              <Link to="/home">
                 <button className="btn btn-primary bg-purple-500 hover:bg-purple-700 border-none text-orange-100" onClick={handleYesConfirm}>
                   Yes
                 </button>
-              </Link>
             </div>
           </div>
         </div>

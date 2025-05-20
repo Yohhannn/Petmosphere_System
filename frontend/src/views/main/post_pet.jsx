@@ -51,7 +51,7 @@ const PostPetForm = () => {
     const [petDescription, setPetDescription] = useState('');
     const [reason, setReason] = useState('');
     const [health, setHealth] = useState('');
-    const [petImages, setPetImages] = useState([]);
+    const [petImages, setPetImages] = useState(null);
     const [postDescription, setPostDescription] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submissionError, setSubmissionError] = useState(null);
@@ -59,12 +59,8 @@ const PostPetForm = () => {
 
     // Function to handle image selection
     const handleImageChange = useCallback((event) => {
-        const files = event.target.files;
-        if (files) {
-            // Limit to a maximum of 5 images
-            const newImages = Array.from(files).slice(0, 5);
-            setPetImages(prevImages => [...prevImages, ...newImages]);
-        }
+        const files = event.target.files[0];
+        setPetImages(files);
     }, []);
     useEffect(() => {
         const fetchPet = async() => {
@@ -76,10 +72,6 @@ const PostPetForm = () => {
         }
        fetchPet();
     }, [Type]);
-    // Function to remove an image
-    const removeImage = useCallback((index) => {
-        setPetImages(prevImages => prevImages.filter((_, i) => i !== index));
-    }, []);
 
     // Function to handle tag addition
     const handleAddTag = useCallback(() => {
@@ -108,8 +100,8 @@ const PostPetForm = () => {
             return;
         }
 
-        if (petImages.length === 0) {
-            setSubmissionError('Please upload at least one image.');
+        if (petImages === null) {
+            setSubmissionError('Please upload  one image.');
             setIsSubmitting(false);
             return;
         }
@@ -117,15 +109,7 @@ const PostPetForm = () => {
         // Simulate an API call (replace with your actual API endpoint)
         try {
             // Convert images to base64 strings (for demonstration purposes)
-            const imagePromises = petImages.map(file => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-            });
-            const base64Images = await Promise.all(imagePromises);
+            const image = await send.uploadImage(petImages);
             const userCookie =  Cookies.get('userCredentials');
             const user = userCookie ? JSON.parse(userCookie) : null;
             // Construct the data object to send
@@ -133,7 +117,7 @@ const PostPetForm = () => {
                 post_descrip: postDescription,
                 post_status: 'Pending',
                 user_id: user.user.user_id,
-                post_img: '/path/to/profile.jpg',
+                post_img: image.secure_url,
                 post_date: new Date().toISOString().split('T')[0],
                 post_reason : reason
             };
@@ -144,42 +128,16 @@ const PostPetForm = () => {
                 pet_tag: petTags.join(','),
                 pet_age: petAge,
                 pet_description: petDescription,
-                pet_reason: reason,
-                pet_health: health,
+                pet_medical: health,
                 pet_status: 'Available',
                 user_id: user.user.user_id,
                 pet_location : user.user.user_location
             }
-            const formData = {
-                PetName: petName,
-                PetType: petType,
-                Breed: breed,
-                PetTags: petTags,
-                PetAge: petAge,
-                PetDescription: petDescription,
-                Reason: reason,
-                Health: health,
-                PetImages: base64Images, // Send base64 strings
-                PostDescription: postDescription,
-                Status: 'Available', // Set status to Available
-                PostStatus: 'Pending', // Set post status
-                OwnerAccountID: 'user123', // Replace with actual owner ID
-                CurrentOwnerFullName: 'John Doe', // Replace
-                CurrentOwnerProfile: '/path/to/profile.jpg', // Replace
-                TimePosted: new Date()
-            };
-            console.log(formData);
-            console.log(petObject);
-            console.log(postObject);
             const pet = await send.sendPet(petObject);
             postObject['pet_id'] = pet.data.pet_id;
-            console.log(pet);
             const post = await send.sendPost(postObject);
-            console.log(post);
-            // Simulate a delay (replace with your actual API call)
             await new Promise(resolve => setTimeout(resolve, 2000));
             if(post.message.includes('successfully')){
-                // If the submission is successful
                 setSubmissionSuccess(true);
                 setPetName('');
                 setType('');
@@ -190,7 +148,7 @@ const PostPetForm = () => {
                 setPetDescription('');
                 setReason('');
                 setHealth('');
-                setPetImages([]);
+                setPetImages(null);
                 setPostDescription('');
             }
         } catch (error) {
@@ -338,6 +296,7 @@ const PostPetForm = () => {
                                         <textarea
                                             id="reason"
                                             value={reason}
+                                            maxLength={100}
                                             onChange={(e) => setReason(e.target.value)}
                                             placeholder="Explain why the pet is being put up for adoption"
                                             required
@@ -361,10 +320,9 @@ const PostPetForm = () => {
 
                                     {/* Pet Images */}
                                     <motion.div variants={inputVariants} className="space-y-1">
-                                        <label className="block text-sm font-semibold text-gray-700">Pet Images <span className="text-red-500">*</span> (Max 5)</label>
+                                        <label className="block text-sm font-semibold text-gray-700">Pet Images <span className="text-red-500">*</span> (Max 1)</label>
                                         <input
                                             type="file"
-                                            multiple
                                             onChange={handleImageChange}
                                             accept="image/*"
                                             className="bg-white"
@@ -373,12 +331,10 @@ const PostPetForm = () => {
 
                                         />
                                         <p id="petImages-help" className="mt-1 text-sm text-gray-500">
-                                            Upload up to 5 images of the pet.
+                                            Upload only 1 image of the pet.
                                         </p>
                                         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
                                             <AnimatePresence>
-                                                {petImages.map((image,index) => {
-                                                    const imageUrl = typeof image === 'string' ? image : URL.createObjectURL(image);
                                                     return (
                                                         <motion.div
                                                             variants={imageVariants}
@@ -388,28 +344,13 @@ const PostPetForm = () => {
                                                             className="relative rounded-md overflow-hidden border border-gray-300"
                                                         >
                                                             <img
-                                                                src={imageUrl}
-                                                                alt={`Pet Preview ${index + 1}`}
+                                                                src={petImages ? URL.createObjectURL(petImages) : "#"}
+                                                                alt={`Pet Preview`}
                                                                 className="w-full h-24 object-cover"
                                                             />
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => removeImage(index)}
-                                                                className="absolute top-1 right-1 bg-red-500/50 text-white hover:bg-red-500/70 rounded-full p-1"
-                                                            >
-                                                                <XCircle className="w-4 h-4" />
-                                                            </button>
                                                         </motion.div>
                                                     );
-                                                })}
                                             </AnimatePresence>
-                                            {petImages.length < 5 && (
-                                                <div className="flex items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
-                                                    onClick={() => document.getElementById('petImages')?.click()}
-                                                >
-                                                    <ImagePlus className="w-6 h-6 text-gray-500" />
-                                                </div>
-                                            )}
                                         </div>
                                     </motion.div>
 
@@ -419,6 +360,7 @@ const PostPetForm = () => {
                                         <textarea
                                             id="postDescription"
                                             value={postDescription}
+                                            maxLength={100}
                                             onChange={(e) => setPostDescription(e.target.value)}
                                             placeholder="Optional description for the post (e.g., adoption event details)"
                                             className="w-full px-4 py-2 border border-[#8E57B2] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F69332] animate__animated animate__slideInRight bg-white text-black"

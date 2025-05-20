@@ -78,7 +78,7 @@ const Pets = () => {
                                 {/* Pet Image (display the first image if available) */}
 
                                     <img
-                                        src={post.pet.pet_img}
+                                        src={post.post_img}
                                         alt={post.pet.pet_name}
                                         className="w-full h-48 object-cover rounded-lg mb-4 border-4 border-orange-400"
                                     />

@@ -22,12 +22,13 @@ const Home = () => {
     const [posts, setPost] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+    const [message,setMessage] = useState('');
+    const [isButton,setIsButton] = useState(false);
     const [verified, setVerified] = useState(false);
 
     const userCookie = Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
     const loggedInUserId = user?.user?.user_id;
-
     useEffect(() => {
         const getPost = async () => {
             const response = await fetch.getPosts();
@@ -43,7 +44,7 @@ const Home = () => {
         const checkVerificationStatus = async () => {
             if (loggedInUserId) {
                 const userData = await fetch.getUserBy(loggedInUserId);
-                setVerified(userData?.data?.user_verified === 0); // Set the state
+                setVerified(userData.data.user_verified !== 0);
             } else {
                 setVerified(false);
             }
@@ -54,14 +55,20 @@ const Home = () => {
     const handlePostPetClick = () => {
         if (verified) {
             navigate('/post_pet');
+        }else if(!verified && loggedInUserId.user_valid_id_pic === null) {
+            setIsModalOpen(true);
+            setIsButton(true);
+            setMessage('To post a pet for adoption, you need to verify your account.\n');
         } else {
             setIsModalOpen(true);
+            setIsButton(false);
+            setMessage('Your verification request is still reviewed by an administrator. Verification takes up to 1-3 days process.');
         }
     };
 
     const handleVerifyNowClick = () => {
         setIsModalOpen(false);
-        navigate('/account/verify/:accId');
+        navigate('/account/verify');
     };
 
     const handleCloseModal = () => {
@@ -109,7 +116,7 @@ const Home = () => {
                                 <div className="w-full md:w-1/2">
                                     {(
                                         <img
-                                            src={post.pet.pet_img}
+                                            src={post.post_img}
                                             alt={post.pet.pet_name}
                                             className="w-full h-auto object-cover rounded-t-lg md:rounded-l-lg md:rounded-r-none"
                                         />
@@ -138,7 +145,7 @@ const Home = () => {
 
                                         <h2 className="text-2xl font-bold text-purple-600 mb-2 animate__animated animate__fadeInLeft flex items-center">
                                             <img src="/main_assets/icons/icon_pet.png" className="w-5 h-5 mr-2" alt="petname" />
-                                            <Link to={`/pet/${post.post_id}/details`}>{post.pet.pet_name}</Link>
+                                            <Link to={`/pet/${post.pet_id}/details`}>{post.pet.pet_name}</Link>
                                         </h2>
 
                                         <p className="text-orange-400 font-semibold mb-2">{post.pet.breed.breed_name} ({post.pet.type.type_name})</p>
@@ -170,7 +177,7 @@ const Home = () => {
                                             ) : (
                                                 <></>
                                             )}
-                                            <Link to={`/pet/${post.post_id}/details`} className="text-purple-600 hover:underline font-semibold">
+                                            <Link to={`/pet/${post.pet_id}/details`} className="text-purple-600 hover:underline font-semibold">
                                                 View More
                                             </Link>
                                         </div>
@@ -193,15 +200,17 @@ const Home = () => {
                     <div className="bg-white rounded-lg p-6 text-center shadow-lg animate__animated animate__zoomIn">
                         <h2 className="text-xl font-semibold mb-4 text-purple-600">Verify Your Account</h2>
                         <p className="text-gray-700 mb-6">
-                            To post a pet for adoption, you need to verify your account.
+                            {message}
                         </p>
                         <div className="flex justify-center">
+                            {isButton &&(
                             <button
                                 onClick={handleVerifyNowClick}
                                 className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 mr-2"
                             >
                                 Verify Now!
                             </button>
+                                )}
                             <button
                                 onClick={handleCloseModal}
                                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors duration-200"

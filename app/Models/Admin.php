@@ -2,17 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Admin extends Model
+class Admin extends Authenticatable
 {
     protected $table = 'admin';
-    protected $fillable = [
-        'admin_username',
-        'admin_pass'
-    ];
-    public $timestamps = false;
 
     protected $primaryKey = 'admin_id';
-    protected $hidden = ['admin_pass'];
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'admin_username',
+        'admin_pass',
+    ];
+
+    protected $hidden = [
+        'admin_pass',
+    ];
+
+    public function getAuthPassword()
+    {
+        return $this->admin_pass;
+    }
+
+    public function getAuthIdentifierName()
+    {
+        return 'admin_username';
+    }
 }

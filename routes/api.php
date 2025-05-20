@@ -29,14 +29,17 @@ use App\Http\Controllers\AdminController;
 
     Route::get('/Post', [PostController::class, 'getAllPost']);
     Route::get('/Post/{id}', [PostController::class, 'getPostById']);
+    Route::get('/Post/pet/{id}', [PostController::class, 'getPostByPetId']);
     Route::get('/Post/User/{id}', [PostController::class, 'getPostByUserId']);
     Route::post('/Post', [PostController::class, 'createPost']);
     Route::put('/Post/{id}', [PostController::class, 'updatePost']);
+    Route::put('/Post/status/{id}', [PostController::class, 'updatePostStatus']);
     Route::delete('/Post/{id}', [PostController::class, 'deletePost']);
 
     Route::get('/User', [UserController::class, 'getAllUser']);
     Route::get('/User/{id}', [UserController::class, 'getUserById']);
     Route::put('/User/{id}', [UserController::class, 'updateUser']);
+    Route::put('/User/verified/{id}', [UserController::class, 'updateUserVerified']);
     Route::delete('/User/{id}', [UserController::class, 'deleteUser']);
 
     Route::get('/AdoptionRequest', [AdoptionRequestController::class, 'getAllAdoptionRequest']);
@@ -46,6 +49,7 @@ use App\Http\Controllers\AdminController;
     Route::put('/AdoptionRequest/{id}', [AdoptionRequestController::class, 'updateAdoptionRequest']);
     Route::put('/AdoptionRequest/update/{id}', [AdoptionRequestController::class, 'updateAdoptionRequestView']);
     Route::put('/AdoptionRequest/update/status/{id}', [AdoptionRequestController::class, 'updateAdoptionRequestStatus']);
+    Route::put('/AdoptionRequest/update/rejected/status/{id}', [AdoptionRequestController::class, 'updateRequestRejectStatus']);
     Route::delete('/AdoptionRequest/{id}', [AdoptionRequestController::class, 'deleteAdoptionRequest']);
 
     Route::get('/Breed', [BreedController::class, 'getAllBreed']);
@@ -63,14 +67,17 @@ use App\Http\Controllers\AdminController;
     Route::get('/Review', [ReviewController::class, 'getAllReview']);
     Route::get('/Review/{id}', [ReviewController::class, 'getReviewById']);
     Route::get('/Review/User/{id}', [ReviewController::class, 'getReviewByUserId']);
+    Route::get('/Review/Pet/{id}', [ReviewController::class, 'getReviewByPetId']);
     Route::post('/Review', [ReviewController::class, 'createReview']);
     Route::put('/Review/{id}', [ReviewController::class, 'updateReview']);
     Route::delete('/Review/{id}', [ReviewController::class, 'deleteReview']);
 
     Route::get('/Pet', [PetController::class, 'getAllPet']);
     Route::get('/Pet/{id}', [PetController::class, 'getPetById']);
+    Route::get('/Pet/user/{id}', [PetController::class, 'getPetByUserId']);
     Route::post('/Pet', [PetController::class, 'createPet']);
     Route::put('/Pet/{id}', [PetController::class, 'updatePet']);
+    Route::put('/Pet/status/{id}', [PetController::class, 'updatePetStatus']);
     Route::delete('/Pet/{id}', [PetController::class, 'deletePet']);
 
     Route::get('/RequestHistory', [RequestHistoryController::class, 'getAllRequestHistory']);

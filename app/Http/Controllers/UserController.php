@@ -52,25 +52,44 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function updateUser(Request $request,$id){
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(["message" => "User not found"], 404);
+        }
+
+        $rules = [
+            'user_name' => 'sometimes|nullable|string|max:50',
+            'user_phone' => 'sometimes|nullable|string|max:11',
+            'user_location' => 'sometimes|nullable|string|max:100',
+            'user_prof_pic' => 'sometimes|nullable|string|max:250',
+        ];
+
+        $validated = $request->validate($rules);
+
+        // Filter out null values so only provided fields are updated
+        $filteredData = array_filter($validated, function ($value) {
+            return !is_null($value);
+        });
+
+        $user->update($filteredData);
+
+        return response()->json([
+            "message" => "User updated successfully",
+            "data" => $user
+        ], 200);
+    }
+
+    public function updateUserVerified(Request $request,$id){
         $user = User::find($id);
         if(!$user){
             return response()->json(["message" => "User not found"],404);
         }
+
         $validated = $request->validate([
-            'user_name' => 'required|string|max:50',
-            'user_phone' => 'required|string|max:11',
-            'user_location' => 'required|string|max:100',
-            'user_prof_pic' => 'nullable|string|max:250',
-            'user_email' => 'required|email|max:50',
-            'user_pass' => 'required|string|max:100',
-            'user_createdate' => 'required|date',
+            'user_valid_id_pic' => 'required|string|min:0',
         ]);
-        if($user->user_email !== $request->user_email){
-            if(User::where('user_email',$request->user_email)->exists()){
-                return response()->json(["message" => "User email already exists"],404);
-            }
-        }
         $user->update($validated);
         return response()->json(["message" => "User updated successfully","data" => $user],200);
     }
@@ -79,7 +98,10 @@ class UserController extends Controller
         if(!$user){
             return response()->json(["message" => "User not found"],404);
         }
-        $user->delete();
+        $updateInactive = [
+            "is_active" => 0
+        ];
+        $user->update($updateInactive);
         return response()->json(["message" => "User deleted successfully"],200);
     }
 

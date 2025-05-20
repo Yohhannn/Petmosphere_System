@@ -8,20 +8,6 @@ import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
 import Cookies from 'js-cookie';
 import {updateAdoptionRequestStatus} from "../postRequest/send.js";
-// Mock data (consider moving to a separate file if it grows)
-// const petRequestsData = [
-//     { id: 1, name: 'John Doe', email: 'john.doe@example.com', contactNumber: '123-456-7890', address: '123 Main St', req_status: 'Pending', petName: 'Buddy', petTags: ['dog', 'friendly'], message: 'I would love to adopt Buddy!', dateRequested: '2024-07-24', req_view_status: 'unread' },
-//     { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', contactNumber: '987-654-3210', address: '456 Oak Ave', req_status: 'Approved', petName: 'Whiskers', petTags: ['cat', 'playful'], message: 'Whiskers seems like a great fit for my family.', dateRequested: '2024-07-23', req_view_status: 'read' },
-//     { id: 3, name: 'Peter Jones', email: 'peter.jones@example.com', contactNumber: '555-123-4567', address: '789 Pine Ln', req_status: 'Rejected', petName: 'Rocky', petTags: ['dog', 'energetic'], message: 'I am interested in adopting Rocky.', dateRequested: '2024-07-22', req_view_status: 'read' },
-//     { id: 4, name: 'Mary Brown', email: 'mary.brown@example.com', contactNumber: '111-222-3333', address: '101 Elm St', req_status: 'Completed', petName: 'Fluffy', petTags: ['cat', 'calm'], message: 'I want to adopt Fluffy.', dateRequested: '2024-07-21', req_view_status: 'read' },
-//     { id: 5, name: 'David Wilson', email: 'david.wilson@example.com', contactNumber: '444-555-6666', address: '222 Maple Dr', req_status: 'Pending', petName: 'Max', petTags: ['dog', 'loyal'], message: 'I am interested in adopting Max.', dateRequested: '2024-07-20', req_view_status: 'unread' },
-// ];
-
-// const sentMessagesData = [
-//     { id: 1, snt_name: 'Edmark Talingting', snt_email: 'sheltera@example.com', snt_contactNumber: '555-987-6543', snt_address: '789 Shelter Rd', snt_req_status: 'Pending', snt_petName: 'Buddy', snt_petTags: ['dog', 'friendly'], snt_message: 'Inquiry about Buddy', snt_dateRequested: '2024-07-25', snt_dateUpdated: '2024-07-25' },
-//     { id: 2, snt_name: 'Jodeci Pacibe', snt_email: 'shelterb@example.com', snt_contactNumber: '555-234-5678', snt_address: '123 Rescue Ln', snt_req_status: 'Approved', snt_petName: 'Whiskers', snt_petTags: ['cat', 'playful'], snt_message: 'Application for Whiskers', snt_dateRequested: '2024-07-24', snt_dateUpdated: '2024-07-24' },
-//     { id: 2, snt_name: 'Jodeci Pacibe', snt_email: 'shelterb@example.com', snt_contactNumber: '555-234-5678', snt_address: '123 Rescue Ln', snt_req_status: 'Completed', snt_petName: 'PDiddy', snt_petTags: ['oil', 'baby'], snt_message: 'Application for Diddy', snt_dateRequested: '2024-07-24', snt_dateUpdated: '2024-07-24' },
-// ];
 
 const systemMessagesData = [
     { id: 1, sys_admin_name: 'Rexshimura', sys_message_type: 'Warning', sys_message: 'The image you posted was flagged as inappropriate. Please review our guidelines.', sys_date_sent: '2025-05-06' },
@@ -49,9 +35,9 @@ const getStatusBadge = (status) => {
         case 'Completed':
             badgeClasses += " text-blue-500 bg-blue-100 border border-blue-300";
             return <div className={badgeClasses}>Completed</div>;
-        default:
-            badgeClasses += " text-gray-500 bg-gray-100 border border-gray-300";
-            return <div className={badgeClasses}>Unknown</div>;
+        case 'Cancelled':
+            badgeClasses += " text-purple-500 bg-purple-100 border border-purple-300";
+            return <div className={badgeClasses}>Cancelled</div>;
     }
 };
 
@@ -232,6 +218,7 @@ const InboxPage = () => {
                                     <option value="Approved">Approved</option>
                                     <option value="Rejected">Rejected</option>
                                     <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                     <FontAwesomeIcon icon={faFilter} className="ml-2 text-gray-500" />
@@ -242,7 +229,8 @@ const InboxPage = () => {
                                 <span className="font-semibold text-yellow-700"> Pending:</span> {messages.filter(m => m.req_status === 'Pending').length} |
                                 <span className="font-semibold text-green-700"> Approved:</span> {messages.filter(m => m.req_status === 'Approved').length} |
                                 <span className="font-semibold text-red-700"> Rejected:</span> {messages.filter(m => m.req_status === 'Rejected').length} |
-                                <span className="font-semibold text-blue-500"> Completed:</span> {messages.filter(m => m.req_status === 'Completed').length}
+                                <span className="font-semibold text-blue-500"> Completed:</span> {messages.filter(m => m.req_status === 'Completed').length} |
+                                <span className="font-semibold text-violet-500"> Cancelled:</span> {messages.filter(m => m.req_status === 'Cancelled').length}
                             </div>
                         </div>
                         {renderMessageList(filteredMessages, 'Inbox')}
@@ -263,6 +251,7 @@ const InboxPage = () => {
                                     <option value="Approved">Approved</option>
                                     <option value="Rejected">Rejected</option>
                                     <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
                                 </select>
                                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                     <FontAwesomeIcon icon={faFilter} className="ml-2 text-gray-500" />
@@ -274,6 +263,7 @@ const InboxPage = () => {
                                 <span className="font-semibold text-green-700"> Approved:</span> {sentMessages.filter(m => m.req_status === 'Approved').length} |
                                 <span className="font-semibold text-red-700"> Rejected:</span> {sentMessages.filter(m => m.req_status === 'Rejected').length} |
                                 <span className="font-semibold text-blue-500"> Completed:</span> {sentMessages.filter(m => m.req_status === 'Completed').length}
+                                <span className="font-semibold text-violet-500"> Cancelled:</span> {sentMessages.filter(m => m.req_status === 'Cancelled').length}
                             </div>
                         </div>
                         {renderMessageList(filteredSentMessages, 'Sent')}
@@ -426,7 +416,6 @@ const InboxPage = () => {
                                     <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.pet.pet_tag}</p>
                                     <p><span className="font-semibold">Message:</span></p>
                                     <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.req_message}</p>
-                                    <p className="text-gray-800 text-sm mb-2 leading-relaxed whitespace-pre-line">Your Request Response:</p>
                                 </>
                              ) //: activeTab === 'Sent' ? (
                             //     <>
@@ -461,24 +450,6 @@ const InboxPage = () => {
                         <div className="mt-4 flex justify-end gap-2 flex-col items-end">
                             {activeTab === 'Inbox' && (
                                 <>
-                                    <div className="relative inline-block w-full mb-2">
-                                        <select
-                                            value={modalStatus}
-                                            onChange={(e) => setModalStatus(e.target.value)}
-                                            className={`block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm
-                                                ${['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)
-                                                ? 'text-gray-400'
-                                                : 'text-gray-700'
-                                            }`}
-                                            disabled={['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)}
-                                        >
-                                            <option value="Pending">Pending</option>
-                                            <option value="Approved">Approved</option>
-                                            <option value="Rejected">Rejected</option>
-                                            </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                        </div>
-                                    </div>
                                     <button
                                         onClick={() => {
                                             if (['Approved', 'Rejected', 'Completed'].includes(selectedMessage.req_status)) {
