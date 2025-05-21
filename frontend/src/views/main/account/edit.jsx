@@ -4,32 +4,27 @@ import Cookies from 'js-cookie';
 import * as send from '../../postRequest/send.js';
 import * as fetch from "../../fetchRequest/fetch.js";
 const AccountEdit = () => {
-  const [name, setName] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [profilePicture, setProfilePicture] = useState(null);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const fileInputRef = useRef(null);
-  const navigate = useNavigate(); // Initialize navigate
     const userCookie =  Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
+    const [name, setName] = useState(user.user.user_name);
+    const [contactNumber, setContactNumber] = useState(user.user.user_phone);
+    const [address, setAddress] = useState(user.user.user_location);
+    const [profilePicture, setProfilePicture] = useState(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const fileInputRef = useRef(null);
+    const navigate = useNavigate(); // Initialize navigate
+
     const handleProfilePictureChange = async(event) => {
     const file = event.target.files[0];
     if (file) {
       setProfilePicture(file);
-      console.log("handleProfilePictureChange: File set to state");
     } else {
-      console.log("handleProfilePictureChange: No file selected");
       setProfilePicture(null);
     }
   };
 
   const handleConfirmClick = () => {
     setIsConfirmModalOpen(true);
-    console.log('Name:', name);
-    console.log('Contact Number:', contactNumber);
-    console.log('Address:', address);
-    console.log('Profile Picture:', profilePicture);
   };
 
   const handleYesConfirm = async() => {

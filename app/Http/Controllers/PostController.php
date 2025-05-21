@@ -132,4 +132,10 @@ class PostController extends Controller
             'data' => null
         ]);
     }
+    public function countPost(){
+        $approved = Post::where('post_status','Available')->count();
+        $pending = Post::where('post_status','Pending')->count();
+        return response()->json(["approved" => $approved,"pending" => $pending]);
+    }
+
 }

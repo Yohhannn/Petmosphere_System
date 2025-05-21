@@ -124,6 +124,10 @@ const AccountInfo = () => {
                         </div>
                             )}
                         <div>
+                            <h3 className="font-semibold text-purple-600">Social Media Link:</h3>
+                            <p>{loggedInAccount.user_socmed ? <a href={loggedInAccount.user_socmed}>{loggedInAccount.user_socmed}</a> : "Not Linked"}</p>
+                        </div>
+                        <div>
                             <h3 className="font-semibold text-purple-600">Date Created:</h3>
                             <p>{loggedInAccount.user_createdate}</p>
                         </div>

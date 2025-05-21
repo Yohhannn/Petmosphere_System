@@ -51,9 +51,16 @@ const SignUp = () => {
       "user_phone": contactNumber, // Include contact number
       "user_location": address,     // Include address
     };
-    console.log(signUpObject);
+    const alertSignUp = {
+        alert_type: "sign_up",
+        admin_id : null,
+        alert_title : "New sign up",
+        alert_message : "New Sign-In: " + email
+    }
     const response = await send.signUp(signUpObject);
     if (response.message.includes('successfully')) {
+      alertSignUp["user_id"] = response.data.user_id;
+      await send.sendAlert(alertSignUp);
       navigate('/login');
     }else if(response.message.includes('email')) {
         setErrorMessage(response.message); //show the error message from server

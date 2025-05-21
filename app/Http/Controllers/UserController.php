@@ -64,16 +64,15 @@ class UserController extends Controller
             'user_phone' => 'sometimes|nullable|string|max:11',
             'user_location' => 'sometimes|nullable|string|max:100',
             'user_prof_pic' => 'sometimes|nullable|string|max:250',
+            'user_verified' => 'sometimes|nullable|integer',
+            'is_active' => 'sometimes|nullable|integer',
+            'user_socmed' => 'sometimes|nullable|string|max:250',
+            'user_valid_id_pic' => 'sometimes|nullable|string'
         ];
 
         $validated = $request->validate($rules);
 
-        // Filter out null values so only provided fields are updated
-        $filteredData = array_filter($validated, function ($value) {
-            return !is_null($value);
-        });
-
-        $user->update($filteredData);
+        $user->update($validated);
 
         return response()->json([
             "message" => "User updated successfully",
@@ -81,18 +80,6 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function updateUserVerified(Request $request,$id){
-        $user = User::find($id);
-        if(!$user){
-            return response()->json(["message" => "User not found"],404);
-        }
-
-        $validated = $request->validate([
-            'user_valid_id_pic' => 'required|string|min:0',
-        ]);
-        $user->update($validated);
-        return response()->json(["message" => "User updated successfully","data" => $user],200);
-    }
     public function deleteUser($id){
         $user = User::find($id);
         if(!$user){
@@ -104,5 +91,10 @@ class UserController extends Controller
         $user->update($updateInactive);
         return response()->json(["message" => "User deleted successfully"],200);
     }
-
+    public function countUser(){
+        $users = User::all()->count();
+        $verified = User::where('user_verified',1)->count();
+        $unverified = User::where('user_verified',0)->count();
+        return response()->json(["users" => $users, "verified" => $verified, "unverified" => $unverified]);
+    }
 }

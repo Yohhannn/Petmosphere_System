@@ -6,15 +6,24 @@ import * as fetch from '../../fetchRequest/fetch.js';
 import PromptVerificationSuccess from '../../../prompt/prompt_verification_success.jsx';
 
 const AccountVerify = () => {
-  const [validId, setValidId] = useState(null);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const fileInputRef = useRef(null);
-  const [success,setSuccess] = useState(false);
-  const navigate = useNavigate();
-  const [fileName, setFileName] = useState(''); // State to store the filename
+    const [validId, setValidId] = useState(null);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const fileInputRef = useRef(null);
+    const [success,setSuccess] = useState(false);
+    const navigate = useNavigate();
+    const [fileName, setFileName] = useState(''); // State to store the filename
     const [fileError, setFileError] = useState('');
+    const [socLink,setsocLink] = useState('');
     const userCookie =  Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
+
+  const alertVerified = {
+      alert_type : "user_verified",
+      alert_title : "Verification Request",
+      alert_message : "Verification Request by "+user.user.user_name,
+      user_id : user.user.user_id,
+      admin_id : null
+  }
   const handleValidIdChange = (event) => {
     const file = event.target.files[0];
         setFileError(''); // Clear any previous error
@@ -39,18 +48,21 @@ const AccountVerify = () => {
             setFileError('Please upload a valid ID.');
             return;
         }
+        if (!socLink) {
+            setFileError('Please enter any social media link.');
+            return;
+        }
     setIsConfirmModalOpen(true);
-    console.log('Valid ID:', validId);
   };
 
   const handleYesConfirm = async() => {
     const image = await send.uploadImage(validId);
-    const response = await send.updateUserVerification(user.user.user_id,{user_valid_id_pic : image.secure_url});
+    const response = await send.updateUser(user.user.user_id,{user_valid_id_pic : image.secure_url,user_socmed:socLink});
     if(response.message.includes('successfully')) {
         setSuccess(true);
         const userDetail = await fetch.getUserBy(user.user.user_id);
         Cookies.set('userCredentials',JSON.stringify({user: userDetail.data}),{expires: 7});
-        console.log('ID uploaded! Waiting for admin approval.');
+        await send.sendAlert(alertVerified);
         setIsConfirmModalOpen(false);
     }else {
         console.log("error");
@@ -105,10 +117,29 @@ const AccountVerify = () => {
              <p className="text-gray-500 text-sm mt-4 italic">
               <strong>Note:</strong> Please ensure the image is clear and the details are easily readable. Only .png and .jpeg files are accepted.
             </p>
-                        {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+
           </div>
-          <div className="flex justify-between animate__animated animate__fadeInUp animate__delay-500">
-          <button
+            <div className="mb-4 animate__animated animate__fadeInLeft animate__delay_200">
+                <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
+                    Social Media Link
+                </label>
+                <input
+                    type="text"
+                    id="socmed_link"
+                    className="input input-bordered w-full bg-white text-gray-800 border border-gray-300"
+                    value={socLink}
+                    required
+                    onChange={(e) => setsocLink(e.target.value)}
+                />
+                <p className="text-gray-600 mt-4">
+                    Please enter any of your social media link — this will be our primary means of communication regarding your post or account.
+                </p>
+                {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+            </div>
+            <div className="flex justify-between animate__animated animate__fadeInUp animate__delay-500">
+
+
+              <button
               className="btn border-orange-400 bg-orange-400 text-white hover:bg-orange-300 hover:border-orange-300 transition-colors duration-200"
               onClick={handleBack}
             >

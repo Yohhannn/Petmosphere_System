@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdoptionRequestController;
+use App\Http\Controllers\AlertController;
 use App\Http\Controllers\BreedController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
@@ -39,7 +40,6 @@ use App\Http\Controllers\AdminController;
     Route::get('/User', [UserController::class, 'getAllUser']);
     Route::get('/User/{id}', [UserController::class, 'getUserById']);
     Route::put('/User/{id}', [UserController::class, 'updateUser']);
-    Route::put('/User/verified/{id}', [UserController::class, 'updateUserVerified']);
     Route::delete('/User/{id}', [UserController::class, 'deleteUser']);
 
     Route::get('/AdoptionRequest', [AdoptionRequestController::class, 'getAllAdoptionRequest']);
@@ -93,6 +93,18 @@ use App\Http\Controllers\AdminController;
     Route::post('/User', [UserController::class, 'createUser']);
     Route::post('/AdoptionRequest/verify', [AdoptionRequestController::class, 'CheckAdoption']);
 
+    //count
+    Route::get('/Users/count', [UserController::class, 'countUser']);
+    Route::get('/Posts/count',[PostController::class, 'countPost']);
+    Route::get('/Pets/count',[PetController::class, 'countPet']);
+    Route::get('/Alert/userCount/{id}',[AlertController::class, 'CountAlertByUserId']);
+
+    //alert
+    Route::get('/Alert',[AlertController::class, 'getAllAlert']);
+    Route::get('/Alert/user/{id}',[AlertController::class, 'getAlertByUser']);
+    Route::get('/Alert/admin/{id}',[AlertController::class, 'getAlertByUser']);
+    Route::post('/Alert', [AlertController::class, 'createAlert']);
+    Route::put('/Alert/{id}', [AlertController::class, 'updateAlert']);
 
 
 

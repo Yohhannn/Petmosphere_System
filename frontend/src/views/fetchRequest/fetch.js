@@ -1,11 +1,23 @@
 const base_url = "http://127.0.0.1:8000/api";
 
 export async function getPet(){
-    const response = await fetch(base_url+"/Post");
+    const response = await fetch(base_url+"/Pet");
     return await response.json();
 }
-export async function getTag(){
-    const response = await fetch(base_url+"/Post");
+export async function getCountPet(){
+    const response = await fetch(base_url+"/Pets/count");
+    return await response.json();
+}
+export async function getCountPost(){
+    const response = await fetch(base_url+"/Posts/count");
+    return await response.json();
+}
+export async function getCountUser(){
+    const response = await fetch(base_url+"/Users/count");
+    return await response.json();
+}
+export async function getUsers(){
+    const response = await fetch(base_url+"/User");
     return await response.json();
 }
 export async function getPosts(){
@@ -46,6 +58,18 @@ export  async function getType(){
 }
 export  async function getBreed(){
     const response = await fetch(base_url+"/Breed");
+    return await response.json();
+}
+export  async function getCountAlert(id){
+    const response = await fetch(base_url+`/Alert/userCount/${id}`);
+    return await response.json();
+}
+export  async function getAlertByUser(id){
+    const response = await fetch(base_url+`/Alert/user/${id}`);
+    return await response.json();
+}
+export  async function getAlerts(){
+    const response = await fetch(base_url+"/Alert");
     return await response.json();
 }
 export  async function getAdoptionRequestByUserId(id){

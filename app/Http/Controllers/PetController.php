@@ -94,5 +94,10 @@ class PetController extends Controller
         }
         return response()->json(["message" => "Id doesn't exist"], 404);
     }
+    public function countPet()
+    {
+        $adoptedPet = Pet::where('pet_status','Adopted')->count();
+        return response()->json(["adopted" => $adoptedPet]);
+    }
 
 }

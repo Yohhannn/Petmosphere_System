@@ -9,16 +9,6 @@ import * as send from '../postRequest/send.js';
 import Cookies from 'js-cookie';
 import {updateAdoptionRequestStatus} from "../postRequest/send.js";
 
-const systemMessagesData = [
-    { id: 1, sys_admin_name: 'Rexshimura', sys_message_type: 'Warning', sys_message: 'The image you posted was flagged as inappropriate. Please review our guidelines.', sys_date_sent: '2025-05-06' },
-    { id: 2, sys_admin_name: 'Rexshimura', sys_message_type: 'Announcement', sys_message: 'We are excited to announce our new foster program! Learn how you can make a difference.', sys_date_sent: '2025-05-05' },
-    { id: 3, sys_admin_name: 'Rexshimura', sys_message_type: 'Update', sys_message: 'System Update V3.1.2 Pre-Alpha: Bug fixes and performance improvements.', sys_date_sent: '2025-05-04' },
-    { id: 4, sys_admin_name: 'Rexshimura', sys_message_type: 'System', sys_message: 'Your post was rejected due to policy violations.', sys_date_sent: '2025-05-04' },
-    { id: 5, sys_admin_name: 'Rexshimura', sys_message_type: 'System', sys_message: 'Your post was approved and is now live.', sys_date_sent: '2025-05-04' },
-    { id: 6, sys_admin_name: 'Rexshimura', sys_message_type: 'System', sys_message: 'Your post was deleted by the administrator.', sys_date_sent: '2025-05-04' },
-    { id: 7, sys_admin_name: 'Petmosphere', sys_message_type: 'System', sys_message: 'Welcome to Petmosphere! Were so happy to have you join our community of pet lovers.', sys_date_sent: '2025-05-07' }
-];
-
 // Helper function for status badges (reused)
 const getStatusBadge = (status) => {
     let badgeClasses = "px-2 py-1 rounded text-xs font-semibold";
@@ -45,13 +35,13 @@ const getStatusBadge = (status) => {
 const getSystemMessageBadge = (type) => {
     let badgeClasses = "px-2 py-1 rounded text-xs font-semibold";
     switch (type) {
-        case 'Warning':
+        case 'warning':
             badgeClasses += " text-red-700 bg-red-100 border border-red-300";
             return <div className={badgeClasses}><FontAwesomeIcon icon={faExclamationTriangle} className="mr-1" /> Warning</div>;
-        case 'Announcement':
+        case 'announcement':
             badgeClasses += " text-blue-700 bg-blue-100 border border-blue-300";
             return <div className={badgeClasses}><FontAwesomeIcon icon={faBullhorn} className="mr-1" /> Announcement</div>;
-        case 'Update':
+        case 'update':
             badgeClasses += " text-yellow-700 bg-yellow-100 border border-yellow-300";
             return <div className={badgeClasses}><FontAwesomeIcon icon={faSyncAlt} className="mr-1" /> Update</div>;
         default:
@@ -67,12 +57,15 @@ const InboxPage = () => {
     const [modalStatus, setModalStatus] = useState('');
     const [messages, setMessages] = useState([]);
     const [sentMessages, setSentMessages] = useState([]);
-    const [systemMessages] = useState(systemMessagesData);
-
+    const [systemMessages,setSystemMessages] = useState([]);
     let fetchAdoptionRequestByUser;
     let fetchAllAdoptionRequest;
     const userCookie = Cookies.get('userCredentials');
     const user = userCookie ? JSON.parse(userCookie) : null;
+    const systemData = async() => {
+        const response = await fetch.getAlertByUser(user.user.user_id);
+        setSystemMessages(response.data);
+    }
     useEffect(() => {
         fetchAdoptionRequestByUser = async () =>{
             const response = await fetch.getAdoptionRequestByUserId(user.user.user_id);
@@ -87,6 +80,7 @@ const InboxPage = () => {
         }
         fetchAdoptionRequestByUser();
         fetchAllAdoptionRequest();
+        systemData();
     }, [modalStatus]);
     const updateAdoptionRequestView = async (id,data) =>{
         const response = await send.updateAdoptionRequestView(id,data);
@@ -439,11 +433,11 @@ const InboxPage = () => {
                             // )
                                 : (
                                 <>
-                                    <p><span className="font-semibold">Admin:</span> {selectedMessage.sys_admin_name}</p>
-                                    <p><span className="font-semibold">Type:</span> {getSystemMessageBadge(selectedMessage.sys_message_type)}</p>
+                                    <p><span className="font-semibold">Admin:</span> {selectedMessage.admin.admin_name}</p>
+                                    <p><span className="font-semibold">Type:</span> {getSystemMessageBadge(selectedMessage.alert_type)}</p>
                                     <p><span className="font-semibold">Message:</span></p>
-                                    <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.sys_message}</p>
-                                    <p><span className="font-semibold">Date Sent:</span> {selectedMessage.sys_date_sent}</p>
+                                    <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.alert_message}</p>
+                                    <p><span className="font-semibold">Date Sent:</span> {selectedMessage.created_at.split('T')[0]+" "+selectedMessage.created_at.split('T')[1].split('.')[0]}</p>
                                 </>
                             )}
                         </div>

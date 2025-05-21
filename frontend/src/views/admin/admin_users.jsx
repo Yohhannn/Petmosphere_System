@@ -1,111 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Admin_Header from '../../components/admin_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
-
+import * as fetch from '../fetchRequest/fetch.js';
+import * as send from '../postRequest/send.js';
 const Users = () => {
   // Mock user data
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'Jane Doe',
-      email: 'jane.doe@example.com',
-      verified: true,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-24',
-      warnings: 1,
-      active: true,
-    },
-    {
-      id: 2,
-      name: 'John Smith',
-      email: 'john.smith@example.com',
-      verified: false,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-23',
-      warnings: 0,
-      active: true,
-    },
-    {
-      id: 3,
-      name: 'Alice Johnson',
-      email: 'alice.johnson@example.com',
-      verified: false,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-22',
-      warnings: 2,
-      active: true,
-    },
-    {
-      id: 4,
-      name: 'Bob Williams',
-      email: 'bob.williams@example.com',
-      verified: true,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-21',
-      warnings: 0,
-      active: true,
-    },
-    {
-      id: 5,
-      name: 'Eva Brown',
-      email: 'eva.brown@example.com',
-      verified: false,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-20',
-      warnings: 3,
-      active: false,
-    },
-    {
-      id: 6,
-      name: 'Michael Davis',
-      email: 'michael.davis@example.com',
-      verified: true,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-19',
-      warnings: 1,
-      active: true,
-    },
-    {
-      id: 7,
-      name: 'David Lee',
-      email: 'david.lee@example.com',
-      verified: true,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-18',
-      warnings: 5,
-      active: true,
-    },
-    {
-      id: 8,
-      name: 'Sarah Kim',
-      email: 'sarah.kim@example.com',
-      verified: false,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-17',
-      warnings: 1,
-      active: true,
-    },
-    {
-      id: 9,
-      name: 'Kevin Chen',
-      email: 'kevin.chen@example.com',
-      verified: false,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-16',
-      warnings: 0,
-      active: true,
-    },
-    {
-      id: 10,
-      name: 'Priya Patel',
-      email: 'priya.patel@example.com',
-      verified: true,
-      idPhotoUrl: 'https://via.placeholder.com/60',
-      dateOfRequest: '2024-07-15',
-      warnings: 2,
-      active: true,
-    },
-  ]);
+  const [users, setUsers] = useState([]);
 
   const [modalUser, setModalUser] = useState(null);
   const [modalType, setModalType] = useState(''); // 'warn', 'deactivate', 'activate'
@@ -114,53 +14,68 @@ const Users = () => {
     approve: false,
     reject: false,
   });
+
   const [verificationDescription, setVerificationDescription] = useState('');
+  let alertWarn = {};
+  const [userWarnings, setUserWarnings] = useState({});
 
-  const handleVerifyUser = (userId) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, verified: true } : u))
-    );
+    const userData = async () => {
+        const usersData = await fetch.getUsers();
+        setUsers(usersData.data);
+
+        const verified = usersData.data.filter((u) => u.user_verified && u.is_active);
+        const warnings = {};
+
+        for (const user of verified) {
+            const response = await fetch.getCountAlert(user.user_id);
+            warnings[user.user_id] = response.count;
+        }
+        setUserWarnings(warnings);
+    };
+    useEffect(() => {
+        userData();
+    }, []);
+  const handleVerifyUser = async(userId) => {
+    await send.updateUser(userId,{user_verified: 1})
     setModalUser(null);
     setVerificationStatus({ approve: false, reject: false });
     setVerificationDescription('');
+    await userData();
   };
 
-  const handleRejectUser = (userId) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, verified: false } : u))
-    );
+  const handleRejectUser = async(userId) => {
+    const alertReject = {
+        alert_type: 'user_rejected',
+        alert_title : "Rejected User Verification",
+        alert_message : verificationDescription,
+        user_id : userId,
+        admin_id : 6
+    }
+    await send.sendAlert(alertReject);
+    await send.updateUser(userId,{user_valid_id_pic : null});
     setModalUser(null);
     setVerificationStatus({ approve: false, reject: false });
     setVerificationDescription('');
+    await userData();
   };
 
-  const handleUnverifyUser = (userId) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) => (user.id === userId ? { ...user, verified: false } : user))
-    );
-  };
 
-  const handleDeactivateUser = (userId) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) => (user.id === userId ? { ...user, active: false } : user)) // Add a new 'active' property
-    );
+  const handleDeactivateUser = async(userId) => {
+    await send.updateUser(userId,{is_active:0})
+    userData();
     setModalUser(null);
   };
 
-  const handleActivateUser = (userId) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) => (user.id === userId ? { ...user, active: true } : user))
-    );
-    setModalUser(null);
+  const handleActivateUser = async(userId) => {
+      await send.updateUser(userId,{is_active:1})
+      userData();
+      setModalUser(null);
   };
 
-  const handleDeleteUser = (userId) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-  };
 
-  const unverifiedUsers = users.filter((u) => !u.verified);
-  const verifiedUsers = users.filter((u) => u.verified && u.active);
-  const deactivatedUsers = users.filter((u) => u.verified && !u.active);
+  const unverifiedUsers = users.filter((u) => !u.user_verified && u.user_valid_id_pic );
+  const verifiedUsers = users.filter((u) => u.user_verified && u.is_active);
+  const deactivatedUsers = users.filter((u) => u.user_verified && !u.is_active);
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -177,18 +92,25 @@ const Users = () => {
     setModalMessage(message);
   };
 
-  const performAction = () => {
+  const performAction = async() => {
     if (!modalUser) return;
     switch (modalType) {
       case 'warn':
-        // Implement warn functionality
-        alert(`Warn user ${modalUser.name} with message: ${modalMessage}`);
+           alertWarn = {
+               alert_type: 'warning',
+               alert_title: "Warning for deactivation",
+               alert_message: modalMessage,
+               user_id: modalUser.user_id,
+               admin_id: 6
+           }
+        await send.sendAlert(alertWarn);
+        await userData();
         break;
       case 'deactivate':
-        handleDeactivateUser(modalUser.id);
+        handleDeactivateUser(modalUser.user_id);
         break;
       case 'activate':
-        handleActivateUser(modalUser.id);
+        handleActivateUser(modalUser.user_id);
         break;
       default:
         break;
@@ -233,22 +155,23 @@ const Users = () => {
             <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scroll">
               {unverifiedUsers.map((user) => (
                 <li
-                  key={user.id}
+                  key={user.user_id}
                   className="border-b border-gray-200 pb-3 flex flex-col md:flex-row md:justify-between items-start md:items-center"
                 >
                   <div className="flex items-center">
                     <img
-                      src={user.idPhotoUrl}
-                      alt={`${user.name}'s Profile`}
+                      src={user.user_prof_pic}
+                      alt={`${user.user_name}'s Profile`}
                       className="rounded-full w-16 h-16 mr-4 border-2 border-gray-300"
                     />
                     <div className="flex flex-col items-start ">
                       <p className="text-lg text-black">
-                        <b className="text-purple-600">{user.name}</b>
+                        <b className="text-purple-600">{user.user_name}</b>
                       </p>
-                      <p className="text-lg text-black">{user.email}</p>
-                      <p className="text-sm text-gray-500">
-                        Account ID: {user.id}
+                      <p className="text-lg text-black">{user.user_email}</p>
+                        <p className="text-lg text-black">{<a href={user.user_socmed}>{user.user_socmed}</a>}</p>
+                        <p className="text-sm text-gray-500">
+                        Account ID: {user.user_id}
                       </p>
                       <p className="text-sm text-gray-500">
                         <b>Status: </b>
@@ -287,27 +210,28 @@ const Users = () => {
                 >
                   <div className="flex items-center">
                     <img
-                      src={user.idPhotoUrl}
-                      alt={`${user.name}'s Profile`}
+                      src={user.user_prof_pic}
+                      alt={`${user.user_name}'s Profile`}
                       className="rounded-full w-16 h-16 mr-4 border-2 border-gray-300"
                     />
                     <div className="flex flex-col items-start">
                       <p className="text-lg text-black">
-                        <b className="text-purple-600">{user.name}</b>
+                        <b className="text-purple-600">{user.user_name}</b>
                       </p>
-                      <p className="text-lg text-black">{user.email}</p>
+                        <p className="text-lg text-black">{user.user_email}</p>
+                      <p className="text-lg text-black">{user.user_socmed}</p>
                       <p className="text-sm text-gray-500">
-                        Account ID: {user.id}
+                        Account ID: {user.user_id}
                       </p>
                       <p className="text-sm text-green-500">
                         <b>Status:</b> Verified
                       </p>
                       <p className="text-sm text-gray-600">
-                        <b>Total Violations:</b> {user.warnings}
+                        <b>Total Violations:</b> {userWarnings[user.user_id] ?? 0}
                       </p>
                       <p className="text-sm text-gray-600">
                         <b>Is Active:</b>{' '}
-                        {user.active ? (
+                        {user.is_active ? (
                           <span className="text-green-500">Yes</span>
                         ) : (
                           <span className="text-red-500">No</span>
@@ -349,22 +273,22 @@ const Users = () => {
             <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scroll">
               {deactivatedUsers.map((user) => (
                 <li
-                  key={user.id}
+                  key={user.user_id}
                   className="border-b border-gray-200 pb-3 flex flex-col md:flex-row md:justify-between items-start md:items-center"
                 >
                   <div className="flex items-center">
                     <img
-                      src={user.idPhotoUrl}
-                      alt={`${user.name}'s Profile`}
+                      src={user.user_prof_pic}
+                      alt={`${user.user_name}'s Profile`}
                       className="rounded-full w-16 h-16 mr-4 border-2 border-gray-300"
                     />
                     <div className="flex flex-col items-start">
                       <p className="text-lg text-black">
-                        <b className="text-purple-600">{user.name}</b>
+                        <b className="text-purple-600">{user.user_name}</b>
                       </p>
-                      <p className="text-lg text-black">{user.email}</p>
+                      <p className="text-lg text-black">{user.user_email}</p>
                       <p className="text-sm text-gray-500">
-                        Account ID: {user.id}
+                        Account ID: {user.user_id}
                       </p>
                       <p className="text-sm text-green-500">
                         <b>Status:</b> Verified
@@ -423,7 +347,7 @@ const Users = () => {
                   {/* Left side: Image */}
                   <div className="md:w-1/2">
                     <img
-                      src={modalUser.idPhotoUrl}
+                      src={modalUser.user_valid_id_pic}
                       alt="Uploaded ID"
                       className="w-full mb-4 border rounded text-black"
                       style={{ maxHeight: '500px', objectFit: 'contain' }}
@@ -470,9 +394,9 @@ const Users = () => {
                         className="bg-[#955CA4] text-white px-4 py-2 rounded hover:bg-[#F9B233] hover:text-white disabled:opacity-50 text-xs"
                         onClick={() => {
                           if (verificationStatus.approve) {
-                            handleVerifyUser(modalUser.id);
+                            handleVerifyUser(modalUser.user_id);
                           } else if (verificationStatus.reject) {
-                            handleRejectUser(modalUser.id);
+                            handleRejectUser(modalUser.user_id);
                           }
                         }}
                         disabled={!verificationStatus.approve && !verificationStatus.reject}

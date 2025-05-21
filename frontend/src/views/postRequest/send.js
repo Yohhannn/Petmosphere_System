@@ -113,17 +113,7 @@ export async function updatePostStatus(id,data){
     });
     return await response.json();
 }
-export async function updateUserVerification(id,data){
-    const response = await fetch(base_url+`/User/verified/${id}`,{
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
-    return await response.json();
-}
+
 export async function updateUser(id,data){
     const response = await fetch(base_url+`/User/${id}`,{
         method: "PUT",
@@ -160,11 +150,69 @@ export async function checkAdoption(data){
 export async function sendBreed(data){
     const response = await fetch(base_url+"/Breed",{
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+            "Accept": "application/json"
+        },
         body: JSON.stringify(data)
     });
     return await response.json();
 }
+export async function sendAlert(data){
+    const response = await fetch(base_url+"/Alert",{
+        method: "POST",
+        headers: {"Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updateBreed(id,data){
+    const response = await fetch(base_url+`/Breed/${id}`,{
+        method: "PUT",
+        headers: {"Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function deleteBreed(id){
+    const response = await fetch(base_url+`/Breed/${id}`,{
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+    });
+    return await response.json();
+}
+export async function sendType(data){
+    const response = await fetch(base_url+"/Type",{
+        method: "POST",
+        headers: {"Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function updateType(id,data){
+    const response = await fetch(base_url+`/Type/${id}`,{
+        method: "PUT",
+        headers: {"Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+export async function deleteType(id){
+    const response = await fetch(base_url+`/Type/${id}`,{
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+    });
+    return await response.json();
+}
+
+
 
 
 

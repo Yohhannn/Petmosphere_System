@@ -137,7 +137,15 @@ const PostPetForm = () => {
             postObject['pet_id'] = pet.data.pet_id;
             const post = await send.sendPost(postObject);
             await new Promise(resolve => setTimeout(resolve, 2000));
+            const alertPost = {
+                alert_type: "post_created",
+                user_id : user.user.user_id,
+                admin_id : null,
+                alert_title : "New post request approval",
+                alert_message : "New Post by " +user.user.user_name
+            }
             if(post.message.includes('successfully')){
+                await send.sendAlert(alertPost);
                 setSubmissionSuccess(true);
                 setPetName('');
                 setType('');

@@ -1,44 +1,48 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Admin_Header from '../../components/admin_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
-
+import * as fetch from '../fetchRequest/fetch.js';
+import * as send from '../postRequest/send.js';
 const AdminInfo = () => {
   // Sample editable content state (can be connected to database/API later)
-  const [previousAnnouncements, setPreviousAnnouncements] = useState([
-    // { date: "2024-07-28", message: "Content of announcement 1." },
-    // { date: "2024-07-27", message: "Content of announcement 2." },
-  ]);
+  const [previousAnnouncements, setPreviousAnnouncements] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newAnnouncementMessage, setNewAnnouncementMessage] = useState('');
   const [announcementType, setAnnouncementType] = useState('Announcement'); // Default value
 
   // Editing states
-  const [editMode, setEditMode] = useState(null);
-
+  const announcementData = async () =>{
+      const announcement = await fetch.getAlerts();
+      const adminAnnouncement = announcement.data.filter((x) => x.alert_type === 'update' || x.alert_type === 'announcement');
+      setPreviousAnnouncements(adminAnnouncement);
+  }
+    useEffect(() => {
+        announcementData();
+    }, []);
   // Save handler (for now, just alerts - connect to backend later)
-  const handleSave = (type) => {
-    alert(`${type} saved!`);
-    setEditMode(null);
-  };
+
 
   const handleCreateAnnouncement = () => {
     setIsModalOpen(true);
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (newAnnouncementMessage.trim()) {
-      const newAnnouncement = {
-        date: new Date().toLocaleDateString(),
-        message: newAnnouncementMessage,
-        type: announcementType, // Include the type
-      };
-      setPreviousAnnouncements(prev => [newAnnouncement, ...prev]);
+      const AlertInfo ={
+          alert_type : announcementType.toLowerCase(),
+          alert_title : "New "+announcementType.toLowerCase()+" to Admin",
+          alert_message: newAnnouncementMessage,
+          user_id : null,
+          admin_id : 6
+      }
+      await send.sendAlert(AlertInfo);
       setNewAnnouncementMessage(''); // Clear input
       setIsModalOpen(false);
       alert(`${announcementType} created!`); // Use type in alert
     } else {
       alert('Please enter a message.');
     }
+    await announcementData();
   }
 
   const handleCancel = () => {
@@ -98,9 +102,9 @@ const AdminInfo = () => {
             <div className="space-y-4">
               {previousAnnouncements.map((prevAnnouncement, index) => (
                 <div key={index} className="text-gray-700">
-                  <p><b className="text-gray-600">Type:</b> <span className={getAnnouncementColor(prevAnnouncement.type)}>{prevAnnouncement.type}</span></p>
-                  <p><b className="text-gray-600">Date Announced:</b> {prevAnnouncement.date}</p>
-                  <p><b className="text-gray-600">Message:</b> {prevAnnouncement.message}</p>
+                  <p><b className="text-gray-600">Type:</b> <span className={getAnnouncementColor(prevAnnouncement.alert_type)}>{prevAnnouncement.alert_type}</span></p>
+                  <p><b className="text-gray-600">Date Announced:</b> {prevAnnouncement.created_at.split('T')[0]+" "+prevAnnouncement.created_at.split('T')[1].split('.')[0]}</p>
+                  <p><b className="text-gray-600">Message:</b> {prevAnnouncement.alert_message}</p>
                 </div>
               ))}
             </div>

@@ -24,7 +24,8 @@ class User extends Authenticatable
         'user_pass',
         'user_createdate',
         'user_verified',
-        'is_active'
+        'is_active',
+        'user_socmed'
     ];
     public $timestamps = false;
     protected $hidden = [

@@ -1,82 +1,84 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Mail, Clock, Heart, Users, CheckCircle, UserX } from 'lucide-react';
 import Admin_Header from '../../components/admin_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import { Link } from 'react-router-dom'; // Import Link from React Router
-
+import * as fetch from '../fetchRequest/fetch.js';
 const AdminDashboard = () => {
+    const [approvePost,setApprovedPost] = useState("....");
+    const [pendingPost,setPendingPost] = useState("....");
+    const [adoptedPet,setAdoptedPet] = useState("....");
+    const [users,setUsers] = useState("....");
+    const [verifiedUsers,setVerifiedUsers] = useState("....");
+    const [unverifiedUsers,setUnverifiedUsers] = useState("....");
+    const [Alert,setAlert] = useState([]);
+    useEffect(() => {
+        const Post = async() =>{
+            const posts = await fetch.getCountPost();
+            const pet = await fetch.getCountPet();
+            const users = await fetch.getCountUser();
+            setAdoptedPet(pet.adopted);
+            setApprovedPost(posts.approved);
+            setPendingPost(posts.pending);
+            setUsers(users.users);
+            setUnverifiedUsers(users.unverified);
+            setVerifiedUsers(users.verified);
+        }
+        Post();
+    }, []);
   const cardData = [
     {
       icon: Mail,
-      value: 120,
+      value: approvePost,
       label: 'Approved Posts',
       valueColor: 'text-blue-600',
     },
     {
       icon: Clock,
-      value: 15,
+      value: pendingPost,
       label: 'Pending Posts',
       valueColor: 'text-yellow-500',
     },
     {
       icon: Heart,
-      value: 85,
+      value: adoptedPet,
       label: 'Adopted Pets',
       valueColor: 'text-green-600',
     },
     {
       icon: Users,
-      value: 234,
+      value: users,
       label: 'Active Users',
       valueColor: 'text-purple-600',
     },
     {
       icon: CheckCircle,
-      value: 180,
+      value: verifiedUsers,
       label: 'Verified Users',
       valueColor: 'text-green-500',
     },
     {
       icon: UserX,
-      value: 54,
+      value: unverifiedUsers,
       label: 'Unverified Users',
       valueColor: 'text-red-500',
     },
   ];
 
   // Dummy data with email and full name
-  const generateDummyData = (type, count) => {
-    const data = [];
-    for (let i = 0; i < count; i++) {
-      const baseData = {
-        date: '2024-01-15 09:30:00',
-        email: `user${i}@example.com`,
-        fullName: `User ${i}`,
-      };
-      switch (type) {
-        case 'post':
-          data.push({ ...baseData, petName: `Pet ${i}` });
-          break;
-        case 'signup':
-          data.push(baseData);
-          break;
-        case 'adoption':
-          data.push({ ...baseData, petName: `Pet ${i}` });
-          break;
-        case 'verification':
-          data.push(baseData);
-          break;
-        default:
-          data.push(baseData);
-      }
-    }
-    return data;
-  };
+  const AlertData = async() => {
+    const alerts = await fetch.getAlerts();
+    setAlert(alerts.data);
+    console.log(alerts);
+  }
+  useEffect(() => {
+    AlertData();
+  }, []);
 
-  const recentPosts = generateDummyData('post', 15);
-  const recentSignUps = generateDummyData('signup', 12);
-  const recentAdoptions = generateDummyData('adoption', 18);
-  const recentVerifications = generateDummyData('verification', 20);
+  const recentPosts = Alert.filter((x) => x.alert_type === "post_created");
+  const recentSignUps = Alert.filter((x) => x.alert_type === "sign_up");
+  const recentAdoptions = Alert.filter((x) => x.alert_type?.includes("adoption"));
+  const recentVerifications = Alert.filter((x) => x.alert_type === "user_verified");
 
   return (
     <>
@@ -134,9 +136,9 @@ const AdminDashboard = () => {
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md mt-4">
               <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm overflow-y-auto max-h-48">
-                {recentPosts.slice(0, 10).map((post, index) => (
+                {recentPosts.map((post, index) => (
                   <li key={index}>
-                    New Post from {post.email} {post.fullName ? `#${post.fullName}` : ''} <span className="float-right">{post.date}</span>
+                   {post.alert_message} <span className="float-right">{post.created_at.split('T')[0]+" "+post.created_at.split('T')[1].split('.')[0]}</span>
                   </li>
                 ))}
               </ul>
@@ -150,9 +152,9 @@ const AdminDashboard = () => {
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md mt-4">
               <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm overflow-y-auto max-h-48">
-                {recentSignUps.slice(0, 10).map((signUp, index) => (
+                {recentSignUps.map((signUp, index) => (
                   <li key={index}>
-                    New Sign-In: {signUp.email}  {signUp.fullName ? `#${signUp.fullName}` : ''}  <span className="float-right">{signUp.date}</span>
+                      {signUp.alert_message}<span className="float-right">{signUp.created_at.split('T')[0]+" "+signUp.created_at.split('T')[1].split('.')[0]}</span>
                   </li>
                 ))}
               </ul>
@@ -166,9 +168,9 @@ const AdminDashboard = () => {
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md mt-4">
               <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm overflow-y-auto max-h-48">
-                {recentAdoptions.slice(0, 10).map((adoption, index) => (
+                {recentAdoptions.map((adoption, index) => (
                   <li key={index}>
-                    New Adoption: {adoption.petName} by {adoption.email} {adoption.fullName ? `#${adoption.fullName}` : ''}  <span className="float-right">{adoption.date}</span>
+                      {adoption.alert_message} <span className="float-right">{adoption.created_at.split('T')[0]+" "+adoption.created_at.split('T')[1].split('.')[0]}</span>
                   </li>
                 ))}
               </ul>
@@ -188,9 +190,9 @@ const AdminDashboard = () => {
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md mt-4">
               <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm overflow-y-auto max-h-48">
-                {recentVerifications.slice(0, 10).map((verification, index) => (
+                {recentVerifications.map((verification, index) => (
                   <li key={index}>
-                    Verification Request: {verification.email} {verification.fullName ? `#${verification.fullName}` : ''}  <span className="float-right">{verification.date}</span>
+                      {verification.alert_message} <span className="float-right">{verification.created_at.split('T')[0]+" "+verification.created_at.split('T')[1].split('.')[0]}</span>
                   </li>
                 ))}
               </ul>

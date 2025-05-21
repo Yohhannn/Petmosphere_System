@@ -53,7 +53,7 @@ const PetDetails = () => {
         };
     };
 
-    const handleAdoptionButtonClick = async (pet_id,user_id) => {
+    const handleAdoptionButtonClick = async (pet_id) => {
         setPetId(pet.pet_id); // Save pet ID for request
         const userDetails = await fetch.getUserBy(loggedInUserId);
         const isVerified = userDetails.data.user_verified !== 0;
@@ -65,7 +65,7 @@ const PetDetails = () => {
             setAdoptionVerify(true); // Already requested
             setVerification(true);   // So we hide the verify button
             setIsModalOpen(true);
-        } else if (!isVerified && loggedInUserId.user_valid_id_pic !== null) {
+        } else if (!isVerified && loggedInUserId.user_valid_id_pic) {
             setVerification(false); // Not verified, show verify button
             setAdoptionVerify(false);
             setIsModalOpen(true);
@@ -85,8 +85,16 @@ const PetDetails = () => {
     };
 
     const handleAdoptionRequest = async () => {
+        const alertPetRequest = {
+            alert_type: "adoption_request",
+            user_id : user.user.user_id,
+            admin_id : null,
+            alert_title : "New Adoption Request",
+            alert_message : "New Adoption Request by " +user.user.user_name
+        }
         const response = await send.sendAdoptionRequest(AdoptionObject());
         if (response.message.includes('successfully')) {
+            await send.sendAlert(alertPetRequest);
             setShowAdoptionDialog(false);
             setAdoptionMessage('');
             console.log(response.message);

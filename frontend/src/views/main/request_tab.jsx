@@ -20,6 +20,12 @@
       const [req, setReq] = useState(null);
       const userCookie = Cookies.get('userCredentials');
       const user = userCookie ? JSON.parse(userCookie) : null;
+      const alertPetApproval = {
+          alert_type: "adoption_approved",
+          admin_id : null,
+          alert_title : "Adoption Approval",
+      }
+
         const fetchRequests = async () => {
             if (!user) return;
 
@@ -228,6 +234,9 @@
                                 onClick={async () => {
                                   await send.updateAdoptionRequestStatus(req.req_id, { req_status: 'Approved' });
                                   fetchApprovalRequests();
+                                  alertPetApproval["user_id"] = req.user_id;
+                                  alertPetApproval["alert_message"] = "Adoption approval for "+req.pet.pet_name;
+                                  await send.sendAlert(alertPetApproval);
                                 }}
                               >Approved</button>
                               <button
@@ -244,6 +253,10 @@
                                 className={`px-3 py-1 rounded text-xs font-semibold border ${req.req_status === 'Rejected' ? 'bg-red-500 text-white' : 'bg-white text-red-600 border-red-400'}`}
                                 onClick={async () => {
                                   await send.updateAdoptionRequestStatus(req.req_id, { req_status: 'Rejected' });
+                                    alertPetApproval["alert_type"] = "adoption_rejected";
+                                    alertPetApproval["user_id"] = req.user_id;
+                                    alertPetApproval["alert_message"] = "Adoption Rejected for "+req.pet.pet_name;
+                                    await send.sendAlert(alertPetApproval);
                                   fetchApprovalRequests();
                                 }}
                               >Reject</button>

@@ -55,7 +55,7 @@ const Home = () => {
     const handlePostPetClick = () => {
         if (verified) {
             navigate('/post_pet');
-        }else if(!verified && loggedInUserId.user_valid_id_pic === null) {
+        }else if(!verified && !loggedInUserId.user_valid_id_pic) {
             setIsModalOpen(true);
             setIsButton(true);
             setMessage('To post a pet for adoption, you need to verify your account.\n');
