@@ -29,7 +29,8 @@ import AdminUsers from './views/admin/admin_users';
 import AdminPosts from './views/admin/admin_posts';
 import AdminControls from './views/admin/admin_controls';
 import AdminInfo from './views/admin/admin_info';
-import Validation from './views/main/validation';
+import UserValidation from './views/main/userValidation.jsx';
+import AdminValidation from './views/main/adminValidation.jsx';
 import PromptPostSuccess from './prompt/prompt_post_success';
 
 const router = createBrowserRouter ([
@@ -46,7 +47,7 @@ const router = createBrowserRouter ([
     {path: '/requestp', element: <RequestPage />,},
 
     {
-        path: '/', element: <Validation />,
+        path: '/', element: <UserValidation />,
         children: [
             {path: '/home', element: <Home />,},
             {path: '/pets', element: <Pets />,},
@@ -60,13 +61,19 @@ const router = createBrowserRouter ([
             {path: '/account/verify', element: <AccountVerify/>,},
         ]
     },
+    {
+        path: '/', element: <AdminValidation/>,
+        children: [
+            {path: '/admin/dashboard', element: <AdminDashboard />,},
+            {path: '/admin/users', element: <AdminUsers />,},
+            {path: '/admin/posts', element: <AdminPosts />,},
+            {path: '/admin/info', element: <AdminInfo />,},
+            {path: '/admin/controls', element: <AdminControls />,},
+        ]
+    },
 
 
-    {path: '/admin/dashboard', element: <AdminDashboard />,},
-    {path: '/admin/users', element: <AdminUsers />,},
-    {path: '/admin/posts', element: <AdminPosts />,},
-    {path: '/admin/info', element: <AdminInfo />,},
-    {path: '/admin/controls', element: <AdminControls />,},
+
 
 
 

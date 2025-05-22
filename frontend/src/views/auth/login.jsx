@@ -39,7 +39,6 @@ const Login = () => {
                 admin_pass: password,
             };
         }
-        console.log(credentials);
         const data = await send.login(credentials);
 
         if (data.message.includes('Invalid')) {
@@ -50,6 +49,7 @@ const Login = () => {
                 navigate('/home');
                 Cookies.set('userCredentials', JSON.stringify(data), { expires: 7 });
             }else{
+                Cookies.set('adminCredentials', JSON.stringify(data), { expires: 7 });
                 navigate('/admin/dashboard');
             }
         } else {

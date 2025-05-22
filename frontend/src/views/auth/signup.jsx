@@ -55,7 +55,7 @@ const SignUp = () => {
         alert_type: "sign_up",
         admin_id : null,
         alert_title : "New sign up",
-        alert_message : "New Sign-In: " + email
+        alert_message : "New Sign-up: " + email
     }
     const response = await send.signUp(signUpObject);
     if (response.message.includes('successfully')) {

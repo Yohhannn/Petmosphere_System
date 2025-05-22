@@ -8,6 +8,7 @@ import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
 import Cookies from 'js-cookie';
 import {updateAdoptionRequestStatus} from "../postRequest/send.js";
+import {Link} from "react-router-dom";
 
 // Helper function for status badges (reused)
 const getStatusBadge = (status) => {
@@ -65,12 +66,12 @@ const InboxPage = () => {
     const systemData = async() => {
         const response = await fetch.getAlertByUser(user.user.user_id);
         setSystemMessages(response.data);
+        console.log(response.data);
     }
     useEffect(() => {
         fetchAdoptionRequestByUser = async () =>{
             const response = await fetch.getAdoptionRequestByUserId(user.user.user_id);
             setSentMessages(response.data);
-            console.log(response.data);
         }
         fetchAllAdoptionRequest = async () =>{
             const response = await fetch.getAdoptionRequest();
@@ -96,14 +97,14 @@ const InboxPage = () => {
         fetchAllAdoptionRequest;// Reset filter when tab changes
     };
 
-    const handleMessageClick = (message) => {
+    const handleMessageClick = async (message) => {
         setSelectedMessage(message);
         if (activeTab === 'Inbox') {
             setModalStatus(message.req_status);
             if (message.req_view_status === 'unread') {
                 updateAdoptionRequestView(message.req_id,{"req_view_status" : 'read'});
-                fetchAllAdoptionRequest;
-                fetchAdoptionRequestByUser;
+                await fetchAllAdoptionRequest;
+                await fetchAdoptionRequestByUser;
             }
         } else if (activeTab === 'Sent') {
             setModalStatus(message.req_status);
@@ -170,11 +171,11 @@ const InboxPage = () => {
                                     <FontAwesomeIcon icon={faCog} className="text-lg text-gray-700" />
                                 )}
                                 <span className="font-semibold text-gray-800">
-                                    {tab === 'Inbox' ? message.user.user_name : tab === 'Sent' ? message.user.user_name : message.sys_admin_name}
+                                    {tab === 'Inbox' ? <Link to={`/account/${message.user.user_id}`} className="text-blue-600 hover:underline">{message.user.user_name }</Link>: tab === 'Sent' ?<Link to={`/account/${message.user.user_id}`} className="text-blue-600 hover:underline">{message.user.user_name }</Link> : message.admin?.admin_username ? "Admin" : message.user.user_name  }
                                 </span>
                             </div>
                             <span className="text-sm text-gray-500">
-                                {tab === 'Inbox' ? message.req_date : tab === 'Sent' ? message.req_date : message.sys_date_sent}
+                                {tab === 'Inbox' ? message.req_date : tab === 'Sent' ? message.req_date : message.created_at.split('T')[0]+" "+message.created_at.split('T')[1].split('.')[0]}
                             </span>
                         </div>
                         <p className="text-gray-700 truncate">
@@ -182,12 +183,12 @@ const InboxPage = () => {
                                 ? `${message.pet.pet_name} - ${message.req_message}`
                                 : tab === 'Sent'
                                     ? `${message.pet.pet_name} - ${message.req_message}`
-                                    : message.sys_message}
+                                    : message.alert_message}
                         </p>
                         <div className="mt-1">
                             {tab === 'Inbox' && getStatusBadge(message.req_status)}
                             {tab === 'Sent' && getStatusBadge(message.req_status)}
-                            {tab === 'System' && getSystemMessageBadge(message.sys_message_type)}
+                            {tab === 'System' && getSystemMessageBadge(message.alert_type)}
                         </div>
                     </li>
                 ))}
@@ -375,8 +376,8 @@ const InboxPage = () => {
                                     {activeTab === 'Inbox'
                                         ? `Requested By: ${selectedMessage.user.user_name} | ${selectedMessage.req_date}`
                                         : activeTab === 'Sent'
-                                            ? `Sent To: ${selectedMessage.user.user_name} | ${selectedMessage.req_date}`
-                                            : `Sent On: ${selectedMessage.sys_date_sent}`}
+                                            ? `Sent To: ${selectedMessage.pet.user.user_name} | ${selectedMessage.req_date}`
+                                            : `Sent On: ${selectedMessage.req_date}`}
                                 </p>
                             </div>
                             <button
@@ -399,9 +400,9 @@ const InboxPage = () => {
                             </button>
                         </div>
                         <div className="space-y-2 text-gray-800">
-                            {activeTab === 'Inbox' || activeTab === 'Sent' ? (
+                            {activeTab === 'Inbox' ? (
                                 <>
-                                    <p><span className="font-semibold">Name:</span> {selectedMessage.user.user_name}</p>
+                                    <p><span className="font-semibold">Name:</span> {<Link to={`/account/${selectedMessage.user.user_id}`} className="text-blue-600 hover:underline">{selectedMessage.user.user_name}</Link>}</p>
                                     <p><span className="font-semibold">Email:</span> {selectedMessage.user.user_email}</p>
                                     <p><span className="font-semibold">Contact Number:</span> {selectedMessage.user.user_phone}</p>
                                     <p><span className="font-semibold">Address:</span> {selectedMessage.user.user_location}</p>
@@ -411,33 +412,31 @@ const InboxPage = () => {
                                     <p><span className="font-semibold">Message:</span></p>
                                     <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.req_message}</p>
                                 </>
-                             ) //: activeTab === 'Sent' ? (
-                            //     <>
-                            //         <p><span className="font-semibold">Name:</span> {selectedMessage.user.user_name}</p>
-                            //         <p><span className="font-semibold">Email:</span> {selectedMessage.snt_email}</p>
-                            //         <p><span className="font-semibold">Contact Number:</span> {selectedMessage.snt_contactNumber}</p>
-                            //         <p><span className="font-semibold">Address:</span> {selectedMessage.snt_address}</p>
-                            //         <p><span className="font-semibold">Request Status:</span> {getStatusBadge(selectedMessage.snt_req_status)}</p>
-                            //         <p><span className="font-semibold">Pet Name:</span> {selectedMessage.snt_petName}</p>
-                            //         <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.snt_petTags.join(', ')}</p>
-                            //         <p><span className="font-semibold">Message:</span></p>
-                            //         <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.snt_message}</p>
-                            //         <p><span className="font-semibold">Date Sent:</span> {selectedMessage.snt_dateRequested}</p>
-                            //         <p><span className="font-semibold">Last Updated:</span> {selectedMessage.snt_dateUpdated}</p>
-                            //         { selectedMessage.snt_req_status === 'Completed' && (
-                            //             <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors">
-                            //                 <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
-                            //             </button>
-                            //         )}
-                            //     </>
-                            // )
-                                : (
+                            ) : activeTab === 'Sent' ? (
+                                <>
+                                    <p><span className="font-semibold">Owner Name:</span> {<Link to={`/account/${selectedMessage.pet.user.user_id}`} className="text-blue-600 hover:underline">{selectedMessage.pet.user.user_name}</Link>}</p>
+                                    <p><span className="font-semibold">Owner Email:</span> {selectedMessage.pet.user.user_email}</p>
+                                    <p><span className="font-semibold">Owner Contact Number:</span> {selectedMessage.pet.user.user_phone}</p>
+                                    <p><span className="font-semibold">Owner Address:</span> {selectedMessage.pet.user.user_location}</p>
+                                    <p><span className="font-semibold">Request Status:</span> {getStatusBadge(selectedMessage.req_status)}</p>
+                                    <p><span className="font-semibold">Pet Name:</span> {selectedMessage.pet.pet_name}</p>
+                                    <p><span className="font-semibold">Pet Tags:</span> {selectedMessage.pet.pet_tag}</p>
+                                    <p><span className="font-semibold">Your request message:</span></p>
+                                    <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.req_message}</p>
+                                    <p><span className="font-semibold">Date Sent:</span> {selectedMessage.req_date}</p>
+                                    {selectedMessage.snt_req_status === 'Completed' && (
+                                        <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors">
+                                            <FontAwesomeIcon icon={faPlusCircle} className="mr-2" /> Add Review
+                                        </button>
+                                    )}
+                                </>
+                            ) : (
                                 <>
                                     <p><span className="font-semibold">Admin:</span> {selectedMessage.admin.admin_name}</p>
                                     <p><span className="font-semibold">Type:</span> {getSystemMessageBadge(selectedMessage.alert_type)}</p>
                                     <p><span className="font-semibold">Message:</span></p>
                                     <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.alert_message}</p>
-                                    <p><span className="font-semibold">Date Sent:</span> {selectedMessage.created_at.split('T')[0]+" "+selectedMessage.created_at.split('T')[1].split('.')[0]}</p>
+                                    <p><span className="font-semibold">Date Sent:</span> {selectedMessage.created_at.split('T')[0] + " " + selectedMessage.created_at.split('T')[1].split('.')[0]}</p>
                                 </>
                             )}
                         </div>

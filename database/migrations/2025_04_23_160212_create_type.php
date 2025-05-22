@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('type', function (Blueprint $table) {
-            $table->bigIncrements('type_id')->primary(true);
+            $table->bigIncrements('type_id');
             $table->string('type_name',50);
         });
     }

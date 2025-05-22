@@ -14,7 +14,7 @@ class AlertController extends Controller
     }
     public function getAlertByUser($id) {
         $alert = Alert::where("user_id", $id)
-            ->whereNotIn('type', ['sign_up', 'user_verified'])
+            ->whereNotIn('alert_type', ['sign_up'])
             ->with(['user', 'admin'])
             ->get();
         return response()->json(["message" => "Successfully get data","data" => $alert]);

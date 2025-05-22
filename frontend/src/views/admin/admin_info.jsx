@@ -3,13 +3,16 @@ import Admin_Header from '../../components/admin_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
+import Cookies from "js-cookie";
 const AdminInfo = () => {
   // Sample editable content state (can be connected to database/API later)
   const [previousAnnouncements, setPreviousAnnouncements] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newAnnouncementMessage, setNewAnnouncementMessage] = useState('');
   const [announcementType, setAnnouncementType] = useState('Announcement'); // Default value
-
+    const adminCookie = Cookies.get('adminCredentials');
+    const admin = adminCookie ? JSON.parse(adminCookie) : null;
+    const logInAdmin = admin.admin?.admin_id;
   // Editing states
   const announcementData = async () =>{
       const announcement = await fetch.getAlerts();
@@ -33,7 +36,7 @@ const AdminInfo = () => {
           alert_title : "New "+announcementType.toLowerCase()+" to Admin",
           alert_message: newAnnouncementMessage,
           user_id : null,
-          admin_id : 6
+          admin_id : logInAdmin
       }
       await send.sendAlert(AlertInfo);
       setNewAnnouncementMessage(''); // Clear input

@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('alerts', function (Blueprint $table) {
@@ -25,21 +22,19 @@ return new class extends Migration
                 'adoption_request',
                 'adoption_approved',
                 'adoption_rejected',
-                'warning'
+                'warning',
+                'announcement',
+                'user_rejected',
             ]);
-            $table->string('alert_title');
+            $table->string('alert_title', 255);
             $table->text('alert_message')->nullable();
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
 
-            $table->foreign('user_id')->references('user_id')->on('users')->nullOnDelete();
-            $table->foreign('admin_id')->references('admin_id')->on('admins')->nullOnDelete();
+            $table->foreign('user_id')->references('user_id')->on('user')->nullOnDelete();
+            $table->foreign('admin_id')->references('admin_id')->on('admin')->nullOnDelete();
         });
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('alerts');

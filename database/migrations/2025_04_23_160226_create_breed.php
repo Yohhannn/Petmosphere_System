@@ -15,8 +15,6 @@ return new class extends Migration
             $table->bigIncrements('breed_id')->primary(true);
             $table->string('breed_name', 50);
             $table->unsignedBigInteger('type_id');
-            $table->timestamps();
-
             $table->foreign('type_id')
                 ->references('type_id')
                 ->on('type')

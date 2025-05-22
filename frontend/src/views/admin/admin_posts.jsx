@@ -3,6 +3,7 @@ import Admin_Header from '../../components/admin_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
+import Cookies from "js-cookie";
 
 const AdminPosts = () => {
     const [selectedPost, setSelectedPost] = useState(null);
@@ -13,7 +14,9 @@ const AdminPosts = () => {
     const [pendingPosts, setPendingPosts] = useState([]);
     const [approvedPosts, setApprovedPosts] = useState([]);
     const [userId, setUserId] = useState(null);
-
+    const adminCookie = Cookies.get('adminCredentials');
+    const admin = adminCookie ? JSON.parse(adminCookie) : null;
+    const logInAdmin = admin.admin?.admin_id;
     const PendingPost = async () => {
         const response = await fetch.getPosts();
         const pendingPost = response.data.filter((x) => x.post_status === 'Pending');
@@ -74,7 +77,7 @@ const AdminPosts = () => {
                     alert_title: 'Post Rejected',
                     alert_message: `Your post is rejected due to ${declineReason}`,
                     user_id: userId,
-                    admin_id: 6,
+                    admin_id: logInAdmin,
                 };
                 await send.updatePostStatus(post.pet_id, { post_status: 'Rejected' });
                 await send.sendAlert(alertPost);

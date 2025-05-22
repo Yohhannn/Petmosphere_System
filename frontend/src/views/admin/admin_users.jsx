@@ -3,6 +3,7 @@ import Admin_Header from '../../components/admin_header';
 import ScrollToTopButton from '../utility/util_scroll_up';
 import * as fetch from '../fetchRequest/fetch.js';
 import * as send from '../postRequest/send.js';
+import Cookies from "js-cookie";
 const Users = () => {
   // Mock user data
   const [users, setUsers] = useState([]);
@@ -18,7 +19,9 @@ const Users = () => {
   const [verificationDescription, setVerificationDescription] = useState('');
   let alertWarn = {};
   const [userWarnings, setUserWarnings] = useState({});
-
+    const adminCookie = Cookies.get('adminCredentials');
+    const admin = adminCookie ? JSON.parse(adminCookie) : null;
+    const logInAdmin = admin.admin?.admin_id;
     const userData = async () => {
         const usersData = await fetch.getUsers();
         setUsers(usersData.data);
@@ -36,7 +39,15 @@ const Users = () => {
         userData();
     }, []);
   const handleVerifyUser = async(userId) => {
-    await send.updateUser(userId,{user_verified: 1})
+      const alertVerified = {
+          alert_type: 'user_verified',
+          alert_title : "Approved User Verification",
+          alert_message : verificationDescription,
+          user_id : userId,
+          admin_id : logInAdmin
+      }
+    await send.updateUser(userId,{user_verified: 1});
+    await send.sendAlert(alertVerified);
     setModalUser(null);
     setVerificationStatus({ approve: false, reject: false });
     setVerificationDescription('');
@@ -49,7 +60,7 @@ const Users = () => {
         alert_title : "Rejected User Verification",
         alert_message : verificationDescription,
         user_id : userId,
-        admin_id : 6
+        admin_id : logInAdmin
     }
     await send.sendAlert(alertReject);
     await send.updateUser(userId,{user_valid_id_pic : null});
@@ -101,7 +112,7 @@ const Users = () => {
                alert_title: "Warning for deactivation",
                alert_message: modalMessage,
                user_id: modalUser.user_id,
-               admin_id: 6
+               admin_id: logInAdmin
            }
         await send.sendAlert(alertWarn);
         await userData();

@@ -111,13 +111,9 @@
             if (petRes.data) {
                 // Get all pets owned by the user
                 const userPets = petRes.data
-                    .filter(item => item.pet && item.pet.user_id === user.user.user_id)
-                    .map(item => item.pet);
-                if (userPets.length === 0) {
-                    setApprovalRequests([]); // User owns no pets
-                    return;
-                }
+                    .filter(pet => pet.user_id === user.user.user_id);
                 // Now check for adoption requests for these pets
+                console.log(userPets);
                 const adoptionReqRes = await fetch.getAdoptionRequest();
                 if (adoptionReqRes.data) {
                     // Map pets by pet_id for quick lookup
@@ -133,6 +129,7 @@
                             ...req,
                             pet: petMap[req.pet_id], // Attach pet details for display
                         }));
+                    console.log(requestsNeedingApproval);
                     setApprovalRequests(requestsNeedingApproval);
                 } else {
                     setApprovalRequests([]);
