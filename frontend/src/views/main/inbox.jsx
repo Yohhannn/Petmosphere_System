@@ -370,14 +370,14 @@ const InboxPage = () => {
                                         ? `${selectedMessage.pet.pet_name} - Adoption Request`
                                         : activeTab === 'Sent'
                                             ? `${selectedMessage.pet.pet_name} - Message Details`
-                                            : `${selectedMessage.sys_message_type} - System Notification`}
+                                            : `${selectedMessage.alert_type} - System Notification`}
                                 </h2>
                                 <p className="text-sm text-gray-500">
                                     {activeTab === 'Inbox'
                                         ? `Requested By: ${selectedMessage.user.user_name} | ${selectedMessage.req_date}`
                                         : activeTab === 'Sent'
                                             ? `Sent To: ${selectedMessage.pet.user.user_name} | ${selectedMessage.req_date}`
-                                            : `Sent On: ${selectedMessage.req_date}`}
+                                            : `Sent On: ${selectedMessage.created_at.split('T')[0]+" "+selectedMessage.created_at.split('T')[1].split('.')[0]}`}
                                 </p>
                             </div>
                             <button
