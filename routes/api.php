@@ -80,13 +80,6 @@ use App\Http\Controllers\AdminController;
     Route::put('/Pet/status/{id}', [PetController::class, 'updatePetStatus']);
     Route::delete('/Pet/{id}', [PetController::class, 'deletePet']);
 
-    Route::get('/RequestHistory', [RequestHistoryController::class, 'getAllRequestHistory']);
-    Route::get('/RequestHistory/{id}', [RequestHistoryController::class, 'getRequestHistoryById']);
-    Route::post('/RequestHistory', [RequestHistoryController::class, 'createRequestHistory']);
-    Route::put('/RequestHistory/{id}', [RequestHistoryController::class, 'updateRequestHistory']);
-    Route::delete('/RequestHistory/{id}', [RequestHistoryController::class, 'deleteRequestHistory']);
-
-
     Route::post('/logout', [LoginController::class, 'logout']);
 
     Route::post('/login', [LoginController::class, 'login']);

@@ -32,7 +32,7 @@ class AlertController extends Controller
             'alert_message' => 'nullable|string',
         ]);
 
-        $alert = Alert::create($validated);
+        Alert::create($validated);
         return response()->json(["message" => "Successfully created alert"], 201);
     }
     public function updateAlert(Request $request, $id) {
