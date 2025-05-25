@@ -10,8 +10,6 @@ return new class extends Migration
     {
         Schema::create('alerts', function (Blueprint $table) {
             $table->bigIncrements('alert_id');
-            $table->string('alert_title',20)->nullable();
-            $table->string('alert_message',100)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->enum('alert_type', [
