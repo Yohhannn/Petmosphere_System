@@ -432,7 +432,7 @@ const InboxPage = () => {
                                 </>
                             ) : (
                                 <>
-                                    <p><span className="font-semibold">Admin:</span> {selectedMessage.admin.admin_name}</p>
+                                    <p><span className="font-semibold">Admin:</span> {selectedMessage.admin?.admin_name ?? "Admin"}</p>
                                     <p><span className="font-semibold">Type:</span> {getSystemMessageBadge(selectedMessage.alert_type)}</p>
                                     <p><span className="font-semibold">Message:</span></p>
                                     <p className="text-gray-800 leading-relaxed whitespace-pre-line pb-5">{selectedMessage.alert_message}</p>
