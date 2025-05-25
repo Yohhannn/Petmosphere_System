@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('user_name', 50);
             $table->string('user_phone', 11)->nullable();
             $table->string('user_location', 100)->nullable();
-            $table->string('user_prof_pic', 250)->nullable();
+            $table->string('user_prof_pic', 250)->default('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQJxKGGpPc9-5g25KWwnsCCy9O_dlS4HWo5A&s');
             $table->string('user_email', 50)->unique();
             $table->string('user_pass', 100);
             $table->date('user_createdate');

@@ -28,7 +28,7 @@ class AlertController extends Controller
             'user_id' => 'nullable|exists:user,user_id',
             'admin_id' => 'nullable|exists:admin,admin_id',
             'alert_type' => 'required|in:login,sign_up,post_created,post_rejected,user_verified,user_deactivated,adoption_request,adoption_approved,adoption_rejected,warning,update,announcement,user_rejected',
-            'alert_title' => 'required|string|max:255',
+            'alert_title' => 'nullable|string|max:255',
             'alert_message' => 'nullable|string',
         ]);
 

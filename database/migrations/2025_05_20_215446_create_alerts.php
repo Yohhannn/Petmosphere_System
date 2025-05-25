@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('alerts', function (Blueprint $table) {
-            $table->id('alert_id');
+            $table->bigIncrements('alert_id');
+            $table->string('alert_title',20)->nullable();
+            $table->string('alert_message',100)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->enum('alert_type', [

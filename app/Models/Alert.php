@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alert extends Model
 {
     use HasFactory;
-    protected $table = 'alert';
+    protected $table = 'alerts';
     protected $primaryKey = 'alert_id';
     protected $fillable = [
         'user_id',
