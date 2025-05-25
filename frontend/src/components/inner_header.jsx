@@ -96,7 +96,7 @@ const Inner_Header = () => {
                   alt="Chat Icon"
                   className="w-6 h-6 mb-1"
                 />
-                Chat
+                Tracking
               </Link>
             </li>
 
