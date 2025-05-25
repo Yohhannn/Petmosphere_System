@@ -7,7 +7,6 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\RequestHistoryController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
