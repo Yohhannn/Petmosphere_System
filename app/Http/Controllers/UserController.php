@@ -34,7 +34,6 @@ class UserController extends Controller
             'user_name' => 'required|string|max:50',
             'user_phone' => 'required|string|max:11',
             'user_location' => 'required|string|max:100',
-            'user_prof_pic' => 'nullable|string|max:250',
             'user_email' => 'required|email|max:50',
             'user_pass' => 'required|string|max:100',
             'user_createdate' => 'required|date',
