@@ -47,7 +47,6 @@ const SignUp = () => {
       "user_email": email,
       "user_pass": password,
       "user_createdate": new Date().toISOString().slice(0, 10),
-        "user_prof_pic" : null,
       "user_phone": contactNumber, // Include contact number
       "user_location": address,     // Include address
     };
